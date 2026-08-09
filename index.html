@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>LAM Petrochemical Weekly Board - Category Analytics 10W</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   --navy:#071d49;
@@ -328,9 +329,39 @@ button{touch-action:manipulation}
   .item-stack .price{font-size:30px}
   .item-stack .pricebox{margin-top:9px}
 }
+
+
+/* =========================================================
+   Current Tab Image Export
+   - High-resolution PNG for the currently selected tab
+   - Dedicated report layout; not a raw browser screenshot
+   ========================================================= */
+.tab-image-export{
+  position:fixed;left:-30000px;top:0;z-index:-9999;
+  width:1600px;background:#edf4fb;padding:34px;
+  color:#14213d;font-family:Pretendard,'Noto Sans KR','Apple SD Gothic Neo',Arial,sans-serif;
+  box-sizing:border-box;
+}
+.tab-image-sheet{background:#fff;border:1px solid #cbd9e6;box-shadow:0 12px 36px rgba(7,29,73,.08);overflow:hidden}
+.tab-image-header{background:#071d49;color:#fff;padding:27px 31px 25px;display:flex;justify-content:space-between;gap:30px;align-items:flex-end;border-bottom:6px solid #5e98c5}
+.tab-image-brand{display:flex;align-items:center;gap:15px}.tab-image-logo{width:48px;height:48px;border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:950;letter-spacing:.08em}
+.tab-image-title{font-size:31px;line-height:1.08;font-weight:950;letter-spacing:-.035em}.tab-image-sub{font-size:13px;margin-top:6px;color:#bfd4e8;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.tab-image-meta{text-align:right}.tab-image-tab{display:inline-block;background:#eaf4ff;color:#0b3760;border:1px solid #cfe2f5;padding:7px 12px;font-size:16px;font-weight:950;margin-bottom:8px}.tab-image-week{font-size:20px;font-weight:950}.tab-image-tone{font-size:14px;color:#d7e5f1;font-weight:850;margin-top:5px}.tab-image-tone b{font-size:21px;color:#fff;margin-left:7px}
+.tab-image-content{padding:27px 28px 30px;background:#fff}.tab-image-footer{display:flex;justify-content:space-between;align-items:center;padding:12px 29px 14px;border-top:1px solid #d7e1ea;background:#f7fafc;color:#61748a;font-size:12px;font-weight:800}
+.tab-image-export .overview-edit-btn,.tab-image-export .row-actions,.tab-image-export .chart-controls,.tab-image-export button{display:none!important}
+.tab-image-export .section{margin:20px 0 27px}.tab-image-export .section-title{margin:0 0 12px;padding-bottom:9px;border-bottom:2px solid #aebfce}.tab-image-export .section-title h3{font-size:29px!important}.tab-image-export .section-title small{font-size:13px!important}
+.tab-image-export .grid-head{display:none!important}
+.tab-image-export .row{padding:19px 20px!important;margin-bottom:13px!important;border-color:#cedae5!important;box-shadow:none!important;overflow:visible!important}
+.tab-image-export .row-main{display:grid!important;grid-template-columns:360px 145px minmax(0,1fr)!important;gap:20px!important;align-items:center!important}
+.tab-image-export .item-stack{padding-left:0!important}.tab-image-export .name{font-size:29px!important;line-height:1.08!important}.tab-image-export .row .note{font-size:12.5px!important}.tab-image-export .item-stack .pricebox{margin-top:14px!important}.tab-image-export .price{font-size:46px!important;line-height:1!important}.tab-image-export .prev-inline{font-size:19px!important}.tab-image-export .benchmark-sub{font-size:13px!important;line-height:1.35!important;display:block!important;overflow:visible!important}
+.tab-image-export .chg{font-size:25px!important;padding:13px 9px!important;line-height:1.2!important}.tab-image-export .comm{font-size:20px!important;line-height:1.64!important;padding:15px 17px!important;display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
+.tab-image-export.category-focus .detail-inline{display:grid!important;grid-template-columns:1fr 1fr!important;gap:13px!important;margin-top:15px!important;padding-top:15px!important}.tab-image-export.category-focus .detailbox{padding:16px 17px!important}.tab-image-export.category-focus .detailbox h4{font-size:19px!important;margin-bottom:9px!important}.tab-image-export.category-focus .detailbox pre{font-size:17px!important;line-height:1.63!important;white-space:pre-wrap!important}
+.tab-image-export .category-insight{margin:0 0 22px!important;border-top-width:5px!important}.tab-image-export .category-insight-head{padding:20px 22px 15px!important}.tab-image-export .category-insight-head h3{font-size:27px!important}.tab-image-export .category-insight-head p{font-size:14px!important}.tab-image-export .chart-body{grid-template-columns:minmax(0,1fr) 280px!important;gap:20px!important;padding:19px 21px 20px!important}.tab-image-export .chart-stage{min-height:340px!important}.tab-image-export .weekly-svg{height:340px!important}.tab-image-export .chart-kpi span{font-size:11px!important}.tab-image-export .chart-kpi strong{font-size:25px!important}.tab-image-export .chart-kpi small,.tab-image-export .chart-note{font-size:11.5px!important}.tab-image-export .donut-wrap{padding:24px 30px!important}
+.tab-image-export .overview-panel{margin:0!important;padding:25px 25px 27px!important;border-top-width:5px!important;box-shadow:none!important}.tab-image-export .overview-head h3{font-size:31px!important}.tab-image-export .overview-head p{font-size:14.5px!important}.tab-image-export .overview-week{font-size:17px!important}.tab-image-export .overview-grid{gap:15px!important}.tab-image-export .overview-card{padding:21px 22px 22px!important}.tab-image-export .overview-title h4{font-size:23px!important}.tab-image-export .overview-body{font-size:19px!important;line-height:1.72!important}.tab-image-export .overview-summary{font-size:23px!important;line-height:1.48!important;padding:16px 18px!important;background:#eaf4ff!important}.tab-image-export .overview-summary .summary-label{font-size:14px!important}
+
 </style></head>
 <body>
-<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">주차 불러오는 중...</option></select><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
+<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">주차 불러오는 중...</option></select><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
 <div class="wrap"><div class="hero"><div><div class="eyebrow">Weekly Market Monitor</div><h2>전체 석유화학 위클리 브리핑</h2><p>Energy → Base Chemicals → Key Feedstocks → Polymers → Regional Benchmarks</p></div><div class="week-card"><span>Reporting Week</span><strong class="week" id="weekText"></strong><div class="tone-inline"><span>주간 톤</span><strong id="toneText">-</strong></div></div></div><div class="toolbar"><div class="tabs" id="tabs"></div><div class="note">Overview · 카테고리별 상세 분석 · 최대 10주 주간가격 그래프 · 품목별 독립 파싱 · Google Sheet 자동동기화</div></div><div id="board"></div></div>
 <div id="printReport" class="print-report"></div>
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
@@ -834,6 +865,80 @@ function parsedEditItem(){if(EDIT_INDEX<0||!ITEMS[EDIT_INDEX])return null;const 
 function applyEditLocal(){try{const p=parsedEditItem();ITEMS[EDIT_INDEX]=p;render();showToast(p.name+' 화면 반영 완료')}catch(e){showToast(e.message)}}
 async function saveEditToSheet(){if(!isAdminUnlocked('edit')){requestAdminAccess(()=>saveEditToSheet(),'edit');return}try{const idx=EDIT_INDEX,p=parsedEditItem();ITEMS[idx]=p;render();const weekEnd=CURRENT_WEEK_END||inferWeekEnd();if(!weekEnd)throw new Error('저장 주차를 확인할 수 없습니다.');setDbStatus('saving','수정 저장 중');const res=await gasPost('saveItem',{item:localItemToApi(p,weekEnd)});if(!res.success)throw new Error(res.error||'수정 저장 실패');const meta={week_end:weekEnd,week_label:(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd),week_tone:computeWeeklyTone()};await gasPost('saveMeta',{meta});CURRENT_META={...CURRENT_META,...meta};WEEK_HISTORY_CACHE.delete(weekEnd);clearRetryAction();closeEdit();setDbStatus('online','자동 동기화');showToast(p.name+' 수정 · 자동저장 완료');await loadWeekList(false);const sel=document.getElementById('weekSelector');if(sel)sel.value=weekEnd}catch(e){console.error(e);setDbStatus('error','수정 실패');setRetryAction(()=>saveCurrentWeek({auto:true}));showToast('수정 저장 실패 · 상단 저장 재시도를 눌러주세요: '+e.message)}}
 async function deleteEditingItem(){if(!isAdminUnlocked('edit')){requestAdminAccess(()=>deleteEditingItem(),'edit');return}if(EDIT_INDEX<0||!ITEMS[EDIT_INDEX])return;const x=ITEMS[EDIT_INDEX],weekEnd=CURRENT_WEEK_END||inferWeekEnd();if(!confirm(x.name+' 품목을 현재 주차에서 삭제할까요?'))return;try{setDbStatus('saving','삭제 중');const res=await gasPost('deleteItem',{week_end:weekEnd,item:normalizeItemName(x.name)});if(!res.success)throw new Error(res.error||'삭제 실패');ITEMS.splice(EDIT_INDEX,1);const meta={week_end:weekEnd,week_label:(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd),week_tone:computeWeeklyTone()};await gasPost('saveMeta',{meta});CURRENT_META={...CURRENT_META,...meta};WEEK_HISTORY_CACHE.delete(weekEnd);closeEdit();render();setDbStatus('online','자동 동기화');showToast(x.name+' 삭제 · DB 반영 완료')}catch(e){console.error(e);setDbStatus('error','삭제 실패');showToast('삭제 실패: '+e.message)}}
+
+
+
+function sanitizeFilePart(value){
+  return String(value||'')
+    .replace(/[\\/:*?"<>|]+/g,'_')
+    .replace(/\s+/g,'_')
+    .replace(/^_+|_+$/g,'') || 'tab';
+}
+function buildCurrentTabImageNode(){
+  const board=document.getElementById('board');
+  if(!board)throw new Error('저장할 탭 영역을 찾을 수 없습니다.');
+  const weekEnd=CURRENT_WEEK_END||inferWeekEnd();
+  const weekLabel=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd)||'';
+  const tone=computeWeeklyTone();
+  const tabName=activeCategory||'전체';
+  const wrap=document.createElement('div');
+  wrap.className='tab-image-export'+((tabName!=='전체'&&tabName!=='Overview')?' category-focus':'');
+  const sheet=document.createElement('div');sheet.className='tab-image-sheet';
+  const header=document.createElement('div');header.className='tab-image-header';
+  header.innerHTML=`<div class="tab-image-brand"><div class="tab-image-logo">LAM</div><div><div class="tab-image-title">Petrochemical Weekly Market Board</div><div class="tab-image-sub">Strategic Market Intelligence · Tab Report</div></div></div><div class="tab-image-meta"><div class="tab-image-tab">${esc(tabName)}</div><div class="tab-image-week">${esc(weekLabel)}${weekEnd?' · 기준일 '+esc(weekEnd):''}</div><div class="tab-image-tone">주간 톤 <b>${esc(tone)}</b></div></div>`;
+  const content=document.createElement('div');content.className='tab-image-content';
+  const clone=board.cloneNode(true);
+  clone.removeAttribute('id');
+  clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
+  clone.querySelectorAll('button,.row-actions,.overview-edit-btn,.chart-controls').forEach(el=>el.remove());
+  content.appendChild(clone);
+  const footer=document.createElement('div');footer.className='tab-image-footer';
+  footer.innerHTML=`<span>LAM Petrochemical Weekly Board · ${esc(tabName)}</span><span>${esc(weekLabel)}${weekEnd?' | '+esc(weekEnd):''}</span>`;
+  sheet.appendChild(header);sheet.appendChild(content);sheet.appendChild(footer);wrap.appendChild(sheet);
+  document.body.appendChild(wrap);
+  return wrap;
+}
+async function saveCurrentTabImage(){
+  try{
+    if(typeof html2canvas==='undefined')throw new Error('이미지 저장 모듈을 불러오지 못했습니다. 인터넷 연결 후 다시 시도해 주세요.');
+    if(activeCategory!=='전체'&&activeCategory!=='Overview'){
+      await refreshCategoryChart();
+      await new Promise(r=>setTimeout(r,80));
+    }
+    showToast('현재 탭 고해상도 이미지 생성 중...');
+    if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(_){}}
+    const node=buildCurrentTabImageNode();
+    try{
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      const naturalHeight=Math.ceil(node.scrollHeight);
+      const naturalWidth=1600;
+      const maxCanvasHeight=26000;
+      const scale=Math.max(1.25,Math.min(2,maxCanvasHeight/Math.max(naturalHeight,1)));
+      const canvas=await html2canvas(node,{
+        scale,
+        useCORS:true,
+        allowTaint:false,
+        backgroundColor:'#edf4fb',
+        width:naturalWidth,
+        height:naturalHeight,
+        windowWidth:1700,
+        windowHeight:Math.min(naturalHeight,9000),
+        scrollX:0,
+        scrollY:0,
+        logging:false
+      });
+      const link=document.createElement('a');
+      const weekEnd=CURRENT_WEEK_END||inferWeekEnd()||'weekly';
+      const weekLabel=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd)||'';
+      link.download=`LAM_${sanitizeFilePart(weekLabel)}_${sanitizeFilePart(activeCategory||'전체')}_${sanitizeFilePart(weekEnd)}.png`;
+      link.href=canvas.toDataURL('image/png',1.0);
+      document.body.appendChild(link);link.click();link.remove();
+      showToast(`${activeCategory||'전체'} 탭 이미지 저장 완료`);
+    }finally{node.remove()}
+  }catch(e){
+    console.error(e);showToast('탭 이미지 저장 실패: '+e.message);
+  }
+}
 
 render();
 initDb();
