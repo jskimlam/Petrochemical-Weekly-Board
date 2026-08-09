@@ -874,7 +874,7 @@ function sanitizeFilePart(value){
     .replace(/\s+/g,'_')
     .replace(/^_+|_+$/g,'') || 'tab';
 }
-function buildCurrentTabImageNode(){
+function buildCurrentTabImageParts(){
   const board=document.getElementById('board');
   if(!board)throw new Error('저장할 탭 영역을 찾을 수 없습니다.');
   const weekEnd=CURRENT_WEEK_END||inferWeekEnd();
@@ -896,7 +896,33 @@ function buildCurrentTabImageNode(){
   footer.innerHTML=`<span>LAM Petrochemical Weekly Board · ${esc(tabName)}</span><span>${esc(weekLabel)}${weekEnd?' | '+esc(weekEnd):''}</span>`;
   sheet.appendChild(header);sheet.appendChild(content);sheet.appendChild(footer);wrap.appendChild(sheet);
   document.body.appendChild(wrap);
-  return wrap;
+  return {wrap,sheet,header,content,footer,tabName,weekEnd,weekLabel};
+}
+async function renderExportNodeToCanvas(node, options={}){
+  const width=options.width||1600;
+  const height=Math.ceil(options.height||node.scrollHeight||node.getBoundingClientRect().height||0);
+  const scale=options.scale||2;
+  return await html2canvas(node,{
+    scale,
+    useCORS:true,
+    allowTaint:false,
+    backgroundColor:options.backgroundColor||'#ffffff',
+    width,
+    height,
+    windowWidth:options.windowWidth||1700,
+    windowHeight:options.windowHeight||Math.min(height,9000),
+    scrollX:0,
+    scrollY:0,
+    logging:false
+  });
+}
+function downloadCanvasFile(canvas, filename){
+  const link=document.createElement('a');
+  link.download=filename;
+  link.href=canvas.toDataURL('image/png',1.0);
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 async function saveCurrentTabImage(){
   try{
@@ -905,36 +931,68 @@ async function saveCurrentTabImage(){
       await refreshCategoryChart();
       await new Promise(r=>setTimeout(r,80));
     }
-    showToast('현재 탭 고해상도 이미지 생성 중...');
+    showToast('현재 탭 이미지를 PPT 표준(16:9) 기준으로 생성 중...');
     if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(_){}}
-    const node=buildCurrentTabImageNode();
+
+    const parts=buildCurrentTabImageParts();
     try{
       await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-      const naturalHeight=Math.ceil(node.scrollHeight);
-      const naturalWidth=1600;
+
+      const exportWidth=1600;
+      const overviewPageHeight=900; // PPT standard 16:9
       const maxCanvasHeight=26000;
-      const scale=Math.max(1.25,Math.min(2,maxCanvasHeight/Math.max(naturalHeight,1)));
-      const canvas=await html2canvas(node,{
-        scale,
-        useCORS:true,
-        allowTaint:false,
-        backgroundColor:'#edf4fb',
-        width:naturalWidth,
-        height:naturalHeight,
-        windowWidth:1700,
-        windowHeight:Math.min(naturalHeight,9000),
-        scrollX:0,
-        scrollY:0,
-        logging:false
-      });
-      const link=document.createElement('a');
-      const weekEnd=CURRENT_WEEK_END||inferWeekEnd()||'weekly';
-      const weekLabel=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd)||'';
-      link.download=`LAM_${sanitizeFilePart(weekLabel)}_${sanitizeFilePart(activeCategory||'전체')}_${sanitizeFilePart(weekEnd)}.png`;
-      link.href=canvas.toDataURL('image/png',1.0);
-      document.body.appendChild(link);link.click();link.remove();
-      showToast(`${activeCategory||'전체'} 탭 이미지 저장 완료`);
-    }finally{node.remove()}
+      const maxScaleByHeight=maxCanvasHeight/Math.max(parts.wrap.scrollHeight||1,1);
+      const scale=Math.max(1.3,Math.min(2,maxScaleByHeight));
+
+      const headerCanvas=await renderExportNodeToCanvas(parts.header,{width:exportWidth,height:Math.ceil(parts.header.scrollHeight),scale,backgroundColor:'#071d49'});
+      const footerCanvas=await renderExportNodeToCanvas(parts.footer,{width:exportWidth,height:Math.ceil(parts.footer.scrollHeight),scale,backgroundColor:'#f7fafc'});
+      const contentCanvas=await renderExportNodeToCanvas(parts.content,{width:exportWidth,height:Math.ceil(parts.content.scrollHeight),scale,backgroundColor:'#ffffff'});
+
+      const pageWidth=headerCanvas.width;
+      const pageHeight=Math.round(pageWidth*(overviewPageHeight/exportWidth));
+      const headerH=headerCanvas.height;
+      const footerH=footerCanvas.height;
+      const bodyH=Math.max(200,pageHeight-headerH-footerH);
+
+      const totalPages=Math.max(1,Math.ceil(contentCanvas.height/bodyH));
+      const weekEnd=parts.weekEnd||'weekly';
+      const weekLabel=parts.weekLabel||isoWeekLabel(weekEnd)||'';
+      const tabName=parts.tabName||'전체';
+
+      for(let page=0; page<totalPages; page++){
+        const pageCanvas=document.createElement('canvas');
+        pageCanvas.width=pageWidth;
+        pageCanvas.height=pageHeight;
+        const ctx=pageCanvas.getContext('2d');
+
+        ctx.fillStyle='#edf4fb';
+        ctx.fillRect(0,0,pageWidth,pageHeight);
+
+        // white main sheet background
+        ctx.fillStyle='#ffffff';
+        ctx.fillRect(0,0,pageWidth,pageHeight);
+
+        ctx.drawImage(headerCanvas,0,0);
+
+        const sy=page*bodyH;
+        const sliceH=Math.min(bodyH, contentCanvas.height-sy);
+        ctx.fillStyle='#ffffff';
+        ctx.fillRect(0,headerH,pageWidth,bodyH);
+        if(sliceH>0){
+          ctx.drawImage(contentCanvas,0,sy,pageWidth,sliceH,0,headerH,pageWidth,sliceH);
+        }
+
+        ctx.drawImage(footerCanvas,0,pageHeight-footerH);
+
+        const base=`LAM_${sanitizeFilePart(weekLabel)}_${sanitizeFilePart(tabName)}_${sanitizeFilePart(weekEnd)}`;
+        const filename=totalPages>1?`${base}_${String(page+1).padStart(2,'0')}.png`:`${base}.png`;
+        downloadCanvasFile(pageCanvas, filename);
+      }
+
+      showToast(totalPages>1?`${tabName} 탭 이미지 ${totalPages}장 분할 저장 완료`:`${tabName} 탭 이미지 저장 완료`);
+    }finally{
+      parts.wrap.remove();
+    }
   }catch(e){
     console.error(e);showToast('탭 이미지 저장 실패: '+e.message);
   }
