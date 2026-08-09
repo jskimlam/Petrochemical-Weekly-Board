@@ -87,8 +87,21 @@ button{touch-action:manipulation}
 @media(max-width:560px){.parser-itemgrid{grid-template-columns:repeat(2,1fr)}.parser-selected{align-items:flex-start;flex-direction:column}.parser-selected strong{font-size:22px}.parser-selected .state{text-align:left}.parserbox textarea{height:40vh}.parser-actions .left,.parser-actions .right{flex-direction:column}.parser-actions .btn{width:100%}}
 
 
+/* Print / PDF report */
+.print-report{display:none}
 @media print{
-  .topbar,.toolbar,.detailbtn{display:none!important}body{background:#fff}.wrap{max-width:none;padding:0}.hero{box-shadow:none}.row{break-inside:avoid;box-shadow:none}.section{break-inside:auto}
+  @page{size:A4 landscape;margin:9mm 10mm 10mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{background:#fff!important}
+  body{margin:0!important;color:#14213d!important;font-family:Pretendard,'Noto Sans KR','Apple SD Gothic Neo',Arial,sans-serif!important}
+  .topbar,.wrap,.modal,.toast{display:none!important}
+  .print-report{display:block!important;width:100%;color:#14213d;background:#fff}
+  .pr-header{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;border-bottom:3px solid #071d49;padding:0 0 9px;margin-bottom:10px}
+  .pr-brand{display:flex;align-items:center;gap:10px}.pr-logo{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#071d49!important;color:#fff!important;font-size:11px;font-weight:950;letter-spacing:.08em}.pr-title{font-size:23px;font-weight:950;color:#071d49!important;letter-spacing:-.035em;line-height:1.05}.pr-sub{font-size:9px;color:#66758a!important;font-weight:850;letter-spacing:.12em;margin-top:3px;text-transform:uppercase}
+  .pr-meta{text-align:right}.pr-week{font-size:15px;font-weight:950;color:#071d49!important}.pr-tone{font-size:10px;font-weight:850;color:#66758a!important;margin-top:3px}.pr-tone strong{font-size:17px;margin-left:6px}.pr-tone .weak{color:#175cd3!important}.pr-tone .strong{color:#b42318!important}.pr-tone .mixed{color:#071d49!important}
+  .pr-section-title{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #c7d1dc;margin:12px 0 7px;padding-bottom:5px}.pr-section-title h2{margin:0;color:#071d49!important;font-size:14px;font-weight:950;letter-spacing:-.02em}.pr-section-title span{font-size:8.5px;color:#66758a!important;font-weight:800}
+  .pr-summary{width:100%;border-collapse:collapse;table-layout:fixed;font-size:9px;margin-bottom:8px}.pr-summary th{background:#eef3f8!important;color:#071d49!important;border-top:1px solid #9fb0c1;border-bottom:1px solid #9fb0c1;padding:5px 6px;text-align:left;font-size:8px;font-weight:950}.pr-summary td{border-bottom:1px solid #e2e8ef;padding:5px 6px;vertical-align:middle}.pr-summary .pr-catrow td{background:#f7f9fb!important;color:#071d49!important;font-weight:950;padding:4px 6px;border-bottom:1px solid #cfd9e3}.pr-summary .item{font-weight:950;color:#071d49!important;font-size:9.5px}.pr-summary .cur{font-weight:950;font-size:11.5px;color:#071d49!important;white-space:nowrap}.pr-summary .prev{font-size:8px;color:#738397!important;font-weight:800;white-space:nowrap}.pr-summary .wow{text-align:center;font-weight:950;font-size:11px;white-space:nowrap}.pr-summary .wow.up{color:#b42318!important}.pr-summary .wow.down{color:#175cd3!important}.pr-summary .wow.flat{color:#475467!important}.pr-summary .bench{font-size:8px;color:#52677e!important}.pr-summary .date{text-align:center;color:#66758a!important;font-weight:800;white-space:nowrap}
+  .pr-analysis{display:grid;grid-template-columns:1fr 1fr;gap:7px 9px}.pr-card{border:1px solid #cbd6e1;border-top:3px solid #071d49;padding:7px 8px 8px;break-inside:avoid;page-break-inside:avoid;background:#fff!important}.pr-card.up{border-top-color:#b42318!important}.pr-card.down{border-top-color:#175cd3!important}.pr-card.flat{border-top-color:#66758a!important}.pr-card-head{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline}.pr-card-name{font-size:13px;font-weight:950;color:#071d49!important;white-space:nowrap}.pr-card-price{font-size:15px;font-weight:950;letter-spacing:-.03em;color:#071d49!important;white-space:nowrap}.pr-card.up .pr-card-price,.pr-card.up .pr-card-wow{color:#b42318!important}.pr-card.down .pr-card-price,.pr-card.down .pr-card-wow{color:#175cd3!important}.pr-card-wow{font-size:13px;font-weight:950;white-space:nowrap}.pr-card-bench{margin:2px 0 5px;font-size:7.8px;color:#66758a!important;font-weight:800}.pr-comment{background:#f3faf5!important;border-left:3px solid #88b996!important;padding:5px 6px;font-size:8.5px;line-height:1.42;color:#23384e!important;font-weight:700}.pr-bottom{display:grid;grid-template-columns:.95fr 1.05fr;gap:7px;margin-top:5px}.pr-box{border-top:1px solid #d8e1e9;padding-top:4px}.pr-box h4{margin:0 0 2px;font-size:7.8px;color:#071d49!important;font-weight:950}.pr-box p,.pr-box ul{margin:0;color:#40566e!important;font-size:7.7px;line-height:1.38}.pr-box ul{padding-left:13px}.pr-box li{margin:0 0 1px}.pr-category{break-before:auto;margin-top:11px}.pr-category-title{font-size:12px;color:#071d49!important;font-weight:950;border-left:4px solid #2f6fa5!important;padding-left:6px;margin:0 0 6px}.pr-footer{display:flex;justify-content:space-between;border-top:1px solid #cbd6e1;margin-top:8px;padding-top:4px;color:#7d8998!important;font-size:7px;font-weight:750}.pr-break-before{break-before:page;page-break-before:always}
 }
 
 /* Google Sheet DB controls */
@@ -98,8 +111,9 @@ button{touch-action:manipulation}
 
 </style></head>
 <body>
-<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">주차 불러오는 중...</option></select><button class="btn db-save" onclick="saveCurrentWeek()">수동 재저장</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="window.print()">인쇄/PDF</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
+<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">주차 불러오는 중...</option></select><button class="btn db-save" onclick="saveCurrentWeek()">수동 재저장</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
 <div class="wrap"><div class="hero"><div><div class="eyebrow">Weekly Market Monitor</div><h2>전체 석유화학 위클리 브리핑</h2><p>Energy → Base Chemicals → Key Feedstocks → Polymers → Regional Benchmarks</p></div><div class="week-card"><span>Reporting Week</span><strong class="week" id="weekText"></strong><div class="tone-inline"><span>주간 톤</span><strong id="toneText">-</strong></div></div></div><div class="toolbar"><div class="tabs" id="tabs"></div><div class="note">품목별 독립 파싱 · 선택한 한 품목만 Google Sheet 자동갱신 · 전주가는 현재가 옆 괄호 표기</div></div><div id="board"></div></div>
+<div id="printReport" class="print-report"></div>
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
 <div class="modal" id="parserModal"><div class="modalbox parserbox"><div class="modaltop"><div><h3>품목별 브리핑 파싱 · 자동저장</h3><div class="note">아래에서 품목을 먼저 선택한 뒤 해당 품목 브리핑만 붙여넣으세요. 다른 품목 데이터는 절대 변경하지 않습니다.</div><div class="parser-status">선택 품목과 브리핑 제목의 품목명이 일치할 때만 저장됩니다. 제목 날짜는 평가일, Reporting Week 기준일은 DB 저장 주차입니다.</div></div><button class="close" onclick="closeParser()">닫기</button></div><div class="parser-weekbar"><div class="field"><label for="parserWeekEnd">Reporting Week 기준일</label><input id="parserWeekEnd" type="date"></div><div class="hint">예: 8/7 위클리의 AN 평가일이 8/4라면 Reporting Week는 2026-08-07, AN 제목 날짜는 2026-08-04로 입력합니다.<br>한 번에 한 품목만 파싱하며 저장도 해당 품목만 수행합니다.</div></div><div class="parser-workspace"><div class="parser-itemnav" id="parserItemNav"></div><div class="parser-editor"><div class="parser-selected"><div><div class="label">선택 품목</div><strong id="parserSelectedName">WTI</strong></div><div class="state" id="parserSelectedState">해당 품목만 자동저장</div></div><textarea id="parserText" placeholder="선택한 품목의 브리핑 1개만 붙여넣으세요."></textarea><div class="parser-help" id="parserHelp">제목부터 데일리가격까지 해당 품목 브리핑 전체를 붙여넣으면 됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentItemToParser()">현재 데이터 불러오기</button><button class="btn" onclick="clearParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" onclick="parseSelectedItemAndSave()">선택 품목 파싱 · 자동저장</button></div></div></div></div></div></div>
 
@@ -231,7 +245,83 @@ async function parseSelectedItemAndSave(){
   }
 }
 
-function copyReport(){let out='[LAM Petrochemical Weekly Board]\n';CATEGORY_ORDER.forEach(c=>{const a=ITEMS.filter(x=>x.category===c).sort((x,y)=>itemSortRank(x.name)-itemSortRank(y.name));if(!a.length)return;out+='\n['+c+']\n';a.forEach(x=>{out+=displayName(x.name)+' | '+x.current_raw+' | '+fmtPct(x.pct)+' '+x.direction+'\n- '+x.commentary+'\n'})});navigator.clipboard.writeText(out.trim()).then(()=>alert('카카오톡 공유용 요약이 복사되었습니다.'))}
+function priceDeltaText(x){
+  if(x.current==null||x.previous==null||Number.isNaN(Number(x.current))||Number.isNaN(Number(x.previous)))return '';
+  const d=Number(x.current)-Number(x.previous), sign=d>0?'+':d<0?'-':'';
+  const raw=String(x.current_raw||'');
+  let unit='';
+  if(/cts\s*\/\s*lb/i.test(raw))unit=' cts/lb';
+  else if(/\/b\b/i.test(raw))unit='/b';
+  else if(/\/mt\b/i.test(raw))unit='/mt';
+  const abs=Math.abs(d).toFixed(2);
+  if(/\$/.test(raw)&&unit!==' cts/lb')return sign+'$'+abs+unit;
+  return sign+abs+unit;
+}
+function dirSymbol(x){return x.direction==='상승'?'▲':x.direction==='하락'?'▼':'━'}
+function compactPriceLine(x){const prev=x.prev_raw?` (전주 ${x.prev_raw})`:'';const delta=priceDeltaText(x);return `${x.current_raw||'-'}${prev}  ${dirSymbol(x)} ${fmtPct(x.pct)}${delta?` [${delta}]`:''}`}
+function copyReport(){
+  const weekEnd=CURRENT_WEEK_END||inferWeekEnd();
+  const weekLabel=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd)||'';
+  const tone=computeWeeklyTone();
+  const ordered=[...ITEMS].sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name));
+  const groups=[['상승','▲'],['하락','▼'],['보합','━']];
+  let out='[LAM 석유화학 위클리 브리핑]\n';
+  out+=`${weekLabel}${weekEnd?' · '+weekEnd:''} | 주간 톤: ${tone}\n\n`;
+  out+='[가격 변동 SUMMARY]\n';
+  groups.forEach(([dir,sym])=>{
+    const arr=ordered.filter(x=>x.direction===dir).sort((a,b)=>dir==='상승'?(b.pct-a.pct):dir==='하락'?(a.pct-b.pct):itemSortRank(a.name)-itemSortRank(b.name));
+    if(!arr.length)return;
+    out+=`\n${sym} ${dir}\n`;
+    arr.forEach(x=>{out+=`${displayName(x.name)}  ${compactPriceLine(x)}\n`});
+  });
+  out+='\n[품목별 핵심 브리핑]\n';
+  CATEGORY_ORDER.forEach(c=>{
+    const a=ordered.filter(x=>x.category===c);
+    if(!a.length)return;
+    out+=`\n■ ${c}\n`;
+    a.forEach(x=>{
+      out+=`\n${displayName(x.name)}\n`;
+      out+=`${compactPriceLine(x)}\n`;
+      if(x.benchmark)out+=`(${x.benchmark})\n`;
+      if(x.commentary)out+=`핵심: ${String(x.commentary).replace(/\s+/g,' ').trim()}\n`;
+    });
+  });
+  navigator.clipboard.writeText(out.trim()).then(()=>showToast('카카오톡 보고용 형식이 복사되었습니다.')).catch(()=>alert('클립보드 복사에 실패했습니다.'));
+}
+
+function factorLinesForPrint(text,max=4){
+  return String(text||'').split(/\n+/).map(s=>s.replace(/^\s*[-•·]\s*/,'').trim()).filter(Boolean).slice(0,max);
+}
+function printToneClass(t){return t==='약세 우위'?'weak':t==='강세 우위'?'strong':'mixed'}
+function buildPrintReport(){
+  const el=document.getElementById('printReport');if(!el)return;
+  const weekEnd=CURRENT_WEEK_END||inferWeekEnd();
+  const weekLabel=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd)||'';
+  const tone=computeWeeklyTone();
+  const ordered=[...ITEMS].sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name));
+  const summaryRows=[];
+  CATEGORY_ORDER.forEach(c=>{
+    const arr=ordered.filter(x=>x.category===c);if(!arr.length)return;
+    summaryRows.push(`<tr class="pr-catrow"><td colspan="5">${esc(c)}</td></tr>`);
+    arr.forEach(x=>summaryRows.push(`<tr><td class="item">${esc(displayName(x.name))}</td><td><span class="cur">${esc(x.current_raw||'-')}</span> <span class="prev">(전주 ${esc(x.prev_raw||'-')})</span></td><td class="wow ${x.direction==='상승'?'up':x.direction==='하락'?'down':'flat'}">${esc(dirSymbol(x)+' '+fmtPct(x.pct))}</td><td class="bench">${esc(x.benchmark||'')}</td><td class="date">${esc(x.date||'')}</td></tr>`));
+  });
+  const analysis=[];
+  CATEGORY_ORDER.forEach((c,ci)=>{
+    const arr=ordered.filter(x=>x.category===c);if(!arr.length)return;
+    const cards=arr.map(x=>{
+      const cls=x.direction==='상승'?'up':x.direction==='하락'?'down':'flat';
+      const factors=factorLinesForPrint(x.factors,4);
+      return `<article class="pr-card ${cls}"><div class="pr-card-head"><div class="pr-card-name">${esc(displayName(x.name))}</div><div class="pr-card-price">${esc(x.current_raw||'-')} <span class="prev">(전주 ${esc(x.prev_raw||'-')})</span></div><div class="pr-card-wow">${esc(dirSymbol(x)+' '+fmtPct(x.pct))}</div></div><div class="pr-card-bench">${esc(x.benchmark||'')} · 평가 ${esc(x.date||'-')}</div><div class="pr-comment">${esc(x.commentary||'-')}</div><div class="pr-bottom"><div class="pr-box"><h4>주요 변동요인</h4>${factors.length?`<ul>${factors.map(v=>`<li>${esc(v)}</li>`).join('')}</ul>`:'<p>-</p>'}</div><div class="pr-box"><h4>결론 및 전망</h4><p>${esc(x.outlook||'-')}</p></div></div></article>`;
+    }).join('');
+    analysis.push(`<section class="pr-category${ci===0?' pr-break-before':''}"><h3 class="pr-category-title">${esc(c)}</h3><div class="pr-analysis">${cards}</div></section>`);
+  });
+  el.innerHTML=`<header class="pr-header"><div class="pr-brand"><div class="pr-logo">LAM</div><div><div class="pr-title">Petrochemical Weekly Market Report</div><div class="pr-sub">Strategic Market Intelligence · Weekly Briefing</div></div></div><div class="pr-meta"><div class="pr-week">${esc(weekLabel)}${weekEnd?' · '+esc(weekEnd):''}</div><div class="pr-tone">주간 톤 <strong class="${printToneClass(tone)}">${esc(tone)}</strong></div></div></header><section><div class="pr-section-title"><h2>Executive Price Snapshot</h2><span>Current price / Previous week / WoW / Benchmark / Assessment date</span></div><table class="pr-summary"><colgroup><col style="width:12%"><col style="width:30%"><col style="width:12%"><col style="width:36%"><col style="width:10%"></colgroup><thead><tr><th>품목</th><th>현재가 (전주가)</th><th style="text-align:center">WoW</th><th>Benchmark</th><th style="text-align:center">평가일</th></tr></thead><tbody>${summaryRows.join('')}</tbody></table></section>${analysis.join('')}<footer class="pr-footer"><span>LAM Petrochemical Weekly Board</span><span>${esc(weekLabel)}${weekEnd?' · '+esc(weekEnd):''}</span></footer>`;
+}
+function prepareAndPrint(){
+  buildPrintReport();
+  setTimeout(()=>window.print(),80);
+}
+window.addEventListener('beforeprint',buildPrintReport);
 
 function inferWeekEnd(){const dates=ITEMS.map(x=>String(x.date||'')).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x)).sort();return dates.length?dates[dates.length-1]:''}
 function isoWeekLabel(dateStr){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(dateStr||'')))return '';const d=new Date(dateStr+'T00:00:00Z');const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const y0=new Date(Date.UTC(d.getUTCFullYear(),0,1));const w=Math.ceil((((d-y0)/86400000)+1)/7);return 'W'+String(w).padStart(2,'0')}
