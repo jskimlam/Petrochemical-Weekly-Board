@@ -270,6 +270,64 @@ button{touch-action:manipulation}
   .detailbox pre,.category-focus .detailbox pre{font-size:15px;line-height:1.67}
 }
 
+
+
+/* =========================================================
+   Item / Price Vertical Stack v3
+   - Long item names never collide with current price.
+   - Item name + assessment date stay on top; price sits below.
+   ========================================================= */
+@media screen {
+  .grid-head,.row-main{
+    grid-template-columns:minmax(330px,2.15fr) minmax(122px,.78fr) minmax(520px,6.85fr) 76px;
+    gap:clamp(12px,.9vw,18px);
+  }
+  .item-stack{min-width:0;display:block;padding-left:2px}
+  .item-stack .pricebox{margin-top:clamp(13px,.9vw,18px);text-align:left;min-width:0}
+  .item-stack .price-line{align-items:baseline;row-gap:7px}
+  .item-stack .benchmark-sub{margin-top:7px}
+  .row-main>div:first-child{padding-left:0}
+}
+
+@media screen and (min-width:1400px){
+  .grid-head,.row-main{
+    grid-template-columns:minmax(365px,2.35fr) minmax(126px,.8fr) minmax(600px,7fr) 78px;
+  }
+  .item-stack .name{max-width:100%}
+  .item-stack .price{font-size:clamp(37px,2.35vw,49px)}
+}
+
+@media screen and (max-width:1150px){
+  .grid-head,.row-main{
+    grid-template-columns:minmax(285px,1.9fr) 108px minmax(340px,5.5fr) 64px;
+  }
+  .item-stack .pricebox{margin-top:12px}
+}
+
+@media screen and (max-width:900px){
+  .row-main{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:'name change' 'comment comment' 'detail detail';
+    gap:12px;
+    align-items:start;
+  }
+  .item-stack{grid-area:name;min-width:0}
+  .item-stack .pricebox{margin-top:11px}
+  .item-stack .price-line{display:flex;flex-wrap:wrap;gap:6px 8px}
+  .item-stack .price{font-size:clamp(29px,7vw,38px)}
+  .item-stack .prev-inline{font-size:clamp(13px,3.3vw,17px)}
+  .chg{grid-area:change}
+  .comm{grid-area:comment}
+  .row-actions{grid-area:detail}
+}
+
+@media screen and (max-width:560px){
+  .row-main{grid-template-columns:minmax(0,1fr) 92px;gap:10px 8px}
+  .item-stack .name{font-size:21px}
+  .item-stack .price{font-size:30px}
+  .item-stack .pricebox{margin-top:9px}
+}
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">주차 불러오는 중...</option></select><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -393,7 +451,7 @@ function render(){
    const focusArr=ITEMS.filter(x=>x.category===activeCategory).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name));
    out+=renderCategoryInsight(activeCategory,focusArr);
  }
- for(const cat of CATEGORY_ORDER){ const arr=ITEMS.filter(x=>x.category===cat&&(activeCategory==='전체'||activeCategory===cat)).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name)); if(!arr.length)continue; out+=`<section class="section"><div class="section-title"><h3>${cat}</h3><small>${arr.length}개 품목${isCategoryFocus?' · 상세 펼침':''}</small></div><div class="grid-head"><div>품목</div><div>현재가 (전주가)</div><div>WoW</div><div>핵심 코멘트</div><div></div></div>`; arr.forEach((x)=>{ const idx=ITEMS.indexOf(x); out+=`<div class="row"><div class="row-main"><div><div class="name">${esc(displayName(x.name))}</div><div class="note">평가 ${esc(x.date)}</div></div><div class="pricebox"><div class="price-line"><span class="price ${cls(x.direction)}">${esc(x.current_raw||x.current)}</span><span class="prev-inline">(${esc(x.prev_raw||x.previous)})</span></div><div class="benchmark-sub">(${esc(x.benchmark)})</div></div><div class="chg ${cls(x.direction)}">${x.direction}<br>${fmtPct(x.pct)}</div><div class="comm">${esc(x.commentary)}</div><div class="row-actions"><button class="parsebtn" onclick="openParserForIndex(${idx})">파싱</button><button class="detailbtn" onclick="openDetail(${idx})">상세</button></div></div><div class="detail-inline"><div class="detailbox"><h4>변동요인</h4><pre>${esc(x.factors)}</pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre>${esc(x.outlook)}</pre></div><div class="detailbox" style="grid-column:1/-1"><h4>추가 정보</h4><pre>${esc(x.additional)}</pre></div></div></div>`; }); out+='</section>'; } document.getElementById('board').innerHTML=out;
+ for(const cat of CATEGORY_ORDER){ const arr=ITEMS.filter(x=>x.category===cat&&(activeCategory==='전체'||activeCategory===cat)).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name)); if(!arr.length)continue; out+=`<section class="section"><div class="section-title"><h3>${cat}</h3><small>${arr.length}개 품목${isCategoryFocus?' · 상세 펼침':''}</small></div><div class="grid-head"><div>품목 / 현재가</div><div>WoW</div><div>핵심 코멘트</div><div></div></div>`; arr.forEach((x)=>{ const idx=ITEMS.indexOf(x); out+=`<div class="row"><div class="row-main"><div class="item-stack"><div class="name">${esc(displayName(x.name))}</div><div class="note">평가 ${esc(x.date)}</div><div class="pricebox"><div class="price-line"><span class="price ${cls(x.direction)}">${esc(x.current_raw||x.current)}</span><span class="prev-inline">(${esc(x.prev_raw||x.previous)})</span></div><div class="benchmark-sub">(${esc(x.benchmark)})</div></div></div><div class="chg ${cls(x.direction)}">${x.direction}<br>${fmtPct(x.pct)}</div><div class="comm">${esc(x.commentary)}</div><div class="row-actions"><button class="parsebtn" onclick="openParserForIndex(${idx})">파싱</button><button class="detailbtn" onclick="openDetail(${idx})">상세</button></div></div><div class="detail-inline"><div class="detailbox"><h4>변동요인</h4><pre>${esc(x.factors)}</pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre>${esc(x.outlook)}</pre></div><div class="detailbox" style="grid-column:1/-1"><h4>추가 정보</h4><pre>${esc(x.additional)}</pre></div></div></div>`; }); out+='</section>'; } document.getElementById('board').innerHTML=out;
  if(isCategoryFocus)setTimeout(()=>refreshCategoryChart(),0);
 }
 function setMode(m){mode=m;render()}
