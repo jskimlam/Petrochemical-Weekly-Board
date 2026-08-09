@@ -143,6 +143,133 @@ button{touch-action:manipulation}
 @media(max-width:900px){.db-status{font-size:10.5px;padding:6px 8px}.week-select{min-width:135px;width:145px;font-size:11px;padding:7px 27px 7px 8px}.editform{grid-template-columns:1fr;gap:5px}.editform label{padding-top:5px}.editform textarea{min-height:105px}.edit-actions{flex-direction:column}.edit-actions>div{width:100%}.edit-actions .btn{flex:1}.actions{max-width:72vw}}
 @media(max-width:560px){.db-status{display:none}.week-select{min-width:128px;width:128px}.actions{max-width:65vw}.toast{bottom:15px}}
 
+
+
+/* =========================================================
+   Responsive Reading Scale v2
+   - Screen only: does not alter PDF/print report typography
+   - Uses fluid clamp() sizing to fill desktop/tablet/mobile screens
+   ========================================================= */
+@media screen {
+  .wrap{
+    max-width:2048px;
+    padding-left:clamp(12px,1.55vw,32px);
+    padding-right:clamp(12px,1.55vw,32px);
+  }
+  .toolbar{min-height:52px;margin-top:clamp(10px,1vw,17px);margin-bottom:clamp(15px,1.35vw,24px)}
+  .tabs{gap:clamp(17px,1.8vw,34px)}
+  .tab{font-size:clamp(13px,.92vw,17px);padding-top:17px;padding-bottom:15px}
+
+  .section{margin-top:clamp(18px,1.45vw,30px);margin-bottom:clamp(25px,1.9vw,38px)}
+  .section-title{margin-bottom:clamp(9px,.8vw,15px);padding-bottom:clamp(8px,.65vw,12px)}
+  .section-title h3{font-size:clamp(22px,1.45vw,30px)}
+  .section-title small{font-size:clamp(11px,.73vw,14px)}
+
+  .grid-head,.row-main{
+    grid-template-columns:minmax(108px,.72fr) minmax(300px,1.8fr) minmax(122px,.78fr) minmax(520px,6.8fr) 74px;
+    gap:clamp(11px,.82vw,17px);
+  }
+  .grid-head{font-size:clamp(10.5px,.66vw,13px);padding:10px 15px}
+  .row{
+    padding:clamp(14px,1.05vw,22px) clamp(14px,1.05vw,21px);
+    margin-bottom:clamp(9px,.72vw,14px);
+  }
+  .name{font-size:clamp(22px,1.5vw,31px);line-height:1.08}
+  .row .note{font-size:clamp(10.5px,.72vw,14px);margin-top:7px}
+  .price-line{gap:clamp(9px,.68vw,14px)}
+  .price{font-size:clamp(35px,2.55vw,52px);line-height:.98}
+  .prev-inline{font-size:clamp(15px,1.1vw,22px)}
+  .benchmark-sub{font-size:clamp(11px,.78vw,15px);margin-top:8px;line-height:1.3}
+  .chg{font-size:clamp(19px,1.37vw,28px);padding:clamp(10px,.8vw,15px) 8px;line-height:1.22}
+  .comm{
+    font-size:clamp(15.5px,1.12vw,22px);
+    line-height:1.62;
+    padding:clamp(11px,.88vw,16px) clamp(13px,1vw,19px);
+    border-left-width:4px;
+    -webkit-line-clamp:4;
+  }
+  .parsebtn,.detailbtn{font-size:clamp(11px,.72vw,14px);padding:clamp(7px,.55vw,10px) 6px}
+  .row-actions{gap:7px}
+
+  .detail-inline{
+    margin-top:clamp(12px,.95vw,18px);
+    padding-top:clamp(12px,.95vw,18px);
+    gap:clamp(10px,.85vw,16px);
+  }
+  .detailbox{padding:clamp(14px,1.05vw,21px) clamp(14px,1.05vw,21px)}
+  .detailbox h4{font-size:clamp(15px,1vw,20px);margin-bottom:clamp(8px,.62vw,12px)}
+  .detailbox pre{font-size:clamp(14px,.96vw,19px);line-height:1.65;color:#2a425b}
+
+  .category-focus .row{padding:clamp(16px,1.15vw,24px) clamp(15px,1.1vw,23px);margin-bottom:clamp(12px,.88vw,17px)}
+  .category-focus .comm{font-size:clamp(16px,1.17vw,22.5px);line-height:1.65;padding-top:clamp(13px,.95vw,18px);padding-bottom:clamp(13px,.95vw,18px)}
+  .category-focus .detailbox h4{font-size:clamp(16px,1.04vw,21px)}
+  .category-focus .detailbox pre{font-size:clamp(14.5px,1vw,19.5px);line-height:1.68}
+
+  .category-insight-head{padding:clamp(18px,1.25vw,25px) clamp(18px,1.35vw,27px) clamp(14px,1vw,20px)}
+  .category-insight-head h3{font-size:clamp(22px,1.45vw,29px)}
+  .category-insight-head p{font-size:clamp(12px,.82vw,16px)}
+  .chart-control label{font-size:clamp(9.5px,.64vw,12px)}
+  .chart-control select{height:clamp(36px,2.45vw,44px);font-size:clamp(12px,.78vw,15px)}
+
+  .modalbox{width:min(1240px,96vw);padding:clamp(18px,1.4vw,28px)}
+  .modal h3{font-size:clamp(25px,1.7vw,34px)}
+  .detailgrid{gap:clamp(10px,.85vw,16px);margin-top:clamp(13px,1vw,19px)}
+}
+
+/* Wide desktop / QHD / large office monitors */
+@media screen and (min-width:1400px){
+  .hero{padding:28px 31px}
+  .hero h2{font-size:clamp(36px,2.35vw,46px)}
+  .hero p{font-size:clamp(15px,1vw,19px)}
+  .week{font-size:clamp(29px,1.9vw,38px)}
+  .tone-inline span{font-size:clamp(25px,1.65vw,33px)}
+  .tone-inline strong{font-size:clamp(40px,2.65vw,53px)}
+  .category-focus .row-main{align-items:start}
+  .category-focus .comm{min-height:96px}
+}
+
+/* Tablet / narrow desktop: keep generous reading size while card layout changes */
+@media screen and (max-width:1150px){
+  .grid-head,.row-main{grid-template-columns:100px minmax(245px,1.55fr) 108px minmax(340px,5.4fr) 62px}
+  .name{font-size:clamp(21px,2vw,25px)}
+  .price{font-size:clamp(31px,3.15vw,39px)}
+  .prev-inline{font-size:clamp(14px,1.55vw,18px)}
+  .chg{font-size:clamp(17px,1.8vw,21px)}
+  .comm{font-size:clamp(14.5px,1.55vw,18px)}
+  .detailbox pre,.category-focus .detailbox pre{font-size:clamp(14px,1.5vw,17px)}
+}
+
+/* Mobile/tablet card view — bigger than previous version but bounded */
+@media screen and (max-width:900px){
+  .row{padding:14px 13px 13px;margin-bottom:10px}
+  .row-main{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'name change' 'price price' 'comment comment' 'detail detail';gap:11px 12px;align-items:start}
+  .detailgrid,.detail-inline{grid-template-columns:1fr!important}
+  .name{font-size:clamp(21px,4.7vw,25px)}
+  .row .note{font-size:clamp(10.5px,2.5vw,12.5px)}
+  .price{font-size:clamp(31px,7vw,39px)}
+  .prev-inline{font-size:clamp(14px,3.35vw,17px)}
+  .benchmark-sub{font-size:clamp(10.5px,2.65vw,13px)}
+  .chg{font-size:clamp(17px,4vw,21px);min-width:100px;padding:9px 10px}
+  .comm,.category-focus .comm{font-size:clamp(15px,3.6vw,18px);line-height:1.62;padding:12px 12px;-webkit-line-clamp:6}
+  .detailbox{padding:14px 13px}
+  .detailbox h4,.category-focus .detailbox h4{font-size:clamp(15px,3.7vw,18px)}
+  .detailbox pre,.category-focus .detailbox pre{font-size:clamp(14.5px,3.45vw,17px);line-height:1.66}
+  .detailbtn,.parsebtn{font-size:13px;padding:10px 9px}
+  .tab{font-size:clamp(12.5px,3vw,14.5px)}
+}
+
+@media screen and (max-width:560px){
+  .wrap{padding-left:8px;padding-right:8px}
+  .section-title h3{font-size:20px}
+  .name{font-size:22px}
+  .price{font-size:32px}
+  .prev-inline{font-size:14.5px}
+  .chg{font-size:17px;min-width:96px}
+  .comm,.category-focus .comm{font-size:15.5px;line-height:1.64}
+  .detailbox h4,.category-focus .detailbox h4{font-size:16px}
+  .detailbox pre,.category-focus .detailbox pre{font-size:15px;line-height:1.67}
+}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">주차 불러오는 중...</option></select><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
