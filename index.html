@@ -382,6 +382,142 @@ button{touch-action:manipulation}
 .tab-image-page-num{font-weight:950;color:#325d82}
 
 
+
+/* =========================================================
+   Device-independent image export
+   - Export DOM must NEVER inherit mobile/tablet card layout.
+   - Same 1600x900 composition on desktop, tablet and phone.
+   ========================================================= */
+.tab-image-export,
+.tab-image-pages-stage,
+.tab-image-page{
+  -webkit-text-size-adjust:100%!important;
+  text-size-adjust:100%!important;
+}
+.tab-image-export .row-main{
+  grid-template-areas:none!important;
+}
+.tab-image-export .row-main > *,
+.tab-image-export .item-stack,
+.tab-image-export .chg,
+.tab-image-export .comm,
+.tab-image-export .row-actions{
+  grid-area:auto!important;
+}
+.tab-image-export .item-stack{
+  min-width:0!important;
+  width:auto!important;
+}
+.tab-image-export .item-stack .price-line{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:baseline!important;
+  gap:7px 10px!important;
+}
+.tab-image-export .chg{
+  min-width:0!important;
+  width:auto!important;
+}
+.tab-image-export .comm{
+  min-height:0!important;
+  width:auto!important;
+}
+.tab-image-export .detail-inline{
+  width:100%!important;
+}
+.tab-image-export .chart-body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 280px!important;
+}
+.tab-image-export .chart-side{
+  display:block!important;
+  border-top:0!important;
+  border-left:1px solid #d7e1ea!important;
+  padding:0 0 0 18px!important;
+}
+.tab-image-export .donut-wrap{
+  display:grid!important;
+  grid-template-columns:260px 1fr!important;
+}
+.tab-image-export .overview-grid,
+.tab-image-export .overview-report-grid{
+  grid-template-columns:1fr 1fr!important;
+}
+.tab-image-export .overview-head,
+.tab-image-export .overview-report-head,
+.tab-image-export .tab-image-header,
+.tab-image-export .tab-image-footer{
+  flex-direction:row!important;
+}
+.tab-image-export .tab-image-meta,
+.tab-image-export .overview-week,
+.tab-image-export .overview-report-head .right{
+  text-align:right!important;
+}
+.tab-image-export .tab-image-title{font-size:31px!important}
+.tab-image-export .tab-image-sub{font-size:13px!important}
+.tab-image-export .tab-image-week{font-size:20px!important}
+.tab-image-export .tab-image-tone{font-size:14px!important}
+.tab-image-export .tab-image-tone b{font-size:21px!important}
+
+/* Extra guard: even when the real browser viewport is mobile, keep export desktop-like. */
+@media screen and (max-width:1200px){
+  .tab-image-export{
+    width:1600px!important;
+    min-width:1600px!important;
+    max-width:1600px!important;
+    padding:34px!important;
+  }
+  .tab-image-page{
+    width:1600px!important;
+    min-width:1600px!important;
+    max-width:1600px!important;
+    height:900px!important;
+  }
+  .tab-image-export .row-main{
+    display:grid!important;
+    grid-template-columns:360px 145px minmax(0,1fr)!important;
+    grid-template-areas:none!important;
+    gap:20px!important;
+    align-items:center!important;
+  }
+  .tab-image-export.category-focus .detail-inline{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+  }
+  .tab-image-export .name{font-size:29px!important}
+  .tab-image-export .price{font-size:46px!important}
+  .tab-image-export .prev-inline{font-size:19px!important}
+  .tab-image-export .chg{font-size:25px!important}
+  .tab-image-export .comm{font-size:20px!important;line-height:1.64!important}
+  .tab-image-export.category-focus .detailbox pre{font-size:17px!important;line-height:1.63!important}
+  .tab-image-export .category-insight-head{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:flex-end!important;
+  }
+  .tab-image-export .chart-body{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 280px!important;
+  }
+  .tab-image-export .chart-side{
+    display:block!important;
+    border-top:0!important;
+    border-left:1px solid #d7e1ea!important;
+    padding:0 0 0 18px!important;
+  }
+  .tab-image-export .overview-report-grid{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+  }
+  .tab-image-export .overview-report-head{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:flex-end!important;
+  }
+}
+
 /* Overview image export: keep the entire market overview on one 16:9 report page */
 .tab-image-overview-page .tab-image-page-body{padding:18px 24px 14px;background:#f8fbfe;position:relative}
 .overview-report-inner{transform-origin:top left;width:100%;box-sizing:border-box}
@@ -1327,7 +1463,7 @@ async function saveCurrentTabImage(){
       await refreshCategoryChart();
       await new Promise(r=>setTimeout(r,100));
     }
-    showToast('텍스트/품목 단위로 보고서 이미지를 구성 중...');
+    showToast('기기와 무관한 1600×900 보고서 이미지 구성 중...');
     if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(_){}}
     const meta=exportMeta();
     const stage=document.createElement('div');stage.className='tab-image-pages-stage';document.body.appendChild(stage);
