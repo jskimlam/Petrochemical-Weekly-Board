@@ -123,6 +123,27 @@ button{touch-action:manipulation}
   .overview-panel{padding:16px 13px 17px}.overview-head{display:block}.overview-head h3{font-size:23px}.overview-week{text-align:left;margin-top:10px;font-size:14px}.overview-grid{grid-template-columns:1fr;gap:10px}.overview-card,.overview-card.wide{grid-column:auto;padding:15px 14px}.overview-title h4{font-size:18px}.overview-body{font-size:14.5px;line-height:1.67}.overview-summary{font-size:17px;line-height:1.45;padding:12px 13px}.overview-summary .summary-label{font-size:11px}
 }
 
+
+/* Mobile week navigation: keep the reporting week controls always visible */
+@media(max-width:900px){
+  .topbar{flex-wrap:wrap;align-items:center;gap:8px 10px;padding:8px 10px 9px}
+  .brand{order:1;flex:0 0 auto}
+  .actions{order:2;flex:1 1 0;max-width:none!important;min-width:0;justify-content:flex-end;flex-wrap:nowrap;overflow-x:auto;padding-bottom:1px}
+  .week-nav-group{order:3;flex:0 0 100%;width:100%;display:grid;grid-template-columns:36px minmax(0,1fr) 36px auto;align-items:center;gap:6px;padding-top:2px}
+  .week-select{width:100%!important;max-width:none!important;min-width:0!important;height:36px;font-size:12px;padding:7px 9px}
+  .week-nav-btn{width:36px;min-width:36px;height:36px;padding:0;font-size:14px}
+  .latest-week-badge{height:36px;padding:0 11px;font-size:10.5px}
+}
+@media(max-width:560px){
+  .topbar{gap:7px 8px;padding:7px 8px 8px}
+  .brand{min-width:112px}
+  .actions{max-width:none!important}
+  .week-nav-group{grid-template-columns:34px minmax(0,1fr) 34px auto;gap:5px}
+  .week-select{height:34px;font-size:11.5px}
+  .week-nav-btn{width:34px;min-width:34px;height:34px;font-size:13px}
+  .latest-week-badge{height:34px;padding:0 9px;font-size:10px}
+}
+
 @media print{
   @page{size:A4 landscape;margin:9mm 10mm 10mm}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -538,7 +559,7 @@ button{touch-action:manipulation}
 
 </style></head>
 <body>
-<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
+<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
 <div class="wrap"><div class="hero"><div><div class="eyebrow">Weekly Market Monitor</div><h2>전체 석유화학 위클리 브리핑</h2><p>Energy → Base Chemicals → Key Feedstocks → Polymers → Regional Benchmarks</p></div><div class="week-card"><span>Reporting Week</span><strong class="week" id="weekText"></strong><div class="tone-inline"><span>주간 톤</span><strong id="toneText">-</strong></div></div></div><div class="toolbar"><div class="tabs" id="tabs"></div><div class="note">Overview · 카테고리별 상세 분석 · 최대 10주 주간가격 그래프 · 품목별 독립 파싱 · Google Sheet 자동동기화</div></div><div id="board"></div></div>
 <div id="printReport" class="print-report"></div>
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox ai-box" id="dAiBox"><h4>AI 전망</h4><pre id="dAiOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
@@ -1150,7 +1171,7 @@ function updateWeekNavigation(selectedWeek){
  const latestWeek=WEEK_LIST[0].week_end;
  if(prevBtn)prevBtn.disabled=(idx===-1||idx>=WEEK_LIST.length-1);
  if(nextBtn)nextBtn.disabled=(idx<=0);
- if(badge){badge.style.display=(current===latestWeek)?'inline-flex':'none';}
+ if(badge){const isLatest=current===latestWeek;badge.style.display=isLatest?'inline-flex':'none';badge.textContent='최신';badge.title=isLatest?'현재 최신 저장 주차':'';}
 }
 async function loadPrevWeek(){
  const current=currentSelectedWeek();
