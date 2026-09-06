@@ -66,6 +66,11 @@ button{touch-action:manipulation}
 
 /* AI Forecast summary tab */
 .ai-forecast-panel{
+  --ai-title-size:clamp(30px,2.15vw,42px);
+  --ai-meta-size:clamp(11.5px,.85vw,16px);
+  --ai-head-size:clamp(19px,1.36vw,27px);
+  --ai-item-size:clamp(18px,1.25vw,24px);
+  --ai-body-size:clamp(14.8px,1.02vw,18.5px);
   margin:2px 0 24px;
   width:100%;
   max-width:none;
@@ -75,8 +80,8 @@ button{touch-action:manipulation}
   padding:clamp(16px,1.2vw,26px) clamp(18px,1.45vw,28px) clamp(18px,1.25vw,26px);
 }
 .ai-forecast-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:clamp(12px,.95vw,18px)}
-.ai-forecast-head h3{margin:0;color:#111;font-size:clamp(30px,2.15vw,42px);font-weight:950;letter-spacing:-.035em;line-height:1.06}
-.ai-forecast-head .meta{font-size:clamp(11.5px,.85vw,16px);color:var(--muted);font-weight:850;white-space:nowrap}
+.ai-forecast-head h3{margin:0;color:#111;font-size:var(--ai-title-size);font-weight:950;letter-spacing:-.035em;line-height:1.06}
+.ai-forecast-head .meta{font-size:var(--ai-meta-size);color:var(--muted);font-weight:850;white-space:nowrap}
 .ai-forecast-table{
   width:100%;
   height:clamp(580px,calc(100vh - 365px),780px);
@@ -87,11 +92,11 @@ button{touch-action:manipulation}
 }
 .ai-forecast-table col.item-col{width:clamp(108px,8.8vw,150px)}
 .ai-forecast-table thead{height:clamp(48px,3.6vw,62px)}
-.ai-forecast-table thead th{background:#050505;color:#fff;border:1px solid #1c1c1c;padding:9px 14px;font-size:clamp(19px,1.36vw,27px);font-weight:950;line-height:1.1;text-align:center;letter-spacing:-.02em}
+.ai-forecast-table thead th{background:#050505;color:#fff;border:1px solid #1c1c1c;padding:9px 14px;font-size:var(--ai-head-size);font-weight:950;line-height:1.1;text-align:center;letter-spacing:-.02em}
 .ai-forecast-table tbody tr{height:20%}
 .ai-forecast-table tbody th,.ai-forecast-table tbody td{background:#e7e7e7;border:1px solid #303030;vertical-align:middle}
-.ai-forecast-table tbody th{padding:12px 10px;text-align:center;color:#111;font-size:clamp(18px,1.25vw,24px);font-weight:950;white-space:nowrap}
-.ai-forecast-table tbody td{padding:clamp(12px,.95vw,18px) clamp(15px,1.15vw,22px);color:#151515;font-size:clamp(14.8px,1.02vw,18.5px);font-weight:650;line-height:1.44;word-break:keep-all;overflow-wrap:anywhere;letter-spacing:-.018em}
+.ai-forecast-table tbody th{padding:12px 10px;text-align:center;color:#111;font-size:var(--ai-item-size);font-weight:950;white-space:nowrap}
+.ai-forecast-table tbody td{padding:clamp(12px,.95vw,18px) clamp(15px,1.15vw,22px);color:#151515;font-size:var(--ai-body-size);font-weight:650;line-height:1.44;word-break:keep-all;overflow-wrap:anywhere;letter-spacing:-.018em}
 .ai-forecast-empty{color:#7b8794;font-weight:800}
 @media(max-width:900px){
   .ai-forecast-panel{padding:12px 9px 14px}
@@ -105,20 +110,21 @@ button{touch-action:manipulation}
   .ai-forecast-table tbody td{font-size:12.2px;line-height:1.42;padding:10px 8px;word-break:normal}
 }
 
-/* AI Forecast image export — full-page responsive composition */
-.tab-image-ai-page .tab-image-page-body{padding:14px 18px 10px!important;background:#f8fbfe!important;display:block!important}
-.tab-image-ai-page .ai-forecast-panel{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important;width:100%!important;max-width:none!important}
-.tab-image-ai-page .ai-export-inner{transform-origin:top center;width:100%!important;max-width:none!important;margin:0!important}
-.tab-image-ai-page .ai-forecast-head{margin:0 0 12px!important}
-.tab-image-ai-page .ai-forecast-head h3{font-size:34px!important;color:#111!important}
-.tab-image-ai-page .ai-forecast-head .meta{font-size:13.5px!important}
-.tab-image-ai-page .ai-forecast-table{width:100%!important;height:690px!important}
-.tab-image-ai-page .ai-forecast-table col.item-col{width:148px!important}
-.tab-image-ai-page .ai-forecast-table thead{height:52px!important}
-.tab-image-ai-page .ai-forecast-table thead th{font-size:22px!important;padding:9px 12px!important;background:#050505!important;color:#fff!important}
-.tab-image-ai-page .ai-forecast-table tbody tr{height:20%!important}
-.tab-image-ai-page .ai-forecast-table tbody th{font-size:20px!important;padding:11px 10px!important;background:#e7e7e7!important}
-.tab-image-ai-page .ai-forecast-table tbody td{font-size:15.8px!important;line-height:1.42!important;padding:12px 16px!important;background:#e7e7e7!important}
+/* AI Forecast image export — AI content only */
+.tab-image-ai-only-page{width:1600px;height:900px;background:#e9eef3;box-sizing:border-box;padding:10px;overflow:hidden;border:1px solid #cbd9e6}
+.tab-image-ai-only-shell{width:100%;height:100%;background:#fff;box-sizing:border-box;padding:12px 14px 14px;overflow:hidden}
+.tab-image-ai-only-shell .ai-export-inner{width:100%;height:100%;transform-origin:top center}
+.tab-image-ai-only-shell .ai-forecast-panel{--ai-title-size:42px;--ai-meta-size:16px;--ai-head-size:27px;--ai-item-size:24px;--ai-body-size:18px;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important;width:100%!important;max-width:none!important;height:100%;display:flex;flex-direction:column}
+.tab-image-ai-only-shell .ai-forecast-head{margin:0 0 12px!important}
+.tab-image-ai-only-shell .ai-forecast-head h3{font-size:var(--ai-title-size)!important;color:#111!important}
+.tab-image-ai-only-shell .ai-forecast-head .meta{font-size:var(--ai-meta-size)!important}
+.tab-image-ai-only-shell .ai-forecast-table{width:100%!important;flex:1 1 auto!important;height:auto!important}
+.tab-image-ai-only-shell .ai-forecast-table col.item-col{width:148px!important}
+.tab-image-ai-only-shell .ai-forecast-table thead{height:56px!important}
+.tab-image-ai-only-shell .ai-forecast-table thead th{font-size:var(--ai-head-size)!important;padding:10px 12px!important;background:#050505!important;color:#fff!important}
+.tab-image-ai-only-shell .ai-forecast-table tbody tr{height:20%!important}
+.tab-image-ai-only-shell .ai-forecast-table tbody th{font-size:var(--ai-item-size)!important;padding:11px 10px!important;background:#e7e7e7!important}
+.tab-image-ai-only-shell .ai-forecast-table tbody td{font-size:var(--ai-body-size)!important;line-height:1.44!important;padding:12px 16px!important;background:#e7e7e7!important}
 
 /* Main board */
 .section{margin:20px 0 29px;width:100%}.section-title{display:flex;align-items:end;justify-content:space-between;margin:0 2px 9px;padding-bottom:8px}.section-title h3{margin:0;font-size:22px;color:var(--navy);font-weight:900;letter-spacing:-.025em}.section-title small{color:var(--muted);font-weight:800;font-size:12px}
@@ -727,6 +733,60 @@ function renderAiForecast(){
  return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA</div></div><table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`;
 }
 
+function applyAiForecastSize(panel,bodyPx){
+ if(!panel||!bodyPx)return 0;
+ const body=Math.max(12,bodyPx);
+ panel.style.setProperty('--ai-body-size',body.toFixed(2)+'px');
+ panel.style.setProperty('--ai-item-size',Math.max(body*1.28,14).toFixed(2)+'px');
+ panel.style.setProperty('--ai-head-size',Math.max(body*1.42,15).toFixed(2)+'px');
+ panel.style.setProperty('--ai-meta-size',Math.max(body*.86,10).toFixed(2)+'px');
+ panel.style.setProperty('--ai-title-size',Math.max(body*2.18,24).toFixed(2)+'px');
+ return body;
+}
+function aiForecastFits(panel){
+ const tds=[...panel.querySelectorAll('.ai-forecast-table tbody td')];
+ const ths=[...panel.querySelectorAll('.ai-forecast-table tbody th')];
+ const head=panel.querySelector('.ai-forecast-head');
+ const table=panel.querySelector('.ai-forecast-table');
+ if(!tds.length||!table)return true;
+ const bodyOk=tds.every(td=>td.scrollHeight<=td.clientHeight+2&&td.scrollWidth<=td.clientWidth+2);
+ const itemOk=ths.every(th=>th.scrollHeight<=th.clientHeight+2&&th.scrollWidth<=th.clientWidth+2);
+ const headOk=!head||head.scrollHeight<=head.clientHeight+6;
+ const tableOk=table.scrollHeight<=table.clientHeight+3;
+ return bodyOk&&itemOk&&headOk&&tableOk;
+}
+function fitAiForecastPanel(panel,opts={}){
+ if(!panel)return 0;
+ const min=opts.minBodySize||12;
+ const max=opts.maxBodySize||24;
+ let low=min,high=max,best=min;
+ applyAiForecastSize(panel,min);
+ for(let i=0;i<16;i++){
+   const mid=(low+high)/2;
+   applyAiForecastSize(panel,mid);
+   void panel.offsetHeight;
+   if(aiForecastFits(panel)){best=mid;low=mid+.2}else{high=mid-.2}
+   if(high<low)break;
+ }
+ applyAiForecastSize(panel,best);
+ return best;
+}
+let AI_FORECAST_FIT_TIMER=0;
+function fitActiveAiForecastPanel(){
+ if(activeCategory!=='AI 전망')return;
+ const panel=document.querySelector('#board .ai-forecast-panel');
+ if(!panel)return;
+ const w=panel.clientWidth||window.innerWidth||1280;
+ const min=Math.max(13.5,Math.min(15.5,w/95));
+ const max=Math.max(16.5,Math.min(22,w/72));
+ fitAiForecastPanel(panel,{minBodySize:min,maxBodySize:max});
+}
+function queueFitActiveAiForecastPanel(){
+ clearTimeout(AI_FORECAST_FIT_TIMER);
+ AI_FORECAST_FIT_TIMER=setTimeout(fitActiveAiForecastPanel,80);
+}
+window.addEventListener('resize',queueFitActiveAiForecastPanel);
+
 function selectCategory(cat){
  activeCategory=cat;
  if(cat!=='전체'&&cat!=='Overview'&&cat!=='AI 전망'){
@@ -759,6 +819,7 @@ function render(){
  if(activeCategory==='AI 전망'){
    out=renderAiForecast();
    document.getElementById('board').innerHTML=out;
+   requestAnimationFrame(()=>requestAnimationFrame(()=>fitActiveAiForecastPanel()));
    return;
  }
  if(isCategoryFocus){
@@ -1668,22 +1729,21 @@ function buildAiForecastSingleReportPage(stage,meta){
   const panel=document.querySelector('#board .ai-forecast-panel');
   if(!panel)throw new Error('저장할 AI 전망 내용이 없습니다.');
   const page=document.createElement('div');
-  page.className='tab-image-export tab-image-page tab-image-ai-page';
-  const header=buildExportHeader(meta);
-  const body=document.createElement('div');body.className='tab-image-page-body';
+  page.className='tab-image-export tab-image-ai-only-page';
+  const shell=document.createElement('div');shell.className='tab-image-ai-only-shell';
   const inner=cleanExportClone(panel);inner.classList.add('ai-export-inner');
-  body.appendChild(inner);
-  const footer=buildExportFooter(meta);footer.querySelector('.tab-image-page-num').textContent='1 / 1';
-  page.appendChild(header);page.appendChild(body);page.appendChild(footer);stage.appendChild(page);
-  return {page,body,inner,footer};
+  shell.appendChild(inner);page.appendChild(shell);stage.appendChild(page);
+  return {page,shell,inner};
 }
 async function fitAiForecastSingleReport(obj){
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  const available=obj.body.clientHeight;
+  fitAiForecastPanel(obj.inner,{minBodySize:16,maxBodySize:22});
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const available=obj.shell.clientHeight;
   const needed=obj.inner.scrollHeight;
   if(needed<=available)return 1;
   let ratio=Math.min(1,(available-2)/Math.max(needed,1));
-  ratio=Math.max(.84,ratio);
+  ratio=Math.max(.86,ratio);
   obj.inner.style.transformOrigin='top center';
   obj.inner.style.transform=`scale(${ratio})`;
   obj.inner.style.width=`${100/ratio}%`;
@@ -1693,10 +1753,22 @@ async function fitAiForecastSingleReport(obj){
 async function saveAiForecastSinglePageImage(stage,meta){
   const report=buildAiForecastSingleReportPage(stage,meta);
   const ratio=await fitAiForecastSingleReport(report);
-  const canvas=await renderPageCanvas(report.page);
-  const base=`LAM_${sanitizeFilePart(meta.weekLabel)}_${sanitizeFilePart(meta.tabName)}_${sanitizeFilePart(meta.weekEnd||'weekly')}`;
+  const canvas=await html2canvas(report.page,{
+    scale:1.6,
+    useCORS:true,
+    allowTaint:false,
+    backgroundColor:'#e9eef3',
+    width:1600,
+    height:900,
+    windowWidth:1600,
+    windowHeight:900,
+    scrollX:0,
+    scrollY:0,
+    logging:false
+  });
+  const base=`LAM_${sanitizeFilePart(meta.weekLabel)}_AI전망_${sanitizeFilePart(meta.weekEnd||'weekly')}`;
   downloadCanvasFile(canvas,`${base}.png`);
-  showToast(`AI 전망 5개 품목 · 1장 저장 완료${ratio<.999?' (자동 맞춤)':''}`);
+  showToast(`AI 전망 내용만 1장 저장 완료${ratio<.999?' (자동 맞춤)':''}`);
 }
 
 async function saveCurrentTabImage(){
