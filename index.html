@@ -65,33 +65,34 @@ button{touch-action:manipulation}
 
 
 /* AI Forecast summary tab */
-.ai-forecast-panel{margin:2px 0 28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:18px 20px 22px}
-.ai-forecast-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:12px}
-.ai-forecast-head h3{margin:0;color:#111;font-size:30px;font-weight:950;letter-spacing:-.035em;line-height:1.15}
-.ai-forecast-head .meta{font-size:12px;color:var(--muted);font-weight:850;white-space:nowrap}
+.ai-forecast-panel{margin:2px auto 24px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:14px 16px 18px;max-width:1560px}
+.ai-forecast-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:10px}
+.ai-forecast-head h3{margin:0;color:#111;font-size:27px;font-weight:950;letter-spacing:-.035em;line-height:1.1}
+.ai-forecast-head .meta{font-size:11.5px;color:var(--muted);font-weight:850;white-space:nowrap}
 .ai-forecast-table{width:100%;border-collapse:collapse;table-layout:fixed;border:1px solid #222;background:#e8e8e8}
-.ai-forecast-table col.item-col{width:145px}
-.ai-forecast-table thead th{background:#050505;color:#fff;border:1px solid #1c1c1c;padding:9px 14px;font-size:22px;font-weight:950;line-height:1.1;text-align:center;letter-spacing:-.02em}
+.ai-forecast-table col.item-col{width:122px}
+.ai-forecast-table thead th{background:#050505;color:#fff;border:1px solid #1c1c1c;padding:8px 12px;font-size:19px;font-weight:950;line-height:1.1;text-align:center;letter-spacing:-.02em}
 .ai-forecast-table thead th:first-child{text-align:center}
 .ai-forecast-table tbody th,.ai-forecast-table tbody td{background:#e7e7e7;border:1px solid #303030;vertical-align:middle}
-.ai-forecast-table tbody th{padding:15px 12px;text-align:center;color:#111;font-size:19px;font-weight:950;white-space:nowrap}
-.ai-forecast-table tbody td{padding:15px 18px;color:#151515;font-size:15.5px;font-weight:650;line-height:1.48;word-break:keep-all;overflow-wrap:anywhere}
+.ai-forecast-table tbody th{padding:12px 10px;text-align:center;color:#111;font-size:17px;font-weight:950;white-space:nowrap}
+.ai-forecast-table tbody td{padding:11px 14px;color:#151515;font-size:13.4px;font-weight:650;line-height:1.34;word-break:keep-all;overflow-wrap:anywhere;letter-spacing:-.015em}
 .ai-forecast-empty{color:#7b8794;font-weight:800}
 @media(max-width:760px){
-  .ai-forecast-panel{padding:14px 10px 16px}.ai-forecast-head{align-items:flex-start;flex-direction:column;gap:5px}.ai-forecast-head h3{font-size:24px}.ai-forecast-head .meta{font-size:11px}
-  .ai-forecast-table col.item-col{width:78px}.ai-forecast-table thead th{font-size:15px;padding:8px 7px}.ai-forecast-table tbody th{font-size:15px;padding:12px 7px}.ai-forecast-table tbody td{font-size:13px;line-height:1.55;padding:12px 10px;word-break:normal}
+  .ai-forecast-panel{padding:12px 9px 14px}.ai-forecast-head{align-items:flex-start;flex-direction:column;gap:5px}.ai-forecast-head h3{font-size:22px}.ai-forecast-head .meta{font-size:10.5px;white-space:normal}
+  .ai-forecast-table col.item-col{width:72px}.ai-forecast-table thead th{font-size:14px;padding:7px 6px}.ai-forecast-table tbody th{font-size:14px;padding:10px 6px}.ai-forecast-table tbody td{font-size:12.2px;line-height:1.42;padding:10px 8px;word-break:normal}
 }
 
 /* AI Forecast image export — fixed 16:9 composition */
-.tab-image-ai-page .tab-image-page-body{padding:20px 28px 18px;background:#fff}
-.tab-image-ai-page .ai-forecast-panel{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
-.tab-image-ai-page .ai-forecast-head{margin:0 0 14px!important}
-.tab-image-ai-page .ai-forecast-head h3{font-size:31px!important;color:#111!important}
-.tab-image-ai-page .ai-forecast-head .meta{font-size:13px!important}
-.tab-image-ai-page .ai-forecast-table col.item-col{width:150px!important}
-.tab-image-ai-page .ai-forecast-table thead th{font-size:22px!important;padding:9px 14px!important;background:#050505!important;color:#fff!important}
-.tab-image-ai-page .ai-forecast-table tbody th{font-size:18px!important;padding:14px 11px!important;background:#e7e7e7!important}
-.tab-image-ai-page .ai-forecast-table tbody td{font-size:14.8px!important;line-height:1.43!important;padding:13px 17px!important;background:#e7e7e7!important}
+.tab-image-ai-page .tab-image-page-body{padding:16px 22px 12px!important;background:#f8fbfe!important}
+.tab-image-ai-page .ai-forecast-panel{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important;max-width:none!important}
+.tab-image-ai-page .ai-export-inner{transform-origin:top left;width:100%}
+.tab-image-ai-page .ai-forecast-head{margin:0 0 10px!important}
+.tab-image-ai-page .ai-forecast-head h3{font-size:28px!important;color:#111!important}
+.tab-image-ai-page .ai-forecast-head .meta{font-size:12px!important}
+.tab-image-ai-page .ai-forecast-table col.item-col{width:128px!important}
+.tab-image-ai-page .ai-forecast-table thead th{font-size:19px!important;padding:8px 11px!important;background:#050505!important;color:#fff!important}
+.tab-image-ai-page .ai-forecast-table tbody th{font-size:16px!important;padding:11px 9px!important;background:#e7e7e7!important}
+.tab-image-ai-page .ai-forecast-table tbody td{font-size:13px!important;line-height:1.33!important;padding:10px 13px!important;background:#e7e7e7!important}
 
 /* Main board */
 .section{margin:20px 0 29px;width:100%}.section-title{display:flex;align-items:end;justify-content:space-between;margin:0 2px 9px;padding-bottom:8px}.section-title h3{margin:0;font-size:22px;color:var(--navy);font-weight:900;letter-spacing:-.025em}.section-title small{color:var(--muted);font-weight:800;font-size:12px}
@@ -1656,7 +1657,7 @@ async function fitAiForecastSingleReport(obj){
   const needed=obj.inner.scrollHeight;
   if(needed<=available)return 1;
   let ratio=Math.min(1,(available-2)/Math.max(needed,1));
-  ratio=Math.max(.72,ratio);
+  ratio=Math.max(.78,ratio);
   obj.inner.style.transformOrigin='top left';
   obj.inner.style.transform=`scale(${ratio})`;
   obj.inner.style.width=`${100/ratio}%`;
