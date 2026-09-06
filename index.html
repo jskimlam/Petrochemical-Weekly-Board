@@ -726,7 +726,21 @@ function fmtPct(v){if(v==null||Number.isNaN(v))return '-';return (v>0?'+':'')+v.
 function cls(d){return d==='상승'?'up':d==='하락'?'down':'flat'}
 
 const AI_FORECAST_ORDER=['SM','AN','BD','BPA','MMA'];
+const AI_FONT_PREF_KEY='LAM_AI_FORECAST_FONT_PREF_V1';
 let AI_FORECAST_EDITING=false, AI_FORECAST_EDIT_SIZE=null, AI_FORECAST_DIRTY=false;
+function aiFontPrefWeekKey(){return CURRENT_WEEK_END||inferWeekEnd()||'default'}
+function readAiFontPrefs(){try{return JSON.parse(localStorage.getItem(AI_FONT_PREF_KEY)||'{}')||{}}catch(e){return {}}}
+function getAiLocalFontSize(){
+ const prefs=readAiFontPrefs(),v=parseFloat(prefs[aiFontPrefWeekKey()]);
+ return Number.isFinite(v)&&v>=10&&v<=30?v:null;
+}
+function saveAiLocalFontSize(v){
+ try{
+   const prefs=readAiFontPrefs(),key=aiFontPrefWeekKey(),n=parseFloat(v);
+   if(Number.isFinite(n)&&n>=10&&n<=30)prefs[key]=Math.round(n*2)/2;else delete prefs[key];
+   localStorage.setItem(AI_FONT_PREF_KEY,JSON.stringify(prefs));
+ }catch(e){}
+}
 function shortMd(iso){
  const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
  return m?(parseInt(m[2],10)+'/'+parseInt(m[3],10)):(iso||'-');
@@ -783,9 +797,9 @@ function aiHtmlToPlain(html){
 }
 function aiFormatMarker(x){
  const html=sanitizeAiRichHtml(x&&x.ai_outlook_html||'');
- const n=parseFloat(x&&x.ai_font_size);const size=Number.isFinite(n)?Math.max(10,Math.min(30,n)):null;
- if(!html&&!size)return '';
- return `\n[[AI_FMT_B64:${encodeAiFormatPayload({html,size})}]]`;
+ if(!html)return '';
+ return `
+[[AI_FMT_B64:${encodeAiFormatPayload({html})}]]`;
 }
 function aiForecastRows(){
  return AI_FORECAST_ORDER.map(name=>{
@@ -797,11 +811,10 @@ function aiForecastRows(){
 }
 function getUnifiedAiForecastFontSize(){
  if(AI_FORECAST_EDITING&&Number.isFinite(parseFloat(AI_FORECAST_EDIT_SIZE)))return parseFloat(AI_FORECAST_EDIT_SIZE);
- const vals=aiForecastRows().map(r=>parseFloat(r.item&&r.item.ai_font_size)).filter(v=>Number.isFinite(v)&&v>=10&&v<=30);
- return vals.length?vals[0]:null;
+ return getAiLocalFontSize();
 }
 function renderAiToolbar(){
- if(!AI_FORECAST_EDITING)return `<div class="ai-editor-toolbar"><button class="ai-tool primary" onclick="startAiForecastEdit()">AI 전망 편집</button><span class="ai-edit-note">텍스트 수정 · 드래그 후 빨강/파랑 강조 · 5개 품목 공통 글자크기 · DB 저장</span></div>`;
+ if(!AI_FORECAST_EDITING)return `<div class="ai-editor-toolbar"><button class="ai-tool primary" onclick="startAiForecastEdit()">AI 전망 편집</button><span class="ai-edit-note">텍스트/색상은 DB 저장 · 글자크기는 이 브라우저의 현재 주차 탭에 유지</span></div>`;
  const sz=Number.isFinite(parseFloat(AI_FORECAST_EDIT_SIZE))?parseFloat(AI_FORECAST_EDIT_SIZE).toFixed(1)+'px':'자동';
  return `<div class="ai-editor-toolbar"><button class="ai-tool red" onmousedown="event.preventDefault();applyAiSelectionColor('red')">빨강</button><button class="ai-tool blue" onmousedown="event.preventDefault();applyAiSelectionColor('blue')">파랑</button><button class="ai-tool black" onmousedown="event.preventDefault();applyAiSelectionColor('black')">검정</button><button class="ai-tool" onclick="adjustAiForecastFont(-0.5)">A−</button><span class="ai-size-readout" id="aiSizeReadout">${sz}</span><button class="ai-tool" onclick="adjustAiForecastFont(0.5)">A+</button><button class="ai-tool" onclick="setAiForecastAutoSize()">자동맞춤</button><button class="ai-tool save" id="aiDbSaveBtn" onclick="saveAiForecastEditsToDb()">DB 저장</button><button class="ai-tool" onclick="cancelAiForecastEdit()">취소</button><span class="ai-edit-note ${AI_FORECAST_DIRTY?'ai-editor-dirty':''}" id="aiEditState">${AI_FORECAST_DIRTY?'수정됨 · DB 저장 필요':'편집 중'}</span></div>`;
 }
@@ -856,7 +869,7 @@ function fitActiveAiForecastPanel(){
  const panel=document.querySelector('#board .ai-forecast-panel');if(!panel)return;
  const preferred=getUnifiedAiForecastFontSize();
  const w=panel.clientWidth||window.innerWidth||1280;
- if(preferred){applyAiForecastSize(panel,preferred);if(!aiForecastFits(panel))fitAiForecastPanel(panel,{minBodySize:12,maxBodySize:preferred});return}
+ if(preferred){applyAiForecastSize(panel,preferred);return}
  const min=Math.max(13.5,Math.min(15.5,w/95)),max=Math.max(16.5,Math.min(22,w/72));
  const fitted=fitAiForecastPanel(panel,{minBodySize:min,maxBodySize:max});
  if(AI_FORECAST_EDITING&&AI_FORECAST_EDIT_SIZE==null){const ro=document.getElementById('aiSizeReadout');if(ro)ro.textContent='자동 '+fitted.toFixed(1)+'px'}
@@ -867,8 +880,14 @@ function markAiForecastDirty(){AI_FORECAST_DIRTY=true;const s=document.getElemen
 function startAiForecastEdit(){if(!isAdminUnlocked('edit')){requestAdminAccess(startAiForecastEditUnlocked,'edit');return}startAiForecastEditUnlocked()}
 function startAiForecastEditUnlocked(){
  if(activeCategory!=='AI 전망')return;
- AI_FORECAST_EDITING=true;AI_FORECAST_DIRTY=false;AI_FORECAST_EDIT_SIZE=getUnifiedAiForecastFontSize();render();
- requestAnimationFrame(()=>requestAnimationFrame(()=>{fitActiveAiForecastPanel();const c=document.querySelector('.ai-editable-cell[contenteditable="true"]');if(c)c.focus()}));
+ AI_FORECAST_EDITING=true;AI_FORECAST_DIRTY=false;AI_FORECAST_EDIT_SIZE=getAiLocalFontSize();render();
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   fitActiveAiForecastPanel();
+   const panel=document.querySelector('#board .ai-forecast-panel');
+   if(AI_FORECAST_EDIT_SIZE==null&&panel){const cur=parseFloat(getComputedStyle(panel).getPropertyValue('--ai-body-size'));if(Number.isFinite(cur))AI_FORECAST_EDIT_SIZE=cur}
+   const ro=document.getElementById('aiSizeReadout');if(ro&&Number.isFinite(parseFloat(AI_FORECAST_EDIT_SIZE)))ro.textContent=parseFloat(AI_FORECAST_EDIT_SIZE).toFixed(1)+'px';
+   const c=document.querySelector('.ai-editable-cell[contenteditable="true"]');if(c)c.focus();
+ }));
 }
 function cancelAiForecastEdit(){AI_FORECAST_EDITING=false;AI_FORECAST_DIRTY=false;AI_FORECAST_EDIT_SIZE=null;if(ADMIN_SCOPE==='edit')ADMIN_SCOPE=null;render()}
 function handleAiEditorPaste(e){
@@ -888,10 +907,17 @@ function applyAiSelectionColor(key){
 function adjustAiForecastFont(delta){
  if(!AI_FORECAST_EDITING)return;const panel=document.querySelector('#board .ai-forecast-panel');if(!panel)return;
  let cur=parseFloat(AI_FORECAST_EDIT_SIZE);if(!Number.isFinite(cur)){cur=parseFloat(getComputedStyle(panel).getPropertyValue('--ai-body-size'))||16}
- cur=Math.max(12,Math.min(26,Math.round((cur+delta)*2)/2));AI_FORECAST_EDIT_SIZE=cur;applyAiForecastSize(panel,cur);markAiForecastDirty();const ro=document.getElementById('aiSizeReadout');if(ro)ro.textContent=cur.toFixed(1)+'px';
+ cur=Math.max(12,Math.min(26,Math.round((cur+delta)*2)/2));
+ AI_FORECAST_EDIT_SIZE=cur;applyAiForecastSize(panel,cur);saveAiLocalFontSize(cur);
+ const ro=document.getElementById('aiSizeReadout');if(ro)ro.textContent=cur.toFixed(1)+'px';
+ const s=document.getElementById('aiEditState');if(s&&!AI_FORECAST_DIRTY){s.textContent='글자크기 유지됨 · 텍스트/색상 변경 시 DB 저장';s.classList.remove('ai-editor-dirty')}
 }
 function setAiForecastAutoSize(){
- if(!AI_FORECAST_EDITING)return;AI_FORECAST_EDIT_SIZE=null;markAiForecastDirty();fitActiveAiForecastPanel();
+ if(!AI_FORECAST_EDITING)return;AI_FORECAST_EDIT_SIZE=null;saveAiLocalFontSize(null);fitActiveAiForecastPanel();
+ const panel=document.querySelector('#board .ai-forecast-panel');
+ const cur=panel?parseFloat(getComputedStyle(panel).getPropertyValue('--ai-body-size')):null;
+ const ro=document.getElementById('aiSizeReadout');if(ro)ro.textContent=Number.isFinite(cur)?('자동 '+cur.toFixed(1)+'px'):'자동';
+ const s=document.getElementById('aiEditState');if(s&&!AI_FORECAST_DIRTY){s.textContent='자동맞춤 유지 · 텍스트/색상 변경 시 DB 저장';s.classList.remove('ai-editor-dirty')}
 }
 function collectAiEditorValues(){
  const out=[];document.querySelectorAll('#board .ai-editable-cell[data-ai-name]').forEach(cell=>{
@@ -907,8 +933,6 @@ async function verifyAiForecastDbSave(weekEnd,expected){
    const x=loaded.find(v=>normalizeItemName(v.name)===e.name);if(!x)throw new Error(e.name+' DB 확인 실패');
    if(String(x.ai_outlook||'').trim()!==String(e.plain||'').trim())throw new Error(e.name+' AI 전망 본문 DB 불일치');
    if(sanitizeAiRichHtml(x.ai_outlook_html||'')!==sanitizeAiRichHtml(e.html||''))throw new Error(e.name+' 색상 서식 DB 불일치');
-   const xs=parseFloat(x.ai_font_size),es=parseFloat(e.size);const xHas=Number.isFinite(xs),eHas=Number.isFinite(es);
-   if(xHas!==eHas||(xHas&&Math.abs(xs-es)>.05))throw new Error(e.name+' 글자크기 DB 불일치');
  }
  return true;
 }
@@ -918,18 +942,17 @@ async function saveAiForecastEditsToDb(){
  const vals=collectAiEditorValues();if(vals.length!==AI_FORECAST_ORDER.length){showToast('AI 전망 5개 품목 편집 영역을 확인해 주세요.');return}
  const btn=document.getElementById('aiDbSaveBtn');if(btn){btn.disabled=true;btn.textContent='DB 저장 중...'}setDbStatus('saving','AI 전망 저장 중');
  try{
-   const size=Number.isFinite(parseFloat(AI_FORECAST_EDIT_SIZE))?parseFloat(AI_FORECAST_EDIT_SIZE):null;
    const expected=[];
    for(const v of vals){
      const x=ITEMS.find(it=>normalizeItemName(it.name)===v.name);if(!x)continue;
-     x.ai_outlook=v.plain;x.ai_outlook_html=v.html;x.ai_font_size=size;x.raw_brief=buildBriefText(x);expected.push({...v,size});
+     x.ai_outlook=v.plain;x.ai_outlook_html=v.html;x.ai_font_size=null;x.raw_brief=buildBriefText(x);expected.push({...v});
    }
    const targets=ITEMS.filter(x=>AI_FORECAST_ORDER.includes(normalizeItemName(x.name)));
    const results=await Promise.all(targets.map(x=>gasPost('saveItem',{item:localItemToApi(x,weekEnd)})));
    const bad=results.find(r=>!r||!r.success);if(bad)throw new Error((bad&&bad.error)||'AI 전망 저장 실패');
    await verifyAiForecastDbSave(weekEnd,expected);
    WEEK_HISTORY_CACHE.delete(weekEnd);saveLatestLocalCache(weekEnd);clearRetryAction();AI_FORECAST_EDITING=false;AI_FORECAST_DIRTY=false;AI_FORECAST_EDIT_SIZE=null;if(ADMIN_SCOPE==='edit')ADMIN_SCOPE=null;
-   setDbStatus('online','자동 동기화');showVerifiedToast('AI 전망 텍스트 · 색상 · 공통 글자크기 DB 저장 확인 완료');render();
+   setDbStatus('online','자동 동기화');showVerifiedToast('AI 전망 텍스트 · 색상 DB 저장 확인 완료 · 글자크기는 탭 설정으로 유지');render();
  }catch(e){console.error(e);setDbStatus('error','AI 전망 저장 실패');setRetryAction(()=>saveAiForecastEditsToDb());showErrorToast('AI 전망 DB 저장 실패: '+e.message)}finally{if(btn){btn.disabled=false;btn.textContent='DB 저장'}}
 }
 
@@ -1611,7 +1634,7 @@ async function saveCurrentWeek(options={}){const auto=!!(options&&options.auto);
 function openEditFromDetailUnlocked(){if(CURRENT_DETAIL_INDEX<0||!ITEMS[CURRENT_DETAIL_INDEX])return;EDIT_INDEX=CURRENT_DETAIL_INDEX;const x=ITEMS[EDIT_INDEX];document.getElementById('eTitle').textContent=x.name+' 수정';document.getElementById('eDate').value=x.date||'';document.getElementById('ePrice').value=x.price_line||'';document.getElementById('eComm').value=x.commentary||'';document.getElementById('eFactors').value=x.factors||'';document.getElementById('eOutlook').value=x.outlook||'';document.getElementById('eAiOutlook').value=x.ai_outlook||'';document.getElementById('eAdditional').value=x.additional||'';document.getElementById('eDaily').value=formatDailyText(x.daily||[]);closeDetail();document.getElementById('editModal').classList.add('show')}
 function openEditFromDetail(){requestAdminAccess(openEditFromDetailUnlocked,'edit')}
 function closeEdit(){document.getElementById('editModal').classList.remove('show');EDIT_INDEX=-1;if(ADMIN_SCOPE==='edit')ADMIN_SCOPE=null}
-function parsedEditItem(){if(EDIT_INDEX<0||!ITEMS[EDIT_INDEX])return null;const x=ITEMS[EDIT_INDEX],date=document.getElementById('eDate').value||x.date;const daily=document.getElementById('eDaily').value.trim(),ai=document.getElementById('eAiOutlook').value.trim();const block=`제목 : ${x.name} 종목 브리핑 (${date})\n\n가격\n${document.getElementById('ePrice').value.trim()}\n\n코멘터리\n${document.getElementById('eComm').value.trim()}\n\n변둉요인\n${document.getElementById('eFactors').value.trim()}\n\n결론 및 전망\n${document.getElementById('eOutlook').value.trim()}\n\n추가 정보\n${document.getElementById('eAdditional').value.trim()}${daily?`\n\n데일리가격\n${daily}`:''}${ai?`\n\nai 전망\n${ai}`:''}`;const p=parseBlock(block);if(!p)throw new Error('가격 문구 형식을 인식하지 못했습니다. 기존 가격 형식을 유지해 주세요.');if(String(ai).trim()===String(x.ai_outlook||'').trim()){p.ai_outlook_html=x.ai_outlook_html||'';p.ai_font_size=x.ai_font_size||null}else{p.ai_outlook_html='';p.ai_font_size=x.ai_font_size||null}p.raw_brief=buildBriefText(p);return p}
+function parsedEditItem(){if(EDIT_INDEX<0||!ITEMS[EDIT_INDEX])return null;const x=ITEMS[EDIT_INDEX],date=document.getElementById('eDate').value||x.date;const daily=document.getElementById('eDaily').value.trim(),ai=document.getElementById('eAiOutlook').value.trim();const block=`제목 : ${x.name} 종목 브리핑 (${date})\n\n가격\n${document.getElementById('ePrice').value.trim()}\n\n코멘터리\n${document.getElementById('eComm').value.trim()}\n\n변둉요인\n${document.getElementById('eFactors').value.trim()}\n\n결론 및 전망\n${document.getElementById('eOutlook').value.trim()}\n\n추가 정보\n${document.getElementById('eAdditional').value.trim()}${daily?`\n\n데일리가격\n${daily}`:''}${ai?`\n\nai 전망\n${ai}`:''}`;const p=parseBlock(block);if(!p)throw new Error('가격 문구 형식을 인식하지 못했습니다. 기존 가격 형식을 유지해 주세요.');if(String(ai).trim()===String(x.ai_outlook||'').trim()){p.ai_outlook_html=x.ai_outlook_html||'';p.ai_font_size=null}else{p.ai_outlook_html='';p.ai_font_size=null}p.raw_brief=buildBriefText(p);return p}
 function applyEditLocal(){try{const p=parsedEditItem();ITEMS[EDIT_INDEX]=p;render();showToast(p.name+' 화면 반영 완료')}catch(e){showToast(e.message)}}
 async function saveEditToSheet(){if(!isAdminUnlocked('edit')){requestAdminAccess(()=>saveEditToSheet(),'edit');return}try{const idx=EDIT_INDEX,p=parsedEditItem();ITEMS[idx]=p;render();const weekEnd=CURRENT_WEEK_END||inferWeekEnd();if(!weekEnd)throw new Error('저장 주차를 확인할 수 없습니다.');setDbStatus('saving','수정 저장 중');const res=await gasPost('saveItem',{item:localItemToApi(p,weekEnd)});if(!res.success)throw new Error(res.error||'수정 저장 실패');const meta={week_end:weekEnd,week_label:(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd),week_tone:computeWeeklyTone()};await gasPost('saveMeta',{meta});CURRENT_META={...CURRENT_META,...meta};WEEK_HISTORY_CACHE.delete(weekEnd);clearRetryAction();closeEdit();setDbStatus('online','자동 동기화');showToast(p.name+' 수정 · 자동저장 완료');await loadWeekList(false);const sel=document.getElementById('weekSelector');if(sel)sel.value=weekEnd}catch(e){console.error(e);setDbStatus('error','수정 실패');setRetryAction(()=>saveCurrentWeek({auto:true}));showToast('수정 저장 실패 · 상단 저장 재시도를 눌러주세요: '+e.message)}}
 async function deleteEditingItem(){if(!isAdminUnlocked('edit')){requestAdminAccess(()=>deleteEditingItem(),'edit');return}if(EDIT_INDEX<0||!ITEMS[EDIT_INDEX])return;const x=ITEMS[EDIT_INDEX],weekEnd=CURRENT_WEEK_END||inferWeekEnd();if(!confirm(x.name+' 품목을 현재 주차에서 삭제할까요?'))return;try{setDbStatus('saving','삭제 중');const res=await gasPost('deleteItem',{week_end:weekEnd,item:normalizeItemName(x.name)});if(!res.success)throw new Error(res.error||'삭제 실패');ITEMS.splice(EDIT_INDEX,1);const meta={week_end:weekEnd,week_label:(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd),week_tone:computeWeeklyTone()};await gasPost('saveMeta',{meta});CURRENT_META={...CURRENT_META,...meta};WEEK_HISTORY_CACHE.delete(weekEnd);closeEdit();render();setDbStatus('online','자동 동기화');showToast(x.name+' 삭제 · DB 반영 완료')}catch(e){console.error(e);setDbStatus('error','삭제 실패');showToast('삭제 실패: '+e.message)}}
@@ -1892,7 +1915,9 @@ function buildAiForecastSingleReportPage(stage,meta){
 }
 async function fitAiForecastSingleReport(obj){
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  const preferred=getUnifiedAiForecastFontSize();if(preferred){applyAiForecastSize(obj.inner,preferred);if(!aiForecastFits(obj.inner))fitAiForecastPanel(obj.inner,{minBodySize:14,maxBodySize:preferred});}else fitAiForecastPanel(obj.inner,{minBodySize:16,maxBodySize:22});
+  const preferred=getAiLocalFontSize();
+  if(preferred){applyAiForecastSize(obj.inner,preferred);if(!aiForecastFits(obj.inner))fitAiForecastPanel(obj.inner,{minBodySize:12,maxBodySize:preferred})}
+  else fitAiForecastPanel(obj.inner,{minBodySize:16,maxBodySize:22});
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   const available=obj.shell.clientHeight;
   const needed=obj.inner.scrollHeight;
