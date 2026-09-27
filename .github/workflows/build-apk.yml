@@ -58,12 +58,12 @@ jobs:
       - name: Build installable APK
         shell: bash
         run: |
-          gradle -p android clean :app:assembleDebug --stacktrace --no-daemon
+          gradle -p android clean :app:assembleRelease --stacktrace --no-daemon
 
       - name: Verify APK signature and manifest
         shell: bash
         run: |
-          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          APK="android/app/build/outputs/apk/release/app-release.apk"
           test -f "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
           "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -v 4 "$APK"
@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p android/dist
-          cp android/app/build/outputs/apk/debug/app-debug.apk android/dist/LAM_Weekly_Board_v1.0.0.apk
+          cp android/app/build/outputs/apk/release/app-release.apk android/dist/LAM_Weekly_Board_v1.0.0.apk
           sha256sum android/dist/LAM_Weekly_Board_v1.0.0.apk > android/dist/LAM_Weekly_Board_v1.0.0.sha256
           cp android/apk-badging.txt android/dist/apk-badging.txt
 
