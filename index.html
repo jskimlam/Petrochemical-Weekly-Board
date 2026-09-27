@@ -814,7 +814,7 @@ button{touch-action:manipulation}
 .as-table tbody td{border-bottom:1px solid #e5ebf0;padding:11px 9px;vertical-align:middle;font-size:12.5px;color:#263d55;font-weight:720}
 .as-table tbody tr:last-child td{border-bottom:0}.as-table tbody tr:hover td{background:#fbfdff}
 .as-table td.center{text-align:center}.as-item{font-size:14px;font-weight:950;color:var(--navy);white-space:nowrap}
-.as-summary{line-height:1.48;color:#40566e;font-weight:720}.as-summary-miss{color:#b42318;font-weight:950}.as-summary-hit{color:#17643a;font-weight:900}
+.as-summary{line-height:1.48;color:#40566e;font-weight:720}.as-summary-miss{color:#b42318;font-weight:950}.as-summary-hit{color:#17643a;font-weight:950}
 .as-light{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;background:#98a2b3;box-shadow:0 0 0 4px rgba(152,162,179,.13)}
 .as-light.hit{background:#2d9d5b;box-shadow:0 0 0 4px rgba(45,157,91,.15),0 0 12px rgba(45,157,91,.3)}
 .as-light.miss{background:#d92d20;box-shadow:0 0 0 4px rgba(217,45,32,.13),0 0 12px rgba(217,45,32,.22)}
@@ -1243,10 +1243,10 @@ function applyManualAsCard(row,card){
 /* Forecast AS ------------------------------------------------------------ */
 const AS_AXES=['cost','demand','supply','event'];
 const AS_AXIS_DEF={
- cost:{label:'코스트',keywords:['원유','wti','brent','브렌트','나프타','원료','원가','feedstock','벤젠','benzene','에틸렌','ethylene','프로필렌','propylene','부타디엔','butadiene','bd','천연가스','프로판','에너지','운임']},
- demand:{label:'수요',keywords:['수요','구매','소비','주문','다운스트림','최종수요','재고보충','성수기','구매저항','관망','필요물량','마진','오더']},
- supply:{label:'공급',keywords:['공급','현물','가용성','재고','정기보수','보수','셧다운','shutdown','재가동','설비','생산','감산','가동률','수입','수출','역외','물량','turnaround','outage','force majeure','fm']},
- event:{label:'이벤트',keywords:['호르무즈','홍해','지정학','전쟁','충돌','공격','제재','관세','정책','금리','환율','물류','선박','운임','기상','라인강','force majeure','사고','파업','협상','선물','moc','arbitrage','아비트라지','급등','급락']}
+ cost:{label:'코스트',keywords:['원유','wti','brent','브렌트','나프타','naphtha','원료','원가','feedstock','cost','벤젠','benzene','에틸렌','ethylene','프로필렌','propylene','부타디엔','butadiene','bd','천연가스','natural gas','프로판','propane','에너지','energy','운임','freight']},
+ demand:{label:'수요',keywords:['수요','demand','구매','buying','buyer','inquiry','inquiries','소비','consumption','주문','order','orders','다운스트림','downstream','최종수요','재고보충','restocking','성수기','구매저항','관망','sidelines','필요물량','마진','margin','오더','acrylic fiber','abs','pmma','pc','eps','ps']},
+ supply:{label:'공급',keywords:['공급','supply','현물','spot','가용성','availability','재고','inventory','stock','정기보수','보수','maintenance','turnaround','셧다운','shutdown','재가동','restart','설비','plant','unit','생산','production','감산','cut','가동률','run rate','operating rate','수입','imports','수출','exports','역외','물량','cargo','offer','offers','outage','force majeure','fm']},
+ event:{label:'이벤트',keywords:['호르무즈','hormuz','홍해','red sea','지정학','geopolitical','전쟁','war','충돌','attack','공격','제재','sanction','관세','tariff','정책','금리','환율','물류','logistics','선박','vessel','운임','freight','기상','weather','라인강','force majeure','사고','파업','strike','협상','talks','선물','futures','moc','arbitrage','아비트라지','급등','급락']}
 };
 let FORECAST_AS_FILTER='all',FORECAST_AS_ROWS=[],FORECAST_AS_SEQ=0;
 
@@ -1340,17 +1340,42 @@ function asAxisSignal(text,axis){
  const t=String(text||'').toLowerCase();if(!t.trim())return '';
  let up=0,down=0;
  if(axis==='cost'){
-  up=asCount(t,[/(원유|wti|brent|브렌트|나프타|원료|원가|feedstock|벤젠|에틸렌|프로필렌|부타디엔|천연가스|프로판|에너지)[^.\n]{0,38}(상승|강세|급등|반등|높|부담|지지|확대|견조)/g,/(상승|강세|급등|반등|높은|원가부담)[^.\n]{0,28}(원유|나프타|원료|원가|벤젠|에너지)/g]);
-  down=asCount(t,[/(원유|wti|brent|브렌트|나프타|원료|원가|feedstock|벤젠|에틸렌|프로필렌|부타디엔|천연가스|프로판|에너지)[^.\n]{0,38}(하락|약세|급락|조정|완화|낮|하향)/g,/(하락|약세|급락|조정|완화)[^.\n]{0,28}(원유|나프타|원료|원가|벤젠|에너지)/g]);
+  up=asCount(t,[
+   /(원유|wti|brent|브렌트|나프타|naphtha|원료|원가|feedstock|cost|벤젠|benzene|에틸렌|ethylene|프로필렌|propylene|부타디엔|butadiene|bd|천연가스|natural gas|프로판|propane|에너지|energy)[^.\n]{0,48}(상승|강세|급등|반등|높|부담|지지|확대|견조|rise|rises|rose|higher|strong|strength|firm|support|surge|increase)/g,
+   /(상승|강세|급등|반등|높은|원가부담|rise|higher|strong|strength|firm|support|surge)[^.\n]{0,36}(원유|wti|brent|나프타|naphtha|원료|feedstock|cost|벤젠|benzene|프로필렌|propylene|에너지|energy)/g
+  ]);
+  down=asCount(t,[
+   /(원유|wti|brent|브렌트|나프타|naphtha|원료|원가|feedstock|cost|벤젠|benzene|에틸렌|ethylene|프로필렌|propylene|부타디엔|butadiene|bd|천연가스|natural gas|프로판|propane|에너지|energy)[^.\n]{0,48}(하락|약세|급락|조정|완화|낮|하향|fall|falls|fell|lower|weak|decline|soft|ease|easing|drop)/g,
+   /(하락|약세|급락|조정|완화|fall|lower|weak|decline|soft|ease|drop)[^.\n]{0,36}(원유|wti|brent|나프타|naphtha|원료|feedstock|cost|벤젠|benzene|프로필렌|propylene|에너지|energy)/g
+  ]);
  }else if(axis==='demand'){
-  up=asCount(t,[/(수요|구매|소비|주문|다운스트림|최종수요|재고보충|오더)[^.\n]{0,42}(회복|개선|증가|확대|강세|적극|견조|재고보충)/g,/(성수기|재고보충)[^.\n]{0,36}(수요|구매|소비)/g]);
-  down=asCount(t,[/(수요|구매|소비|주문|다운스트림|최종수요|마진|오더)[^.\n]{0,42}(부진|약세|둔화|감소|관망|저항|제한|미약|약화|필요물량|낮)/g,/(구매저항|관망|필요물량|수요부진|마진악화)/g]);
+  up=asCount(t,[
+   /(수요|demand|구매|buying|buyer|inquiry|inquiries|소비|consumption|주문|orders?|다운스트림|downstream|최종수요|재고보충|restocking|오더)[^.\n]{0,52}(회복|개선|증가|확대|강세|적극|견조|재고보충|recover|improve|increase|strong|firm|active|pick up|restock)/g,
+   /(성수기|재고보충|restocking)[^.\n]{0,42}(수요|demand|구매|buying|소비|consumption)/g
+  ]);
+  down=asCount(t,[
+   /(수요|demand|구매|buying|buyer|inquiry|inquiries|소비|consumption|주문|orders?|다운스트림|downstream|최종수요|마진|margin|오더)[^.\n]{0,56}(부진|약세|둔화|감소|관망|저항|제한|미약|약화|필요물량|낮|weak|sluggish|slow|thin|limited|lukewarm|sidelines|resistance|soft|poor|decline)/g,
+   /(구매저항|관망|필요물량|수요부진|마진악화|weak demand|sluggish demand|slow buying|thin trading|buyers? .*sidelines)/g
+  ]);
  }else if(axis==='supply'){
-  up=asCount(t,[/(공급|현물|가용성|재고|수입|물량)[^.\n]{0,42}(부족|타이트|제한|감소|축소|차질|낮|타이트닝)/g,/(정기보수|셧다운|shutdown|감산|가동중단|재가동 지연|force majeure|fm)[^.\n]{0,42}/g,/(낮은 재고|재고 감소|현물 부족|공급 타이트)/g]);
-  down=asCount(t,[/(공급|현물|가용성|재고|수입|역외물량|물량)[^.\n]{0,42}(증가|확대|개선|과잉|높|유입|늘)/g,/(재가동|증산|신규 공급|역외물량 유입|높은 재고|재고 증가)/g]);
+  up=asCount(t,[
+   /(공급|supply|현물|spot|가용성|availability|재고|inventory|stock|수입|imports?|물량|cargo|offers?)[^.\n]{0,52}(부족|타이트|제한|감소|축소|차질|낮|타이트닝|tight|limited|short|reduced|lower|decline|scarce)/g,
+   /(정기보수|maintenance|turnaround|셧다운|shutdown|감산|production cut|가동중단|outage|재가동 지연|force majeure|fm)[^.\n]{0,44}/g,
+   /(낮은 재고|재고 감소|현물 부족|공급 타이트|low inventory|tight supply|limited offers|limited spot)/g
+  ]);
+  down=asCount(t,[
+   /(공급|supply|현물|spot|가용성|availability|재고|inventory|stock|수입|imports?|역외물량|cargo|물량)[^.\n]{0,52}(증가|확대|개선|과잉|높|유입|늘|increase|higher|ample|lengthen|improve|rise)/g,
+   /(재가동|restart|증산|production increase|신규 공급|new supply|역외물량 유입|높은 재고|재고 증가|higher inventory|plant restart)/g
+  ]);
  }else if(axis==='event'){
-  up=asCount(t,[/(호르무즈|홍해|지정학|전쟁|충돌|공격|제재|봉쇄|물류|라인강|사고|파업|force majeure|fm|선물|moc)[^.\n]{0,45}(위험|불안|긴장|차질|제한|급등|상승|악화|확대|저수위)/g,/(위험 프리미엄|통항 제한|물류 차질|선물 급등|moc 강세|긴장 재부각)/g]);
-  down=asCount(t,[/(협상|통항|복구|정상화|합의|외교|선물|moc|위험 프리미엄)[^.\n]{0,45}(진전|완화|정상화|복구|재개|축소|하락|약세|급락)/g,/(협상 진전|긴장 완화|위험 프리미엄 축소|통항 재개|선물 급락|moc 약세)/g]);
+  up=asCount(t,[
+   /(호르무즈|hormuz|홍해|red sea|지정학|geopolitical|전쟁|war|충돌|attack|공격|제재|sanction|봉쇄|물류|logistics|라인강|사고|파업|strike|force majeure|fm|선물|futures|moc)[^.\n]{0,56}(위험|불안|긴장|차질|제한|급등|상승|악화|확대|저수위|risk|tension|disruption|tight|surge|rise|higher|worsen)/g,
+   /(위험 프리미엄|통항 제한|물류 차질|선물 급등|moc 강세|긴장 재부각|risk premium|logistics disruption|futures surge)/g
+  ]);
+  down=asCount(t,[
+   /(협상|talks|통항|transit|복구|normalization|정상화|합의|deal|외교|diplomatic|선물|futures|moc|위험 프리미엄|risk premium)[^.\n]{0,56}(진전|완화|정상화|복구|재개|축소|하락|약세|급락|progress|ease|resume|lower|fall|weak|drop)/g,
+   /(협상 진전|긴장 완화|위험 프리미엄 축소|통항 재개|선물 급락|moc 약세|diplomatic progress|risk premium eased|futures fell)/g
+  ]);
  }
  if(up===0&&down===0)return '';
  if(up===down)return '보합';
@@ -1442,8 +1467,49 @@ function asCleanManualCore(text){
  if(/^(?:주요\s*원인을|여기에|내용|분석)\b/i.test(s))return '';
  return s;
 }
+function asForecastReason(text,max=115){
+ let s=asCleanSourceText(text||'');
+ if(!s)return '';
+ s=s.replace(/^(?:상승|하락|보합|강보합|약보합|강세|약세)\s*전망\s*[.:：]?\s*/,'');
+ const first=(s.split(/[.!?。]/)[0]||s).trim();
+ if(!first)return '';
+ return asCompactEvidence(first,max);
+}
+function asActualReason(row,max=125){
+ if(!row||!row.current)return '';
+ const parts=[
+   row.current.commentary||'',
+   row.current.factors||'',
+   row.current.additional||''
+ ].map(asCleanSourceText).filter(Boolean);
+ if(!parts.length)return '';
+ const first=(parts[0].split(/[.!?。]/)[0]||parts[0]).trim();
+ return asCompactEvidence(first,max);
+}
+function asHitEvidenceSummary(row){
+ const axes=row.axes||[];
+ const good=axes.filter(x=>x.status==='hit');
+ const supported=axes.filter(x=>(x.forecastEvidence||[]).length&&(x.actualEvidence||[]).length);
+ const chosen=(good.length?good:supported).slice(0,2);
+ if(chosen.length){
+   const detail=chosen.map(a=>{
+     const ev=asCoreEvidence(a,78);
+     return a.label+(ev?'의 '+ev:'');
+   }).join(', ');
+   if(row.actualDir==='보합')return '주요 적중요인은 '+detail+'가 서로 상쇄되며 전주에 예상한 보합 구조가 실제로 유지된 점이다.';
+   return '주요 적중요인은 '+detail+'가 실제 '+(row.actualDir||'')+' 방향을 지지해 전주 전망 논리와 일치한 점이다.';
+ }
+ const fReason=asForecastReason(row.forecastText,112);
+ const aReason=asActualReason(row,122);
+ if(fReason&&aReason){
+   if(row.actualDir==='보합')return '주요 적중요인은 전주 '+fReason+'를 근거로 보합을 예상했고, 금주 '+aReason+'가 확인되며 상·하방 요인이 실제로 균형을 이룬 점이다.';
+   return '주요 적중요인은 전주 '+fReason+'를 예상했고, 금주 '+aReason+'가 확인되며 실제 '+(row.actualDir||'')+' 방향과 일치한 점이다.';
+ }
+ if(fReason)return '주요 적중요인은 전주 '+fReason+'를 근거로 '+(row.forecastDir||'')+'을 예상했고 실제 방향이 이에 부합한 점이다.';
+ return '전주 '+(row.forecastDir||'')+' 전망과 금주 '+(row.actualDir||'')+' 방향이 일치했으며, 상세 근거는 코스트·수요·공급·이벤트 카드에서 확인할 수 있다.';
+}
 function asCoreSummary(row){
- const axes=row.axes||[],good=axes.filter(x=>x.status==='hit'),bad=axes.filter(x=>x.status==='miss'),hold=axes.filter(x=>x.status==='hold');
+ const axes=row.axes||[],bad=axes.filter(x=>x.status==='miss');
  const manual=asCleanManualCore(row.manual?row.summary:'');
  if(manual)return manual;
 
@@ -1457,19 +1523,7 @@ function asCoreSummary(row){
    return '핵심오판요인은 세부 변수의 방향과 강도를 충분히 포착하지 못해 전주 전망과 실제 방향이 달라진 점이다.';
  }
 
- if(row.result==='hit'){
-   const f=row.forecastDir||'전주',a=row.actualDir||'금주';
-   if(good.length===AS_AXES.length){
-     return '전주 '+f+' 전망과 금주 '+a+' 방향이 일치했고, 코스트·수요·공급·이벤트 판단도 모두 실제 흐름과 정합했다.';
-   }
-   if(good.length){
-     let s='전주 '+f+' 전망과 금주 '+a+' 방향이 일치했다. 세부적으로 '+good.map(x=>x.label).join('·')+' 판단이 정합';
-     if(bad.length)s+=', '+bad.map(x=>x.label).join('·')+'는 불일치';
-     if(hold.length)s+=', '+hold.map(x=>x.label).join('·')+'는 판단보류';
-     return s+'.';
-   }
-   return '전주 '+f+' 전망과 금주 '+a+' 방향은 일치했지만, 코스트·수요·공급·이벤트는 자동 판정 근거가 부족해 세부 적중 여부는 판단보류다.';
- }
+ if(row.result==='hit')return asHitEvidenceSummary(row);
  return '전주 전망 또는 금주 실제 방향 데이터가 부족해 판정을 보류했다.';
 }
 function asCoreSummaryHtml(row){
