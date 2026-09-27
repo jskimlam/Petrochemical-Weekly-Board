@@ -139,6 +139,117 @@ button{touch-action:manipulation}
 
 /* AI Forecast image export — AI content only */
 .tab-image-ai-only-page{width:1600px;height:900px;background:#e9eef3;box-sizing:border-box;padding:10px;overflow:hidden;border:1px solid #cbd9e6}
+.tab-image-as-only-page{width:1600px;height:900px;background:#e9eef3;box-sizing:border-box;padding:10px;overflow:hidden;border:1px solid #cbd9e6}
+.tab-image-as-only-shell{width:100%;height:100%;background:#fff;box-sizing:border-box;padding:14px 16px 16px;overflow:hidden}
+.tab-image-as-only-shell .as-export-inner{width:100%;height:100%;transform-origin:top center}
+.tab-image-as-only-shell .forecast-as-panel{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:#fff!important;
+  width:100%!important;
+  max-width:none!important;
+  height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.tab-image-as-only-shell .forecast-as-head{
+  margin:0 0 14px!important;
+  padding:4px 2px 12px!important;
+  min-height:auto!important;
+  border-bottom:2px solid #d7e2ec!important;
+  align-items:flex-end!important;
+}
+.tab-image-as-only-shell .forecast-as-head .eyebrow,
+.tab-image-as-only-shell .forecast-as-head p{display:none!important}
+.tab-image-as-only-shell .forecast-as-head h3{
+  margin:0!important;
+  font-size:42px!important;
+  line-height:1.06!important;
+  color:#111!important;
+  letter-spacing:-.04em!important;
+}
+.tab-image-as-only-shell .forecast-as-head-right{gap:2px!important}
+.tab-image-as-only-shell .forecast-as-week{
+  font-size:20px!important;
+  line-height:1.2!important;
+  color:#0b2a52!important;
+}
+.tab-image-as-only-shell .forecast-as-week small{
+  margin-top:4px!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+.tab-image-as-only-shell #forecastAsContent{flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important}
+.tab-image-as-only-shell .as-kpis{
+  flex:0 0 auto!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin:0 0 14px!important;
+}
+.tab-image-as-only-shell .as-kpi{
+  min-height:112px!important;
+  padding:14px 16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+}
+.tab-image-as-only-shell .as-kpi span{
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+.tab-image-as-only-shell .as-kpi strong{
+  font-size:34px!important;
+  line-height:1!important;
+  margin-top:7px!important;
+}
+.tab-image-as-only-shell .as-kpi small.as-kpi-items{
+  font-size:13.5px!important;
+  line-height:1.38!important;
+  margin-top:8px!important;
+  font-weight:900!important;
+}
+.tab-image-as-only-shell .as-table-wrap{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  border:1px solid #ccd8e3!important;
+}
+.tab-image-as-only-shell .as-table{
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  table-layout:fixed!important;
+}
+.tab-image-as-only-shell .as-table col.signal{width:64px!important}
+.tab-image-as-only-shell .as-table col.item{width:115px!important}
+.tab-image-as-only-shell .as-table col.dir{width:110px!important}
+.tab-image-as-only-shell .as-table col.result{width:100px!important}
+.tab-image-as-only-shell .as-table col.action{width:0!important}
+.tab-image-as-only-shell .as-table thead{height:52px!important}
+.tab-image-as-only-shell .as-table thead th{
+  padding:10px 10px!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+}
+.tab-image-as-only-shell .as-table tbody tr{height:20%!important}
+.tab-image-as-only-shell .as-table tbody td{
+  padding:12px 11px!important;
+  font-size:14.5px!important;
+  line-height:1.42!important;
+  vertical-align:middle!important;
+}
+.tab-image-as-only-shell .as-item{font-size:17px!important}
+.tab-image-as-only-shell .as-dir{min-width:68px!important;padding:7px 10px!important;font-size:13px!important}
+.tab-image-as-only-shell .as-result{min-width:64px!important;padding:7px 10px!important;font-size:13px!important}
+.tab-image-as-only-shell .as-light{width:20px!important;height:20px!important}
+.tab-image-as-only-shell .as-summary{
+  font-size:15.5px!important;
+  line-height:1.48!important;
+  font-weight:820!important;
+}
+.tab-image-as-only-shell .note{font-size:12px!important;margin-top:5px!important}
 .tab-image-ai-only-shell{width:100%;height:100%;background:#fff;box-sizing:border-box;padding:12px 14px 14px;overflow:hidden}
 .tab-image-ai-only-shell .ai-export-inner{width:100%;height:100%;transform-origin:top center}
 .tab-image-ai-only-shell .ai-forecast-panel{--ai-title-size:42px;--ai-meta-size:16px;--ai-head-size:27px;--ai-item-size:24px;--ai-body-size:18px;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important;width:100%!important;max-width:none!important;height:100%;display:flex;flex-direction:column}
@@ -2605,6 +2716,64 @@ async function saveOverviewSinglePageImage(stage,meta){
 }
 
 
+function buildForecastAsSingleReportPage(stage,meta){
+  const panel=document.querySelector('#board .forecast-as-panel');
+  if(!panel)throw new Error('저장할 전망 AS 내용이 없습니다.');
+  const page=document.createElement('div');
+  page.className='tab-image-export tab-image-as-only-page';
+  const shell=document.createElement('div');shell.className='tab-image-as-only-shell';
+  const inner=cleanExportClone(panel);inner.classList.add('as-export-inner');
+
+  const fiveRows=AI_FORECAST_ORDER
+    .map(name=>(FORECAST_AS_ROWS||[]).find(r=>normalizeItemName(r.name)===normalizeItemName(name)))
+    .filter(Boolean);
+  const tbody=inner.querySelector('.as-table tbody');
+  if(tbody)tbody.innerHTML=fiveRows.map(r=>renderForecastAsRow(r,true)).join('');
+
+  const h3=inner.querySelector('.forecast-as-head h3');
+  if(h3)h3.textContent='전망 AS'+(meta.weekEnd?' ('+shortMd(meta.weekEnd)+')':'');
+  const desc=inner.querySelector('.forecast-as-head p');
+  if(desc)desc.remove();
+  const eyebrow=inner.querySelector('.forecast-as-head .eyebrow');
+  if(eyebrow)eyebrow.remove();
+
+  shell.appendChild(inner);page.appendChild(shell);stage.appendChild(page);
+  return {page,shell,inner};
+}
+async function fitForecastAsSingleReport(obj){
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const available=obj.shell.clientHeight;
+  const needed=obj.inner.scrollHeight;
+  if(needed<=available)return 1;
+  let ratio=Math.min(1,(available-2)/Math.max(needed,1));
+  ratio=Math.max(.84,ratio);
+  obj.inner.style.transformOrigin='top center';
+  obj.inner.style.transform='scale('+ratio+')';
+  obj.inner.style.width=(100/ratio)+'%';
+  await new Promise(r=>requestAnimationFrame(r));
+  return ratio;
+}
+async function saveForecastAsSinglePageImage(stage,meta){
+  const report=buildForecastAsSingleReportPage(stage,meta);
+  const ratio=await fitForecastAsSingleReport(report);
+  const canvas=await html2canvas(report.page,{
+    scale:1.6,
+    useCORS:true,
+    allowTaint:false,
+    backgroundColor:'#e9eef3',
+    width:1600,
+    height:900,
+    windowWidth:1600,
+    windowHeight:900,
+    scrollX:0,
+    scrollY:0,
+    logging:false
+  });
+  const base='LAM_'+sanitizeFilePart(meta.weekLabel)+'_전망_AS_'+sanitizeFilePart(meta.weekEnd||'weekly');
+  downloadCanvasFile(canvas,base+'.png');
+  showToast('전망 AS 5대 품목 · 내용만 1장 저장 완료'+(ratio<.999?' (자동 맞춤)':''));
+}
+
 function buildAiForecastSingleReportPage(stage,meta){
   const panel=document.querySelector('#board .ai-forecast-panel');
   if(!panel)throw new Error('저장할 AI 전망 내용이 없습니다.');
@@ -2656,7 +2825,7 @@ async function saveAiForecastSinglePageImage(stage,meta){
 async function saveCurrentTabImage(){
   try{
     if(typeof html2canvas==='undefined')throw new Error('이미지 저장 모듈을 불러오지 못했습니다. 인터넷 연결 후 다시 시도해 주세요.');
-    if(activeCategory!=='전체'&&activeCategory!=='Overview'&&activeCategory!=='AI 전망'){
+    if(activeCategory!=='전체'&&activeCategory!=='Overview'&&activeCategory!=='AI 전망'&&activeCategory!=='전망 AS'){
       await refreshCategoryChart();
       await new Promise(r=>setTimeout(r,100));
     }
@@ -2671,6 +2840,10 @@ async function saveCurrentTabImage(){
       }
       if(activeCategory==='AI 전망'){
         await saveAiForecastSinglePageImage(stage,meta);
+        return;
+      }
+      if(activeCategory==='전망 AS'){
+        await saveForecastAsSinglePageImage(stage,meta);
         return;
       }
       let units=getSemanticUnits();
