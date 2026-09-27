@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>LAM Petrochemical Weekly Board - Revised 2026-09-12</title>
-<!-- Revised 2026-09-12: DB verification, resilient GAS requests, sequential AI save, UI/export refinements -->
+<title>LAM Petrochemical Weekly Board - Revised 2026-09-27</title>
+<!-- Revised 2026-09-27: Forecast AS tab, traffic-light review, 4-axis cost/demand/supply/event backtesting -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
 // Common modal keyboard behavior
 window.addEventListener('keydown',e=>{
@@ -669,12 +669,79 @@ button{touch-action:manipulation}
   .pr-comment{background:#eef6ff!important;border-left-color:#5e98c5!important}
 }
 
+
+/* =========================================================
+   Forecast AS · 2026-09-27
+   - Previous-week forecast vs current-week actual direction
+   - Traffic-light hit/miss signal
+   - 4-axis review: cost / demand / supply / event
+   ========================================================= */
+.forecast-as-panel{margin:2px 0 28px;background:#fff;border:1px solid var(--line);border-top:4px solid #17643a;box-shadow:var(--shadow);padding:22px 23px 25px}
+.forecast-as-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding-bottom:15px;margin-bottom:15px;border-bottom:1px solid var(--line)}
+.forecast-as-head h3{margin:0;color:var(--navy);font-size:28px;font-weight:950;letter-spacing:-.035em}
+.forecast-as-head p{margin:6px 0 0;color:var(--muted);font-size:13px;font-weight:750;line-height:1.5}
+.forecast-as-week{text-align:right;color:var(--navy);font-size:15px;font-weight:950;white-space:nowrap}
+.forecast-as-week small{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.as-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.as-kpi{border:1px solid var(--line);background:#f9fbfd;padding:12px 13px;min-width:0}
+.as-kpi span{display:block;color:var(--muted);font-size:10px;font-weight:900;letter-spacing:.05em}
+.as-kpi strong{display:block;margin-top:4px;color:var(--navy);font-size:25px;font-weight:950;letter-spacing:-.035em}
+.as-kpi.hit{background:#f1faf4;border-color:#cbe7d4}.as-kpi.hit strong{color:#17643a}
+.as-kpi.miss{background:#fff4f2;border-color:#f0cec8}.as-kpi.miss strong{color:#b42318}
+.as-kpi.rate strong{color:#215e91}
+.as-filterbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 11px}
+.as-filter-btn{border:1px solid var(--line-strong);background:#fff;color:#40566e;border-radius:999px;padding:7px 12px;font-size:11.5px;font-weight:900;cursor:pointer}
+.as-filter-btn.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.as-table-wrap{overflow-x:auto;border:1px solid var(--line)}
+.as-table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:1050px}
+.as-table col.signal{width:58px}.as-table col.item{width:125px}.as-table col.dir{width:110px}.as-table col.result{width:100px}.as-table col.action{width:70px}
+.as-table thead th{background:#eef3f8;color:#465d73;border-bottom:1px solid #cbd6e1;padding:10px 9px;font-size:10px;font-weight:950;letter-spacing:.06em;text-align:center}
+.as-table thead th.summary{text-align:left}
+.as-table tbody td{border-bottom:1px solid #e5ebf0;padding:11px 9px;vertical-align:middle;font-size:12.5px;color:#263d55;font-weight:720}
+.as-table tbody tr:last-child td{border-bottom:0}.as-table tbody tr:hover td{background:#fbfdff}
+.as-table td.center{text-align:center}.as-item{font-size:14px;font-weight:950;color:var(--navy);white-space:nowrap}
+.as-summary{line-height:1.48;color:#40566e;font-weight:720}
+.as-light{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;background:#98a2b3;box-shadow:0 0 0 4px rgba(152,162,179,.13)}
+.as-light.hit{background:#2d9d5b;box-shadow:0 0 0 4px rgba(45,157,91,.15),0 0 12px rgba(45,157,91,.3)}
+.as-light.miss{background:#d92d20;box-shadow:0 0 0 4px rgba(217,45,32,.13),0 0 12px rgba(217,45,32,.22)}
+.as-dir{display:inline-flex;align-items:center;justify-content:center;min-width:62px;padding:6px 9px;border-radius:999px;font-size:11.5px;font-weight:950;border:1px solid transparent}
+.as-dir.up{color:#b42318;background:#fff2f0;border-color:#f3d1cc}.as-dir.down{color:#175cd3;background:#eef5ff;border-color:#d3e3f7}.as-dir.flat{color:#475467;background:#f2f4f7;border-color:#e0e3e7}.as-dir.unknown{color:#7c8796;background:#f8fafc;border-color:#e4e9ef}
+.as-result{display:inline-flex;align-items:center;justify-content:center;min-width:58px;padding:6px 9px;border-radius:3px;font-size:11.5px;font-weight:950}
+.as-result.hit{color:#17643a;background:#edf8f1;border:1px solid #c9e5d2}.as-result.miss{color:#b42318;background:#fff1ef;border:1px solid #f1cbc5}.as-result.hold{color:#66758a;background:#f4f6f8;border:1px solid #dfe5eb}
+.as-detail-btn{border:1px solid #9eb3c6;color:var(--navy);background:#fff;border-radius:3px;padding:7px 9px;font-size:11px;font-weight:900;cursor:pointer}.as-detail-btn:hover{background:#edf4f9}
+.as-loading,.as-empty{padding:44px 20px;text-align:center;color:var(--muted);font-size:14px;font-weight:850;background:#f9fbfd;border:1px dashed #c7d3df}
+.as-detailbox{width:min(1180px,96vw);max-height:92vh;overflow:auto}
+.as-detail-topgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:14px}
+.as-detail-kpi{border:1px solid var(--line);background:#f8fafc;padding:11px 12px}
+.as-detail-kpi span{display:block;font-size:9.5px;color:var(--muted);font-weight:900;letter-spacing:.05em}.as-detail-kpi strong{display:block;margin-top:5px;font-size:16px;color:var(--navy);font-weight:950}
+.as-forecast-text{margin:12px 0;background:#eef6ff;border:1px solid #d5e6f6;border-left:4px solid #5e98c5;padding:12px 14px;color:#21415f;font-size:13px;line-height:1.6;font-weight:720}
+.as-axis-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.as-axis-card{border:1px solid var(--line);background:#fff;padding:13px 14px;min-width:0;border-top:3px solid #98a2b3}
+.as-axis-card.hit{border-top-color:#2d9d5b}.as-axis-card.miss{border-top-color:#d92d20}
+.as-axis-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.as-axis-head h4{margin:0;color:var(--navy);font-size:16px;font-weight:950}
+.as-axis-status{font-size:10.5px;font-weight:950;border-radius:999px;padding:5px 8px;background:#f2f4f7;color:#66758a}
+.as-axis-card.hit .as-axis-status{background:#edf8f1;color:#17643a}.as-axis-card.miss .as-axis-status{background:#fff1ef;color:#b42318}
+.as-axis-signals{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.as-axis-signal{background:#f7f9fb;border:1px solid #e2e8ee;padding:8px 9px}.as-axis-signal span{display:block;color:#7b8794;font-size:9px;font-weight:900}.as-axis-signal b{display:block;margin-top:3px;color:#263d55;font-size:12px;font-weight:950}
+.as-evidence{margin-top:8px}.as-evidence b{display:block;color:#4f6479;font-size:10px;font-weight:950;margin-bottom:3px}.as-evidence p{margin:0;color:#41576d;font-size:11.5px;line-height:1.52;font-weight:700;word-break:keep-all}
+.as-axis-comment{margin-top:9px;padding-top:8px;border-top:1px solid #e5ebf0;color:#263d55;font-size:11.5px;line-height:1.5;font-weight:850}
+.as-overall-review{margin-top:12px;border:1px solid #cbd9e5;border-left:5px solid var(--navy);background:#f6f9fc;padding:12px 14px;color:#18334f;font-size:13px;line-height:1.58;font-weight:850}
+@media(max-width:900px){
+ .forecast-as-panel{padding:15px 10px 18px}.forecast-as-head{align-items:flex-start;flex-direction:column}.forecast-as-week{text-align:left}
+ .as-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.as-kpi.rate{grid-column:1/-1}
+ .as-detail-topgrid,.as-axis-grid{grid-template-columns:1fr}
+}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
 <div class="wrap"><div class="hero"><div><div class="eyebrow">Weekly Market Monitor</div><h2>전체 석유화학 위클리 브리핑</h2><p>Energy → Base Chemicals → Key Feedstocks → Polymers → Regional Benchmarks</p></div><div class="week-card"><span>Reporting Week</span><strong class="week" id="weekText"></strong><div class="tone-inline"><span>주간 톤</span><strong id="toneText">-</strong></div></div></div><div class="toolbar"><div class="tabs" id="tabs"></div><div class="note">Overview · 카테고리별 상세 분석 · 최대 10주 주간가격 그래프 · 품목별 독립 파싱 · Google Sheet 자동동기화</div></div><div id="board"></div></div>
 <div id="printReport" class="print-report"></div>
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox ai-box" id="dAiBox"><h4>AI 전망</h4><pre id="dAiOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
+
+<div class="modal" id="asDetailModal"><div class="modalbox as-detailbox"><div class="modaltop"><div><h3 id="asDTitle">전망 AS 상세</h3><div class="note" id="asDMeta"></div></div><button class="close" onclick="closeAsDetail()">닫기</button></div><div id="asDetailBody"></div></div></div>
+
 <div class="modal" id="parserModal"><div class="modalbox parserbox"><div class="modaltop"><div><h3>품목별 브리핑 파싱 · 자동저장</h3><div class="note">한 번에 한 품목만 파싱합니다. 입력하지 않은 다른 품목 데이터는 변경하지 않습니다.</div><div class="parser-status">위클리 주차(W32 등)는 보고 주차, 기준일은 해당 위클리의 대표일입니다. 제목의 날짜는 각 품목 실제 평가일로 별도 저장됩니다.</div></div><button class="close" onclick="closeParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="parserWeekLabel">위클리 주차</label><input id="parserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="parserWeekEnd">위클리 기준일</label><input id="parserWeekEnd" type="date" onchange="updateParserWeekLabel()"></div><div class="hint"><strong>예: W32 / 기준일 2026-08-07</strong><br>AN 브리핑 제목이 2026-08-04여도 W32·2026-08-07 그룹에 저장되고, AN의 실제 평가일은 2026-08-04로 보존됩니다.</div></div><div class="parser-workspace"><div class="parser-itemnav" id="parserItemNav"></div><div class="parser-editor"><div class="parser-selected"><div><div class="label">선택 품목</div><strong id="parserSelectedName">WTI</strong></div><div class="state" id="parserSelectedState">해당 품목만 자동저장</div></div><textarea id="parserText" placeholder="선택한 품목의 브리핑 1개만 붙여넣으세요."></textarea><div class="parser-help" id="parserHelp">제목부터 데일리가격까지 해당 품목 브리핑 전체를 붙여넣으면 됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentItemToParser()">현재 데이터 불러오기</button><button class="btn" onclick="clearParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" id="itemParseSaveBtn" onclick="parseSelectedItemAndSave()">선택 품목 파싱 · 자동저장</button></div></div></div></div></div></div>
 
 <div class="modal" id="bulkParserModal"><div class="modalbox bulk-parserbox"><div class="modaltop"><div><h3>전체 위클리 파싱 · 자동저장</h3><div class="note">여러 품목 브리핑을 한 번에 붙여넣습니다. 품목 순서는 무작위여도 제목을 기준으로 자동 분류합니다.</div><div class="parser-status">입력된 품목만 해당 W주차에 추가·업데이트하며, 입력하지 않은 기존 품목은 삭제하지 않습니다. 개별 제목의 날짜는 실제 평가일로 보존됩니다.</div></div><button class="close" onclick="closeBulkParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="bulkWeekLabel">위클리 주차</label><input id="bulkWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="bulkWeekEnd">위클리 기준일</label><input id="bulkWeekEnd" type="date" onchange="updateBulkWeekLabel()"></div><div class="hint"><strong>예: W33 / 기준일 2026-08-14</strong><br>AN 8/11, PC 8/12, US BD 8/7처럼 평가일이 달라도 모두 W33 그룹에 저장할 수 있습니다.</div></div><div class="bulk-parser-guide"><strong>전체 파싱 규칙</strong><br>각 품목은 제목 : 품목명 종목 브리핑 (YYYY-MM-DD)로 시작하면 됩니다. WTI·SM·BD·AN·BPA·MMA·Benzene·Ethylene·Propylene·ABS·PC·EPS·PS·PBR·Europe/US SM·Europe/US BD를 순서와 무관하게 인식합니다. ai 전망이 있으면 함께 보존·표시합니다.</div><textarea id="bulkParserText" oninput="previewBulkParse()" placeholder="여기에 전체 위클리 파싱 결과를 품목 순서와 관계없이 그대로 붙여넣으세요.&#10;&#10;제목 : WTI 종목 브리핑 (...)&#10;...&#10;&#10;제목 : Benzene 종목 브리핑 (...)&#10;...&#10;&#10;제목 : SM 종목 브리핑 (...)&#10;..."></textarea><div class="bulk-preview" id="bulkParserPreview">전체 위클리 텍스트를 붙여넣으면 인식 품목 수와 품목명이 자동 표시됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="clearBulkParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" id="bulkParseSaveBtn" onclick="parseAllItemsAndSave()">전체 파싱 · 자동저장</button></div></div></div></div>
@@ -867,6 +934,163 @@ function renderAiForecast(){
  }).join('');
  return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA</div></div>${renderAiToolbar()}<table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`;
 }
+
+/* Forecast AS ------------------------------------------------------------ */
+const AS_AXES=['cost','demand','supply','event'];
+const AS_AXIS_DEF={
+ cost:{label:'코스트',keywords:['원유','wti','brent','브렌트','나프타','원료','원가','feedstock','벤젠','benzene','에틸렌','ethylene','프로필렌','propylene','부타디엔','butadiene','bd','천연가스','프로판','에너지','운임']},
+ demand:{label:'수요',keywords:['수요','구매','소비','주문','다운스트림','최종수요','재고보충','성수기','구매저항','관망','필요물량','마진','오더']},
+ supply:{label:'공급',keywords:['공급','현물','가용성','재고','정기보수','보수','셧다운','shutdown','재가동','설비','생산','감산','가동률','수입','수출','역외','물량','turnaround','outage','force majeure','fm']},
+ event:{label:'이벤트',keywords:['호르무즈','홍해','지정학','전쟁','충돌','공격','제재','관세','정책','금리','환율','물류','선박','운임','기상','라인강','force majeure','사고','파업','협상','선물','moc','arbitrage','아비트라지','급등','급락']}
+};
+let FORECAST_AS_FILTER='all',FORECAST_AS_ROWS=[],FORECAST_AS_SEQ=0;
+
+function asPrevWeekMeta(){
+ const current=CURRENT_WEEK_END||inferWeekEnd();
+ const arr=normalizeWeekList(WEEK_LIST);
+ const idx=arr.findIndex(w=>w.week_end===current);
+ return idx>0?arr[idx-1]:null;
+}
+function asNormDir(v){
+ const s=String(v||'').trim();
+ if(s==='상승'||s==='하락'||s==='보합')return s;
+ if(/약보합|하락|약세|하방/.test(s))return '하락';
+ if(/강보합|상승|강세|상방/.test(s))return '상승';
+ if(/보합|횡보|중립/.test(s))return '보합';
+ return '';
+}
+function asForecastSource(x){
+ if(!x)return {text:'',source:''};
+ const ai=String(x.ai_outlook||'').trim();
+ if(ai)return {text:ai,source:'AI 전망'};
+ const out=String(x.outlook||'').trim();
+ return {text:out,source:out?'결론 및 전망':''};
+}
+function asForecastDir(text){
+ const s=String(text||'').replace(/\s+/g,' ').slice(0,260);
+ if(/약보합|하락\s*전망|약세|하방/.test(s))return '하락';
+ if(/강보합|상승\s*전망|강세|상방/.test(s))return '상승';
+ if(/보합\s*전망|보합권|횡보|중립/.test(s))return '보합';
+ return asNormDir(s);
+}
+function asDirClass(d){return d==='상승'?'up':d==='하락'?'down':d==='보합'?'flat':'unknown'}
+function asDirHtml(d){return '<span class="as-dir '+asDirClass(d)+'">'+esc(d||'미분류')+'</span>'}
+function asSplitSentences(text){
+ return String(text||'').replace(/\r/g,'\n').split(/\n+|[.!?]\s+/).map(s=>s.replace(/^\s*[-•·]\s*/,'').trim()).filter(Boolean);
+}
+function asAxisText(item,mode){
+ if(!item)return '';
+ if(mode==='forecast'){
+  const src=asForecastSource(item).text;
+  return [src,item.outlook||''].filter(Boolean).join('\n');
+ }
+ return [item.commentary||'',item.factors||'',item.additional||''].filter(Boolean).join('\n');
+}
+function asPickEvidence(item,axis,mode,max=2){
+ const def=AS_AXIS_DEF[axis],lines=asSplitSentences(asAxisText(item,mode));
+ const scored=lines.map((line,i)=>{
+  const low=line.toLowerCase();let score=0;
+  def.keywords.forEach(k=>{if(low.includes(k.toLowerCase()))score++});
+  return {line,score,i};
+ }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.i-b.i);
+ const out=[];scored.forEach(x=>{if(out.length<max&&!out.includes(x.line))out.push(x.line)});
+ return out;
+}
+function asCount(text,patterns){
+ let n=0;patterns.forEach(r=>{const m=String(text||'').match(r);if(m)n+=m.length});return n;
+}
+function asAxisSignal(text,axis){
+ const t=String(text||'').toLowerCase();if(!t.trim())return '';
+ let up=0,down=0;
+ if(axis==='cost'){
+  up=asCount(t,[/(원유|wti|brent|브렌트|나프타|원료|원가|feedstock|벤젠|에틸렌|프로필렌|부타디엔|천연가스|프로판|에너지)[^.\n]{0,38}(상승|강세|급등|반등|높|부담|지지|확대|견조)/g,/(상승|강세|급등|반등|높은|원가부담)[^.\n]{0,28}(원유|나프타|원료|원가|벤젠|에너지)/g]);
+  down=asCount(t,[/(원유|wti|brent|브렌트|나프타|원료|원가|feedstock|벤젠|에틸렌|프로필렌|부타디엔|천연가스|프로판|에너지)[^.\n]{0,38}(하락|약세|급락|조정|완화|낮|하향)/g,/(하락|약세|급락|조정|완화)[^.\n]{0,28}(원유|나프타|원료|원가|벤젠|에너지)/g]);
+ }else if(axis==='demand'){
+  up=asCount(t,[/(수요|구매|소비|주문|다운스트림|최종수요|재고보충|오더)[^.\n]{0,42}(회복|개선|증가|확대|강세|적극|견조|재고보충)/g,/(성수기|재고보충)[^.\n]{0,36}(수요|구매|소비)/g]);
+  down=asCount(t,[/(수요|구매|소비|주문|다운스트림|최종수요|마진|오더)[^.\n]{0,42}(부진|약세|둔화|감소|관망|저항|제한|미약|약화|필요물량|낮)/g,/(구매저항|관망|필요물량|수요부진|마진악화)/g]);
+ }else if(axis==='supply'){
+  up=asCount(t,[/(공급|현물|가용성|재고|수입|물량)[^.\n]{0,42}(부족|타이트|제한|감소|축소|차질|낮|타이트닝)/g,/(정기보수|셧다운|shutdown|감산|가동중단|재가동 지연|force majeure|fm)[^.\n]{0,42}/g,/(낮은 재고|재고 감소|현물 부족|공급 타이트)/g]);
+  down=asCount(t,[/(공급|현물|가용성|재고|수입|역외물량|물량)[^.\n]{0,42}(증가|확대|개선|과잉|높|유입|늘)/g,/(재가동|증산|신규 공급|역외물량 유입|높은 재고|재고 증가)/g]);
+ }else if(axis==='event'){
+  up=asCount(t,[/(호르무즈|홍해|지정학|전쟁|충돌|공격|제재|봉쇄|물류|라인강|사고|파업|force majeure|fm|선물|moc)[^.\n]{0,45}(위험|불안|긴장|차질|제한|급등|상승|악화|확대|저수위)/g,/(위험 프리미엄|통항 제한|물류 차질|선물 급등|moc 강세|긴장 재부각)/g]);
+  down=asCount(t,[/(협상|통항|복구|정상화|합의|외교|선물|moc|위험 프리미엄)[^.\n]{0,45}(진전|완화|정상화|복구|재개|축소|하락|약세|급락)/g,/(협상 진전|긴장 완화|위험 프리미엄 축소|통항 재개|선물 급락|moc 약세)/g]);
+ }
+ if(up===0&&down===0)return '';
+ if(up===down)return '보합';
+ return up>down?'상승':'하락';
+}
+function asAxisReview(prev,cur,axis){
+ const fText=asAxisText(prev,'forecast'),aText=asAxisText(cur,'actual');
+ const fSig=asAxisSignal(fText,axis),aSig=asAxisSignal(aText,axis);
+ const fEv=asPickEvidence(prev,axis,'forecast'),aEv=asPickEvidence(cur,axis,'actual');
+ let status='hold';
+ if(fSig&&aSig)status=fSig===aSig?'hit':'miss';
+ let comment='';
+ if(status==='hit')comment=AS_AXIS_DEF[axis].label+' 요인은 전주 예상 '+fSig+' 신호와 금주 확인 '+aSig+' 신호가 일치.';
+ else if(status==='miss')comment=AS_AXIS_DEF[axis].label+' 요인은 전주 '+fSig+' 예상과 실제 '+aSig+' 흐름이 달라 전체 전망 오차에 영향을 준 요인.';
+ else comment=AS_AXIS_DEF[axis].label+' 요인은 저장된 문구만으로 예상과 실제 방향을 명확히 판정하기 어려움.';
+ return {axis,label:AS_AXIS_DEF[axis].label,forecastSignal:fSig,actualSignal:aSig,status,forecastEvidence:fEv,actualEvidence:aEv,comment};
+}
+function asRowSummary(row){
+ if(row.result==='hold')return '전주 전망 또는 금주 실제 방향 데이터가 부족해 판정을 보류.';
+ const axes=row.axes||[];
+ const good=axes.filter(x=>x.status==='hit').map(x=>x.label),bad=axes.filter(x=>x.status==='miss').map(x=>x.label);
+ if(row.result==='hit'){
+  if(good.length)return '방향 적중 · '+good.join('·')+' 판단이 실제 시장 흐름과 정합.';
+  return '전주 방향 전망과 금주 실제 방향이 일치.';
+ }
+ if(bad.length)return '방향 오판 · '+bad.join('·')+' 요인에서 예상과 실제 신호가 불일치.';
+ return '전주 방향 전망과 금주 실제 방향이 달라 상세 요인 재검토 필요.';
+}
+function renderForecastAS(){
+ const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),prev=asPrevWeekMeta();
+ return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
+}
+function setForecastAsFilter(v){FORECAST_AS_FILTER=v||'all';renderForecastAsContent()}
+function renderForecastAsContent(){
+ const root=document.getElementById('forecastAsContent');if(!root)return;
+ const rows=FORECAST_AS_ROWS||[],evalRows=rows.filter(r=>r.result!=='hold'),hits=evalRows.filter(r=>r.result==='hit').length,misses=evalRows.filter(r=>r.result==='miss').length,rate=evalRows.length?hits/evalRows.length*100:0;
+ const filtered=rows.filter(r=>FORECAST_AS_FILTER==='all'||r.result===FORECAST_AS_FILTER);
+ const kpis='<div class="as-kpis"><div class="as-kpi"><span>전체 품목</span><strong>'+rows.length+'</strong></div><div class="as-kpi"><span>평가 가능</span><strong>'+evalRows.length+'</strong></div><div class="as-kpi hit"><span>적중</span><strong>'+hits+'</strong></div><div class="as-kpi miss"><span>오판</span><strong>'+misses+'</strong></div><div class="as-kpi rate"><span>적중률</span><strong>'+rate.toFixed(1)+'%</strong></div></div>';
+ const filters='<div class="as-filterbar"><button class="as-filter-btn '+(FORECAST_AS_FILTER==='all'?'active':'')+'" onclick="setForecastAsFilter(\'all\')">전체 '+rows.length+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hit'?'active':'')+'" onclick="setForecastAsFilter(\'hit\')">적중 '+hits+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='miss'?'active':'')+'" onclick="setForecastAsFilter(\'miss\')">오판 '+misses+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hold'?'active':'')+'" onclick="setForecastAsFilter(\'hold\')">판정보류 '+(rows.length-evalRows.length)+'</button></div>';
+ if(!filtered.length){root.innerHTML=kpis+filters+'<div class="as-empty">해당 조건의 품목이 없습니다.</div>';return}
+ const body=filtered.map(r=>'<tr><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span></td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+esc(r.summary)+'</div></td><td class="center"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button></td></tr>').join('');
+ root.innerHTML=kpis+filters+'<div class="as-table-wrap"><table class="as-table"><colgroup><col class="signal"><col class="item"><col class="dir"><col class="dir"><col class="result"><col><col class="action"></colgroup><thead><tr><th>신호</th><th>품목</th><th>전주 전망</th><th>실제</th><th>판정</th><th class="summary">AS 핵심</th><th>상세</th></tr></thead><tbody>'+body+'</tbody></table></div>';
+}
+async function refreshForecastAS(){
+ if(activeCategory!=='전망 AS')return;
+ const seq=++FORECAST_AS_SEQ,root=document.getElementById('forecastAsContent'),prevMeta=asPrevWeekMeta();
+ if(!root)return;
+ if(!prevMeta){root.innerHTML='<div class="as-empty">비교할 이전 주차 데이터가 없습니다.</div>';return}
+ try{
+  const prevItems=await historyItemsForWeek(prevMeta.week_end);if(seq!==FORECAST_AS_SEQ||activeCategory!=='전망 AS')return;
+  const prevMap=new Map(prevItems.map(x=>[normalizeItemName(x.name),x])),curMap=new Map(ITEMS.map(x=>[normalizeItemName(x.name),x]));
+  FORECAST_AS_ROWS=ITEM_DISPLAY_ORDER.map((name,idx)=>{
+   const prev=prevMap.get(name)||null,cur=curMap.get(name)||null,src=asForecastSource(prev),forecastDir=asForecastDir(src.text),actualDir=asNormDir(cur&&cur.direction);
+   const result=forecastDir&&actualDir?(forecastDir===actualDir?'hit':'miss'):'hold';
+   const axes=AS_AXES.map(a=>asAxisReview(prev,cur,a));
+   const row={index:idx,name,prev,current:cur,source:src.source,forecastText:src.text,forecastDir,actualDir,result,axes,prevWeek:prevMeta.week_end,currentWeek:CURRENT_WEEK_END||inferWeekEnd()};
+   row.summary=asRowSummary(row);return row;
+  });
+  FORECAST_AS_FILTER='all';renderForecastAsContent();
+ }catch(e){console.error(e);root.innerHTML='<div class="as-empty">전망 AS 데이터를 불러오지 못했습니다.<br>'+esc(e.message)+'</div>'}
+}
+function asAxisStatusText(s){return s==='hit'?'정합':s==='miss'?'불일치':'판단보류'}
+function asEvidenceHtml(lines){return lines&&lines.length?lines.map(x=>'• '+esc(x)).join('<br>'):'근거 문구 미확인'}
+function openAsDetail(i){
+ const row=(FORECAST_AS_ROWS||[]).find(r=>r.index===i);if(!row)return;
+ const m=document.getElementById('asDetailModal'),body=document.getElementById('asDetailBody');if(!m||!body)return;
+ document.getElementById('asDTitle').textContent=displayName(row.name)+' 전망 AS 상세';
+ document.getElementById('asDMeta').textContent=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제 · '+(row.source||'전망 데이터 없음');
+ const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
+ const top='<div class="as-detail-topgrid"><div class="as-detail-kpi"><span>전주 전망</span><strong>'+asDirHtml(row.forecastDir)+'</strong></div><div class="as-detail-kpi"><span>금주 실제</span><strong>'+asDirHtml(row.actualDir)+'</strong></div><div class="as-detail-kpi"><span>판정</span><strong><span class="as-result '+row.result+'">'+esc(row.result==='hit'?'적중':row.result==='miss'?'오판':'보류')+'</span></strong></div><div class="as-detail-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div></div>';
+ const forecast='<div class="as-forecast-text"><b>전주 전망 원문</b><br>'+(row.forecastText?esc(row.forecastText):'전망 문구 없음')+'</div>';
+ const axes=row.axes.map(a=>'<article class="as-axis-card '+a.status+'"><div class="as-axis-head"><h4>'+esc(a.label)+'</h4><span class="as-axis-status">'+esc(asAxisStatusText(a.status))+'</span></div><div class="as-axis-signals"><div class="as-axis-signal"><span>전주 예상 신호</span><b>'+esc(a.forecastSignal||'미분류')+'</b></div><div class="as-axis-signal"><span>금주 실제 신호</span><b>'+esc(a.actualSignal||'미분류')+'</b></div></div><div class="as-evidence"><b>예상 근거</b><p>'+asEvidenceHtml(a.forecastEvidence)+'</p></div><div class="as-evidence"><b>실제 확인</b><p>'+asEvidenceHtml(a.actualEvidence)+'</p></div><div class="as-axis-comment">'+esc(a.comment)+'</div></article>').join('');
+ body.innerHTML=top+forecast+'<div class="as-axis-grid">'+axes+'</div><div class="as-overall-review"><b>종합 AS</b><br>'+esc(row.summary)+' 전주 전망과 실제 주간 시황 문구를 기준으로 코스트·수요·공급·이벤트를 각각 재검토한 결과이며, 근거가 부족한 축은 판단보류로 표시했습니다.</div>';
+ m.classList.add('show');
+}
+function closeAsDetail(){const m=document.getElementById('asDetailModal');if(m)m.classList.remove('show')}
+
 function applyAiForecastSize(panel,bodyPx){
  if(!panel||!bodyPx)return 0;
  const body=Math.max(12,bodyPx);
@@ -999,7 +1223,7 @@ async function saveAiForecastEditsToDb(){
 
 function selectCategory(cat){
  activeCategory=cat;
- if(cat!=='전체'&&cat!=='Overview'&&cat!=='AI 전망'){
+ if(cat!=='전체'&&cat!=='Overview'&&cat!=='AI 전망'&&cat!=='전망 AS'){
    const arr=ITEMS.filter(x=>x.category===cat).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name));
    if(!arr.some(x=>normalizeItemName(x.name)===normalizeItemName(CATEGORY_CHART_ITEM)))CATEGORY_CHART_ITEM=arr[0]?normalizeItemName(arr[0].name):'';
  }
@@ -1016,9 +1240,9 @@ function render(){
  const weekEnd=CURRENT_WEEK_END||inferWeekEnd(); const weekLabel=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(weekEnd); document.getElementById('weekText').textContent=weekEnd?((weekLabel?weekLabel+' · ':'')+weekEnd):'-';
  const weeklyTone=computeWeeklyTone();
  const toneEl=document.getElementById('toneText'); if(toneEl){toneEl.textContent=weeklyTone;toneEl.className=weeklyTone==='약세 우위'?'weak':weeklyTone==='강세 우위'?'strong':'mixed';}
- const tabs=['Overview','AI 전망','전체',...CATEGORY_ORDER]; document.getElementById('tabs').innerHTML=tabs.map(t=>`<button class="tab ${t===activeCategory?'active':''}" onclick="selectCategory('${t}')">${t}</button>`).join('');
+ const tabs=['Overview','AI 전망','전망 AS','전체',...CATEGORY_ORDER]; document.getElementById('tabs').innerHTML=tabs.map(t=>`<button class="tab ${t===activeCategory?'active':''}" onclick="selectCategory('${t}')">${t}</button>`).join('');
  document.body.classList.toggle('full',mode==='full');
- const isCategoryFocus=activeCategory!=='전체'&&activeCategory!=='Overview'&&activeCategory!=='AI 전망';
+ const isCategoryFocus=activeCategory!=='전체'&&activeCategory!=='Overview'&&activeCategory!=='AI 전망'&&activeCategory!=='전망 AS';
  document.body.classList.toggle('category-focus',isCategoryFocus);
  let out='';
  if(activeCategory==='Overview'){
@@ -1030,6 +1254,12 @@ function render(){
    out=renderAiForecast();
    document.getElementById('board').innerHTML=out;
    requestAnimationFrame(()=>requestAnimationFrame(()=>fitActiveAiForecastPanel()));
+   return;
+ }
+ if(activeCategory==='전망 AS'){
+   out=renderForecastAS();
+   document.getElementById('board').innerHTML=out;
+   setTimeout(()=>refreshForecastAS(),0);
    return;
  }
  if(isCategoryFocus){
@@ -1786,7 +2016,7 @@ function cleanExportClone(node){
   const clone=node.cloneNode(true);
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-  clone.querySelectorAll('button,.row-actions,.overview-edit-btn,.chart-controls,.ai-editor-toolbar').forEach(el=>el.remove());
+  clone.querySelectorAll('button,.row-actions,.overview-edit-btn,.chart-controls,.ai-editor-toolbar,.as-filterbar,.as-detail-btn').forEach(el=>el.remove());
   return clone;
 }
 function semanticWrap(node, cls=''){
@@ -1840,12 +2070,13 @@ function getSemanticUnits(){
   if(!board)throw new Error('저장할 탭 영역을 찾을 수 없습니다.');
   if(activeCategory==='Overview')return makeOverviewUnits(board);
   if(activeCategory==='AI 전망'){const panel=board.querySelector('.ai-forecast-panel');return panel?[semanticWrap(cleanExportClone(panel),'ai-forecast-unit')]:[];}
+  if(activeCategory==='전망 AS'){const panel=board.querySelector('.forecast-as-panel');return panel?[semanticWrap(cleanExportClone(panel),'forecast-as-unit')]:[];}
   if(activeCategory==='전체')return makeAllUnits(board);
   return makeCategoryUnits(board);
 }
 function newSemanticPage(stage, meta){
   const page=document.createElement('div');
-  page.className='tab-image-export tab-image-page'+((meta.tabName!=='전체'&&meta.tabName!=='Overview')?' category-focus':'');
+  page.className='tab-image-export tab-image-page'+((meta.tabName!=='전체'&&meta.tabName!=='Overview'&&meta.tabName!=='AI 전망'&&meta.tabName!=='전망 AS')?' category-focus':'');
   const header=buildExportHeader(meta);
   const body=document.createElement('div');body.className='tab-image-page-body';
   const footer=buildExportFooter(meta);
