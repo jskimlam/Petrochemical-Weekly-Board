@@ -13,6 +13,8 @@ window.addEventListener('keydown',e=>{
  else if(open.id==='parserModal')closeParser();
  else if(open.id==='bulkParserModal')closeBulkParser();
  else if(open.id==='overviewParserModal')closeOverviewParser();
+ else if(open.id==='asDetailModal')closeAsDetail();
+ else if(open.id==='asParserModal')closeAsParser();
  else if(open.id==='adminAuthModal')closeAdminAuth();
  else if(open.id==='editModal')closeEdit();
 });
@@ -733,6 +735,20 @@ button{touch-action:manipulation}
  .as-detail-topgrid,.as-axis-grid{grid-template-columns:1fr}
 }
 
+
+.forecast-as-head-right{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.as-parse-open-btn{border:1px solid #8fb6a0;background:#f1faf4;color:#17643a;border-radius:4px;padding:8px 12px;font-size:11.5px;font-weight:950;cursor:pointer}
+.as-parse-open-btn:hover{background:#e7f6ec}
+.as-summary strong{color:#0e2d4a;font-weight:950}
+.as-parserbox{width:min(1220px,97vw)}
+.as-parserbox textarea{width:100%;height:56vh;border:1px solid var(--line-strong);border-radius:2px;padding:15px;line-height:1.62;color:#263b50;background:#fbfcfd;resize:vertical;font-size:14px}
+.as-parser-guide{margin:10px 0;padding:11px 13px;background:#f1faf4;border:1px solid #cfe7d6;border-left:4px solid #2d9d5b;font-size:12.5px;line-height:1.62;color:#35546d}
+.as-parser-guide strong{color:#17643a}
+.as-parser-preview{margin-top:9px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);font-size:12px;line-height:1.55;color:var(--muted);min-height:40px}
+.as-parser-preview .ok{color:#087a4b;font-weight:900}.as-parser-preview .warn{color:#b42318;font-weight:900}.as-parser-preview .names{display:block;margin-top:4px;color:#35546d;font-weight:800}
+.as-manual-badge{display:inline-flex;align-items:center;margin-left:7px;padding:3px 6px;border-radius:999px;background:#e8f5ec;color:#17643a;border:1px solid #c9e3d1;font-size:9px;font-weight:950;vertical-align:1px}
+@media(max-width:900px){.forecast-as-head-right{align-items:flex-start}.as-parserbox textarea{height:54vh;font-size:13px}}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -741,6 +757,9 @@ button{touch-action:manipulation}
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox ai-box" id="dAiBox"><h4>AI 전망</h4><pre id="dAiOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
 
 <div class="modal" id="asDetailModal"><div class="modalbox as-detailbox"><div class="modaltop"><div><h3 id="asDTitle">전망 AS 상세</h3><div class="note" id="asDMeta"></div></div><button class="close" onclick="closeAsDetail()">닫기</button></div><div id="asDetailBody"></div></div></div>
+
+
+<div class="modal" id="asParserModal"><div class="modalbox as-parserbox"><div class="modaltop"><div><h3>전망 AS 카드 파싱</h3><div class="note">전체 품목의 전주 전망 → 금주 실제 결과와 상세 AS를 붙여넣어 현재 주차에 저장합니다.</div><div class="parser-status">AS 핵심은 주요 원인을 2~4문장으로 상세히 작성하고, 코스트 · 수요 · 공급 · 이벤트는 각각 예상 / 실제 / 판정 / 분석을 입력합니다.</div></div><button class="close" onclick="closeAsParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="asParserWeekLabel">위클리 주차</label><input id="asParserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="asParserWeekEnd">실제 주차 기준일</label><input id="asParserWeekEnd" type="date" readonly></div><div class="hint"><strong>전주 전망과 금주 실제를 비교한 AS 카드</strong><br>현재 V1은 브라우저에 주차별 저장됩니다. 추후 forecast_as 시트/GAS 연결 시 동일 포맷을 그대로 사용할 수 있습니다.</div></div><div class="as-parser-guide"><strong>입력 형식</strong><br>품목 : SM<br>전주 전망 : 하락<br>실제 : 상승<br>판정 : 오판<br>AS 핵심<br>주요 원인을 2~4문장으로 상세 작성<br><br>코스트<br>예상 : 하락<br>실제 : 상승<br>판정 : 불일치<br>분석 : 원유·나프타·벤젠 등 원가 요인의 예상과 실제 차이를 설명<br><br>수요 / 공급 / 이벤트도 동일 형식으로 작성합니다. 여러 품목을 연속으로 붙여넣을 수 있습니다.</div><textarea id="asParserText" oninput="previewAsParse()" placeholder="품목 : WTI&#10;전주 전망 : 하락&#10;실제 : 하락&#10;판정 : 적중&#10;AS 핵심&#10;...&#10;&#10;코스트&#10;예상 : 하락&#10;실제 : 하락&#10;판정 : 정합&#10;분석 : ...&#10;&#10;수요&#10;..."></textarea><div class="as-parser-preview" id="asParserPreview">AS 카드를 붙여넣으면 인식 품목 수와 품목명이 표시됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentAsCardsToParser()">현재 AS 불러오기</button><button class="btn" onclick="clearAsParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" onclick="parseAndSaveAsCards()">AS카드 파싱 · 저장</button></div></div></div></div>
 
 <div class="modal" id="parserModal"><div class="modalbox parserbox"><div class="modaltop"><div><h3>품목별 브리핑 파싱 · 자동저장</h3><div class="note">한 번에 한 품목만 파싱합니다. 입력하지 않은 다른 품목 데이터는 변경하지 않습니다.</div><div class="parser-status">위클리 주차(W32 등)는 보고 주차, 기준일은 해당 위클리의 대표일입니다. 제목의 날짜는 각 품목 실제 평가일로 별도 저장됩니다.</div></div><button class="close" onclick="closeParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="parserWeekLabel">위클리 주차</label><input id="parserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="parserWeekEnd">위클리 기준일</label><input id="parserWeekEnd" type="date" onchange="updateParserWeekLabel()"></div><div class="hint"><strong>예: W32 / 기준일 2026-08-07</strong><br>AN 브리핑 제목이 2026-08-04여도 W32·2026-08-07 그룹에 저장되고, AN의 실제 평가일은 2026-08-04로 보존됩니다.</div></div><div class="parser-workspace"><div class="parser-itemnav" id="parserItemNav"></div><div class="parser-editor"><div class="parser-selected"><div><div class="label">선택 품목</div><strong id="parserSelectedName">WTI</strong></div><div class="state" id="parserSelectedState">해당 품목만 자동저장</div></div><textarea id="parserText" placeholder="선택한 품목의 브리핑 1개만 붙여넣으세요."></textarea><div class="parser-help" id="parserHelp">제목부터 데일리가격까지 해당 품목 브리핑 전체를 붙여넣으면 됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentItemToParser()">현재 데이터 불러오기</button><button class="btn" onclick="clearParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" id="itemParseSaveBtn" onclick="parseSelectedItemAndSave()">선택 품목 파싱 · 자동저장</button></div></div></div></div></div></div>
 
@@ -935,6 +954,66 @@ function renderAiForecast(){
  return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA</div></div>${renderAiToolbar()}<table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`;
 }
 
+
+const AS_MANUAL_KEY='LAM_FORECAST_AS_CARDS_V1';
+function readAsManualStore(){try{return JSON.parse(localStorage.getItem(AS_MANUAL_KEY)||'{}')||{}}catch(e){return {}}}
+function writeAsManualStore(v){try{localStorage.setItem(AS_MANUAL_KEY,JSON.stringify(v||{}));return true}catch(e){return false}}
+function getAsManualCards(week){const s=readAsManualStore();return Array.isArray(s[week])?s[week]:[]}
+function setAsManualCards(week,cards){const s=readAsManualStore();s[week]=cards||[];return writeAsManualStore(s)}
+function asResultKey(v){const s=String(v||'').trim();if(/적중|정합|일치/.test(s))return 'hit';if(/오판|불일치|미적중/.test(s))return 'miss';return 'hold'}
+function parseAsAxisSection(text,label){
+ const src=String(text||''),head=new RegExp('^'+label+'\\s*$','mi'),hm=src.match(head);if(!hm)return null;
+ const start=hm.index+hm[0].length,rest=src.slice(start),next=rest.search(/^(?:코스트|수요|공급|이벤트)\s*$/mi),body=(next>=0?rest.slice(0,next):rest).trim();
+ const get=key=>{const m=body.match(new RegExp('^'+key+'\\s*:\\s*(.*)$','mi'));return m?m[1].trim():''};
+ const am=body.match(/^분석\s*:\s*([\s\S]*)$/mi);
+ return {label,forecastSignal:get('예상'),actualSignal:get('실제'),status:asResultKey(get('판정')),analysis:am?am[1].trim():''};
+}
+function parseAsCardBlock(block){
+ const item=(block.match(/^품목\s*:\s*(.+)$/mi)||[])[1];if(!item)return null;
+ const name=normalizeItemName(item.trim());if(!ITEM_DISPLAY_ORDER.includes(name))return null;
+ const forecastDir=asNormDir((block.match(/^전주\s*전망\s*:\s*(.+)$/mi)||[])[1]||''),actualDir=asNormDir((block.match(/^실제\s*:\s*(.+)$/mi)||[])[1]||''),result=asResultKey((block.match(/^판정\s*:\s*(.+)$/mi)||[])[1]||'');
+ const sm=block.match(/^AS\s*핵심\s*$([\s\S]*?)(?=^(?:코스트|수요|공급|이벤트)\s*$|$)/mi),axes={};
+ [['cost','코스트'],['demand','수요'],['supply','공급'],['event','이벤트']].forEach(([key,label])=>{const a=parseAsAxisSection(block,label);if(a)axes[key]=a});
+ return {name,forecastDir,actualDir,result,summary:sm?sm[1].trim():'',axes};
+}
+function parseAsCardsText(raw){
+ const t=String(raw||'').replace(/\r\n?/g,'\n').trim();if(!t)return [];
+ const ms=[...t.matchAll(/^품목\s*:\s*.+$/gmi)],cards=[];
+ ms.forEach((m,i)=>{const b=t.slice(m.index,i+1<ms.length?ms[i+1].index:t.length).trim(),x=parseAsCardBlock(b);if(x)cards.push(x)});
+ return cards;
+}
+function openAsParser(){requestAdminAccess(openAsParserUnlocked,'as-parser')}
+function openAsParserUnlocked(){
+ const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),w=document.getElementById('asParserWeekEnd'),l=document.getElementById('asParserWeekLabel');
+ if(w)w.value=week||'';if(l)l.value=label||'';document.getElementById('asParserModal')?.classList.add('show');loadCurrentAsCardsToParser();setTimeout(()=>document.getElementById('asParserText')?.focus(),60);
+}
+function closeAsParser(){document.getElementById('asParserModal')?.classList.remove('show');if(ADMIN_SCOPE==='as-parser')ADMIN_SCOPE=null}
+function clearAsParserText(){const ta=document.getElementById('asParserText');if(ta)ta.value='';previewAsParse()}
+function asCardToText(c){
+ const ax=(key,label)=>{const a=c.axes&&c.axes[key]||{};return label+'\n예상 : '+(a.forecastSignal||'')+'\n실제 : '+(a.actualSignal||'')+'\n판정 : '+(a.status==='hit'?'정합':a.status==='miss'?'불일치':'판단보류')+'\n분석 : '+(a.analysis||'')};
+ return '품목 : '+c.name+'\n전주 전망 : '+(c.forecastDir||'')+'\n실제 : '+(c.actualDir||'')+'\n판정 : '+(c.result==='hit'?'적중':c.result==='miss'?'오판':'판정보류')+'\nAS 핵심\n'+(c.summary||'')+'\n\n'+ax('cost','코스트')+'\n\n'+ax('demand','수요')+'\n\n'+ax('supply','공급')+'\n\n'+ax('event','이벤트');
+}
+function loadCurrentAsCardsToParser(){const week=CURRENT_WEEK_END||inferWeekEnd(),ta=document.getElementById('asParserText'),cards=getAsManualCards(week);if(ta)ta.value=cards.map(asCardToText).join('\n\n');previewAsParse()}
+function previewAsParse(){
+ const el=document.getElementById('asParserPreview'),ta=document.getElementById('asParserText');if(!el||!ta)return;
+ const cards=parseAsCardsText(ta.value),names=cards.map(x=>x.name);if(!ta.value.trim()){el.innerHTML='AS 카드를 붙여넣으면 인식 품목 수와 품목명이 표시됩니다.';return}
+ el.innerHTML='<span class="'+(cards.length?'ok':'warn')+'">인식 '+cards.length+'개 품목</span>'+(names.length?'<span class="names">'+esc(names.join(' · '))+'</span>':'');
+}
+function parseAndSaveAsCards(){
+ const week=CURRENT_WEEK_END||inferWeekEnd(),ta=document.getElementById('asParserText');if(!week||!ta)return;
+ const cards=parseAsCardsText(ta.value);if(!cards.length){alert('인식 가능한 AS 카드가 없습니다. 품목 : 형식을 확인해 주세요.');return}
+ if(!setAsManualCards(week,cards)){showErrorToast('AS 카드 브라우저 저장에 실패했습니다.');return}
+ showVerifiedToast(cards.length+'개 AS 카드 저장 완료');closeAsParser();if(activeCategory==='전망 AS')refreshForecastAS();
+}
+function applyManualAsCard(row,card){
+ if(!card)return row;row.manual=true;
+ if(card.forecastDir)row.forecastDir=card.forecastDir;if(card.actualDir)row.actualDir=card.actualDir;
+ row.result=card.result&&card.result!=='hold'?card.result:(row.forecastDir&&row.actualDir?(row.forecastDir===row.actualDir?'hit':'miss'):'hold');
+ if(card.summary)row.summary=card.summary;
+ row.axes=(row.axes||[]).map(a=>{const m=card.axes&&card.axes[a.axis];if(!m)return a;return {...a,forecastSignal:asNormDir(m.forecastSignal)||m.forecastSignal||a.forecastSignal,actualSignal:asNormDir(m.actualSignal)||m.actualSignal||a.actualSignal,status:m.status||a.status,comment:m.analysis||a.comment,manualAnalysis:m.analysis||''}});
+ return row;
+}
+
 /* Forecast AS ------------------------------------------------------------ */
 const AS_AXES=['cost','demand','supply','event'];
 const AS_AXIS_DEF={
@@ -1044,7 +1123,7 @@ function asRowSummary(row){
 }
 function renderForecastAS(){
  const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),prev=asPrevWeekMeta();
- return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
+ return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div><button class="as-parse-open-btn" onclick="openAsParser()">AS카드 파싱 / 수정</button></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
 }
 function setForecastAsFilter(v){FORECAST_AS_FILTER=v||'all';renderForecastAsContent()}
 function renderForecastAsContent(){
@@ -1054,7 +1133,7 @@ function renderForecastAsContent(){
  const kpis='<div class="as-kpis"><div class="as-kpi"><span>전체 품목</span><strong>'+rows.length+'</strong></div><div class="as-kpi"><span>평가 가능</span><strong>'+evalRows.length+'</strong></div><div class="as-kpi hit"><span>적중</span><strong>'+hits+'</strong></div><div class="as-kpi miss"><span>오판</span><strong>'+misses+'</strong></div><div class="as-kpi rate"><span>적중률</span><strong>'+rate.toFixed(1)+'%</strong></div></div>';
  const filters='<div class="as-filterbar"><button class="as-filter-btn '+(FORECAST_AS_FILTER==='all'?'active':'')+'" onclick="setForecastAsFilter(\'all\')">전체 '+rows.length+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hit'?'active':'')+'" onclick="setForecastAsFilter(\'hit\')">적중 '+hits+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='miss'?'active':'')+'" onclick="setForecastAsFilter(\'miss\')">오판 '+misses+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hold'?'active':'')+'" onclick="setForecastAsFilter(\'hold\')">판정보류 '+(rows.length-evalRows.length)+'</button></div>';
  if(!filtered.length){root.innerHTML=kpis+filters+'<div class="as-empty">해당 조건의 품목이 없습니다.</div>';return}
- const body=filtered.map(r=>'<tr><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span></td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+esc(r.summary)+'</div></td><td class="center"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button></td></tr>').join('');
+ const body=filtered.map(r=>'<tr><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(r.manual?'<span class="as-manual-badge">AS 저장</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary"><strong>주요요인</strong> · '+esc(r.summary)+'</div></td><td class="center"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button></td></tr>').join('');
  root.innerHTML=kpis+filters+'<div class="as-table-wrap"><table class="as-table"><colgroup><col class="signal"><col class="item"><col class="dir"><col class="dir"><col class="result"><col><col class="action"></colgroup><thead><tr><th>신호</th><th>품목</th><th>전주 전망</th><th>실제</th><th>판정</th><th class="summary">AS 핵심</th><th>상세</th></tr></thead><tbody>'+body+'</tbody></table></div>';
 }
 async function refreshForecastAS(){
@@ -1065,12 +1144,13 @@ async function refreshForecastAS(){
  try{
   const prevItems=await historyItemsForWeek(prevMeta.week_end);if(seq!==FORECAST_AS_SEQ||activeCategory!=='전망 AS')return;
   const prevMap=new Map(prevItems.map(x=>[normalizeItemName(x.name),x])),curMap=new Map(ITEMS.map(x=>[normalizeItemName(x.name),x]));
+  const manualMap=new Map(getAsManualCards(CURRENT_WEEK_END||inferWeekEnd()).map(x=>[normalizeItemName(x.name),x]));
   FORECAST_AS_ROWS=ITEM_DISPLAY_ORDER.map((name,idx)=>{
    const prev=prevMap.get(name)||null,cur=curMap.get(name)||null,src=asForecastSource(prev),forecastDir=asForecastDir(src.text),actualDir=asNormDir(cur&&cur.direction);
    const result=forecastDir&&actualDir?(forecastDir===actualDir?'hit':'miss'):'hold';
    const axes=AS_AXES.map(a=>asAxisReview(prev,cur,a));
-   const row={index:idx,name,prev,current:cur,source:src.source,forecastText:src.text,forecastDir,actualDir,result,axes,prevWeek:prevMeta.week_end,currentWeek:CURRENT_WEEK_END||inferWeekEnd()};
-   row.summary=asRowSummary(row);return row;
+   let row={index:idx,name,prev,current:cur,source:src.source,forecastText:src.text,forecastDir,actualDir,result,axes,prevWeek:prevMeta.week_end,currentWeek:CURRENT_WEEK_END||inferWeekEnd()};
+   row.summary=asRowSummary(row);row=applyManualAsCard(row,manualMap.get(name));return row;
   });
   FORECAST_AS_FILTER='all';renderForecastAsContent();
  }catch(e){console.error(e);root.innerHTML='<div class="as-empty">전망 AS 데이터를 불러오지 못했습니다.<br>'+esc(e.message)+'</div>'}
@@ -1080,7 +1160,7 @@ function asEvidenceHtml(lines){return lines&&lines.length?lines.map(x=>'• '+es
 function openAsDetail(i){
  const row=(FORECAST_AS_ROWS||[]).find(r=>r.index===i);if(!row)return;
  const m=document.getElementById('asDetailModal'),body=document.getElementById('asDetailBody');if(!m||!body)return;
- document.getElementById('asDTitle').textContent=displayName(row.name)+' 전망 AS 상세';
+ document.getElementById('asDTitle').textContent=displayName(row.name)+' 전망 AS 상세'+(row.manual?' · 저장 AS':'');
  document.getElementById('asDMeta').textContent=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제 · '+(row.source||'전망 데이터 없음');
  const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
  const top='<div class="as-detail-topgrid"><div class="as-detail-kpi"><span>전주 전망</span><strong>'+asDirHtml(row.forecastDir)+'</strong></div><div class="as-detail-kpi"><span>금주 실제</span><strong>'+asDirHtml(row.actualDir)+'</strong></div><div class="as-detail-kpi"><span>판정</span><strong><span class="as-result '+row.result+'">'+esc(row.result==='hit'?'적중':row.result==='miss'?'오판':'보류')+'</span></strong></div><div class="as-detail-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div></div>';
@@ -2016,7 +2096,7 @@ function cleanExportClone(node){
   const clone=node.cloneNode(true);
   clone.removeAttribute('id');
   clone.querySelectorAll('[id]').forEach(el=>el.removeAttribute('id'));
-  clone.querySelectorAll('button,.row-actions,.overview-edit-btn,.chart-controls,.ai-editor-toolbar,.as-filterbar,.as-detail-btn').forEach(el=>el.remove());
+  clone.querySelectorAll('button,.row-actions,.overview-edit-btn,.chart-controls,.ai-editor-toolbar,.as-filterbar,.as-detail-btn,.as-parse-open-btn').forEach(el=>el.remove());
   return clone;
 }
 function semanticWrap(node, cls=''){
