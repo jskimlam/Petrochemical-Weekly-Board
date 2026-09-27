@@ -1046,11 +1046,26 @@ function asForecastSource(x){
  return {text:out,source:out?'결론 및 전망':''};
 }
 function asForecastDir(text){
- const s=String(text||'').replace(/\s+/g,' ').slice(0,260);
- if(/약보합|하락\s*전망|약세|하방/.test(s))return '하락';
- if(/강보합|상승\s*전망|강세|상방/.test(s))return '상승';
- if(/보합\s*전망|보합권|횡보|중립/.test(s))return '보합';
- return asNormDir(s);
+ const s=String(text||'').replace(/\s+/g,' ').trim();
+ if(!s)return '';
+ // AI 전망의 첫 방향 문구를 최우선으로 사용한다.
+ // 본문 뒤쪽의 약세/하방 표현이 "보합 전망." 같은 명시적 결론을 덮어쓰지 않도록 한다.
+ const head=s.slice(0,90);
+ if(/^(?:보합|보합권)\s*전망\b/.test(head))return '보합';
+ if(/^(?:상승|강보합|강세)\s*전망\b/.test(head))return '상승';
+ if(/^(?:하락|약보합|약세)\s*전망\b/.test(head))return '하락';
+ const explicit=head.match(/(?:^|[.!?]\s*)(보합|상승|하락|강보합|약보합|강세|약세)\s*전망\b/);
+ if(explicit){
+   const v=explicit[1];
+   if(v==='보합')return '보합';
+   if(v==='상승'||v==='강보합'||v==='강세')return '상승';
+   if(v==='하락'||v==='약보합'||v==='약세')return '하락';
+ }
+ const firstSentence=s.split(/[.!?]/,1)[0].slice(0,140);
+ if(/약보합|하락\s*전망|약세|하방/.test(firstSentence))return '하락';
+ if(/강보합|상승\s*전망|강세|상방/.test(firstSentence))return '상승';
+ if(/보합\s*전망|보합권|횡보|중립/.test(firstSentence))return '보합';
+ return asNormDir(firstSentence);
 }
 function asDirClass(d){return d==='상승'?'up':d==='하락'?'down':d==='보합'?'flat':'unknown'}
 function asDirHtml(d){return '<span class="as-dir '+asDirClass(d)+'">'+esc(d||'미분류')+'</span>'}
