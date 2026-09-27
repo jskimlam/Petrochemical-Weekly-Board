@@ -1216,28 +1216,59 @@ function asRowSummary(row){
 }
 
 
-function asCoreSummary(row){
- const axes=row.axes||[],good=axes.filter(x=>x.status==='hit'),bad=axes.filter(x=>x.status==='miss');
- const evidence=a=>asEvidenceLead(a.actualEvidence,72)||((a.actualSignal||'실제')+' 신호');
- if(row.result==='miss'){
-   const causes=bad.slice(0,2).map(a=>a.label+'의 '+evidence(a));
-   if(causes.length)return '핵심오판요인은 '+causes.join(', ')+'를 전주 전망에서 충분히 반영하지 못한 점이다.';
-   return '핵심오판요인은 전주 예상과 달리 금주 가격을 지배한 변수의 방향과 강도를 충분히 반영하지 못한 점이다.';
+function asCoreEvidence(a,max=84){
+ const raw=((a&&a.actualEvidence)||[]).map(v=>String(v||'').replace(/\s+/g,' ').replace(/^[•\-·]\s*/,'').trim()).filter(Boolean)[0]||'';
+ if(!raw)return '';
+ let s=raw.replace(/\.{3,}|…+/g,'').trim();
+ const first=(s.split(/[.!?。]/)[0]||s).trim();
+ s=first||s;
+ if(s.length>max){
+   const cut=s.slice(0,max);
+   const p=Math.max(cut.lastIndexOf(','),cut.lastIndexOf('·'),cut.lastIndexOf(' '));
+   s=(p>Math.floor(max*.6)?cut.slice(0,p):cut).trim();
  }
+ return s.replace(/[,:;·\s]+$/,'');
+}
+function asCleanManualCore(text){
+ let s=String(text||'').replace(/\s+/g,' ').trim();
+ if(!s)return '';
+ s=s.replace(/\.{3,}|…+/g,'').replace(/\s{2,}/g,' ').trim();
+ if(/^(?:주요\s*원인을|여기에|내용|분석)\b/i.test(s))return '';
+ return s;
+}
+function asCoreSummary(row){
+ const axes=row.axes||[],good=axes.filter(x=>x.status==='hit'),bad=axes.filter(x=>x.status==='miss'),hold=axes.filter(x=>x.status==='hold');
+ const manual=asCleanManualCore(row.manual?row.summary:'');
+ if(manual)return manual;
+
+ if(row.result==='miss'){
+   const parts=bad.slice(0,2).map(a=>{
+     const flow=(a.forecastSignal&&a.actualSignal)?('예상 '+a.forecastSignal+'→실제 '+a.actualSignal):'예상과 실제 불일치';
+     const ev=asCoreEvidence(a,76);
+     return a.label+'('+flow+(ev?' · '+ev:'')+')';
+   });
+   if(parts.length)return '핵심오판요인은 '+parts.join(', ')+'을 전주 전망에서 충분히 반영하지 못한 점이다.';
+   return '핵심오판요인은 세부 변수의 방향과 강도를 충분히 포착하지 못해 전주 전망과 실제 방향이 달라진 점이다.';
+ }
+
  if(row.result==='hit'){
-   const causes=good.slice(0,2).map(a=>a.label+'의 '+evidence(a));
-   if(causes.length)return '주요 적중요인은 '+causes.join(', ')+'가 전주 예상과 실제 시장에서 같은 방향으로 전개된 점이다.';
-   return '전주 전망 방향과 금주 실제 방향이 일치했다.';
+   const f=row.forecastDir||'전주',a=row.actualDir||'금주';
+   if(good.length===AS_AXES.length){
+     return '전주 '+f+' 전망과 금주 '+a+' 방향이 일치했고, 코스트·수요·공급·이벤트 판단도 모두 실제 흐름과 정합했다.';
+   }
+   if(good.length){
+     let s='전주 '+f+' 전망과 금주 '+a+' 방향이 일치했다. 세부적으로 '+good.map(x=>x.label).join('·')+' 판단이 정합';
+     if(bad.length)s+=', '+bad.map(x=>x.label).join('·')+'는 불일치';
+     if(hold.length)s+=', '+hold.map(x=>x.label).join('·')+'는 판단보류';
+     return s+'.';
+   }
+   return '전주 '+f+' 전망과 금주 '+a+' 방향은 일치했지만, 코스트·수요·공급·이벤트는 자동 판정 근거가 부족해 세부 적중 여부는 판단보류다.';
  }
  return '전주 전망 또는 금주 실제 방향 데이터가 부족해 판정을 보류했다.';
 }
 function asCoreSummaryHtml(row){
  const text=asCoreSummary(row);
- if(row.result==='miss'){
-   const m=text.match(/^(핵심오판요인은[\s\S]*?[.。])(?:\s*([\s\S]*))?$/);
-   if(m)return '<span class="as-summary-miss">'+esc(m[1])+'</span>'+(m[2]?(' '+esc(m[2])):'');
-   return '<span class="as-summary-miss">'+esc(text)+'</span>';
- }
+ if(row.result==='miss')return '<span class="as-summary-miss">'+esc(text)+'</span>';
  if(row.result==='hit')return '<span class="as-summary-hit">'+esc(text)+'</span>';
  return esc(text);
 }
