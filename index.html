@@ -756,6 +756,12 @@ button{touch-action:manipulation}
 .as-evidence p{white-space:normal}
 .as-summary{font-size:12.7px;line-height:1.6}
 
+
+.forecast-as-export-five{padding-bottom:18px}
+.forecast-as-export-five .forecast-as-head{margin-bottom:10px;padding-bottom:10px}
+.forecast-as-export-five .as-table tbody td{padding-top:9px;padding-bottom:9px}
+.forecast-as-export-five .as-table-wrap{overflow:visible}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -1235,6 +1241,11 @@ function renderForecastAS(){
  return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div><button class="as-parse-open-btn" onclick="openAsParser()">AS카드 파싱 / 수정</button></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
 }
 function setForecastAsFilter(v){FORECAST_AS_FILTER=v||'all';renderForecastAsContent()}
+
+function renderForecastAsRow(r,exportMode=false){
+ const item=normalizeItemName(r.name);
+ return '<tr data-as-item="'+esc(item)+'"><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(!exportMode&&r.manual?'<span class="as-manual-badge">AS 저장</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center">'+(exportMode?'':'<button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button>')+'</td></tr>';
+}
 function renderForecastAsContent(){
  const root=document.getElementById('forecastAsContent');if(!root)return;
  const rows=FORECAST_AS_ROWS||[],evalRows=rows.filter(r=>r.result!=='hold'),hits=evalRows.filter(r=>r.result==='hit').length,misses=evalRows.filter(r=>r.result==='miss').length,rate=evalRows.length?hits/evalRows.length*100:0;
@@ -1242,7 +1253,7 @@ function renderForecastAsContent(){
  const kpis='<div class="as-kpis"><div class="as-kpi"><span>전체 품목</span><strong>'+rows.length+'</strong></div><div class="as-kpi"><span>평가 가능</span><strong>'+evalRows.length+'</strong></div><div class="as-kpi hit"><span>적중</span><strong>'+hits+'</strong></div><div class="as-kpi miss"><span>오판</span><strong>'+misses+'</strong></div><div class="as-kpi rate"><span>적중률</span><strong>'+rate.toFixed(1)+'%</strong></div></div>';
  const filters='<div class="as-filterbar"><button class="as-filter-btn '+(FORECAST_AS_FILTER==='all'?'active':'')+'" onclick="setForecastAsFilter(\'all\')">전체 '+rows.length+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hit'?'active':'')+'" onclick="setForecastAsFilter(\'hit\')">적중 '+hits+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='miss'?'active':'')+'" onclick="setForecastAsFilter(\'miss\')">오판 '+misses+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hold'?'active':'')+'" onclick="setForecastAsFilter(\'hold\')">판정보류 '+(rows.length-evalRows.length)+'</button></div>';
  if(!filtered.length){root.innerHTML=kpis+filters+'<div class="as-empty">해당 조건의 품목이 없습니다.</div>';return}
- const body=filtered.map(r=>'<tr><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(r.manual?'<span class="as-manual-badge">AS 저장</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button></td></tr>').join('');
+ const body=filtered.map(r=>renderForecastAsRow(r,false)).join('');
  root.innerHTML=kpis+filters+'<div class="as-table-wrap"><table class="as-table"><colgroup><col class="signal"><col class="item"><col class="dir"><col class="dir"><col class="result"><col><col class="action"></colgroup><thead><tr><th>신호</th><th>품목</th><th>전주 전망</th><th>실제</th><th>판정</th><th class="summary">AS 핵심</th><th>상세</th></tr></thead><tbody>'+body+'</tbody></table></div>';
 }
 async function refreshForecastAS(){
@@ -2254,12 +2265,26 @@ function makeAllUnits(board){
   board.querySelectorAll(':scope > .section').forEach(section=>units.push(...makeSectionUnits(section)));
   return units;
 }
+
+function makeForecastAsExportUnit(panel){
+  const clone=cleanExportClone(panel);
+  clone.classList.add('forecast-as-export-five');
+  const rows=AI_FORECAST_ORDER.map(name=>(FORECAST_AS_ROWS||[]).find(r=>normalizeItemName(r.name)===normalizeItemName(name))).filter(Boolean);
+  const tbody=clone.querySelector('.as-table tbody');
+  if(tbody)tbody.innerHTML=rows.map(r=>renderForecastAsRow(r,true)).join('');
+  const kpis=clone.querySelector('.as-kpis');if(kpis)kpis.remove();
+  const desc=clone.querySelector('.forecast-as-head p');
+  if(desc)desc.textContent='5대 원료 저장본 · SM · AN · BD · BPA · MMA';
+  const week=clone.querySelector('.forecast-as-week small');
+  if(week)week.textContent=(week.textContent||'')+' · 5대 원료';
+  return semanticWrap(clone,'forecast-as-unit');
+}
 function getSemanticUnits(){
   const board=document.getElementById('board');
   if(!board)throw new Error('저장할 탭 영역을 찾을 수 없습니다.');
   if(activeCategory==='Overview')return makeOverviewUnits(board);
   if(activeCategory==='AI 전망'){const panel=board.querySelector('.ai-forecast-panel');return panel?[semanticWrap(cleanExportClone(panel),'ai-forecast-unit')]:[];}
-  if(activeCategory==='전망 AS'){const panel=board.querySelector('.forecast-as-panel');return panel?[semanticWrap(cleanExportClone(panel),'forecast-as-unit')]:[];}
+  if(activeCategory==='전망 AS'){const panel=board.querySelector('.forecast-as-panel');return panel?[makeForecastAsExportUnit(panel)]:[];}
   if(activeCategory==='전체')return makeAllUnits(board);
   return makeCategoryUnits(board);
 }
