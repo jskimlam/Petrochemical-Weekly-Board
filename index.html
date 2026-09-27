@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>LAM Petrochemical Weekly Board - Revised 2026-09-27</title>
 <!-- Revised 2026-09-27: Forecast AS tab, traffic-light review, 4-axis cost/demand/supply/event backtesting -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
@@ -992,6 +992,173 @@ button{touch-action:manipulation}
 .as-a4-analysis b,.as-a4-correction b{display:block;margin-bottom:3px;color:#173a5e;font-size:10.5px;font-weight:950}
 .as-a4-correction{margin-top:8px;padding:9px 10px;background:#fffaf0;border:1px solid #f0dfb8;border-left:4px solid #d4a72c;color:#5c4a1f;font-size:12px;line-height:1.44;font-weight:760}
 .as-a4-footer{margin-top:12px;padding-top:8px;border-top:1px solid #d8e1e9;display:flex;justify-content:space-between;color:#7a8896;font-size:10.5px;font-weight:800}
+
+
+/* =========================================================
+   Fold / tablet header optimization v3
+   - Keeps every top action visible on Galaxy Fold class widths
+   - Final override intentionally placed last in stylesheet
+   ========================================================= */
+@media screen and (max-width:1200px){
+  body{overflow-x:hidden}
+  .topbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "brand week"
+      "actions actions"!important;
+    align-items:center!important;
+    gap:8px 12px!important;
+    padding:
+      max(8px,env(safe-area-inset-top))
+      max(10px,env(safe-area-inset-right))
+      9px
+      max(10px,env(safe-area-inset-left))!important;
+  }
+  .topbar .brand{
+    grid-area:brand!important;
+    order:initial!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
+  .topbar .brand>div{min-width:0}
+  .topbar .brand h1{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:clamp(14px,2.05vw,18px)!important;
+  }
+  .topbar .brand-sub{font-size:10px}
+  .topbar .week-nav-group{
+    grid-area:week!important;
+    order:initial!important;
+    width:auto!important;
+    max-width:min(48vw,390px)!important;
+    min-width:250px!important;
+    display:grid!important;
+    grid-template-columns:32px minmax(128px,1fr) 32px auto!important;
+    align-items:center!important;
+    gap:5px!important;
+    padding:0!important;
+    flex:none!important;
+  }
+  .topbar .week-nav-btn{
+    width:32px!important;
+    min-width:32px!important;
+    height:32px!important;
+    padding:0!important;
+  }
+  .topbar .week-select{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:32px!important;
+    padding:6px 8px!important;
+    font-size:11px!important;
+  }
+  .topbar .latest-week-badge{
+    height:32px!important;
+    padding:0 8px!important;
+    font-size:9.5px!important;
+  }
+  .topbar .actions{
+    grid-area:actions!important;
+    order:initial!important;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    gap:6px!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+  .topbar .actions .db-status{display:none!important}
+  .topbar .actions .btn{
+    width:100%!important;
+    min-width:0!important;
+    min-height:34px!important;
+    padding:7px 7px!important;
+    font-size:11.5px!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+}
+
+/* Galaxy Fold inner display / narrow tablet portrait */
+@media screen and (min-width:641px) and (max-width:900px){
+  .hero{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:14px!important;
+    padding:14px 16px!important;
+    align-items:center!important;
+  }
+  .hero h2{font-size:24px!important;margin-bottom:5px!important}
+  .hero p{font-size:11.5px!important;line-height:1.4!important}
+  .hero .eyebrow{font-size:9.5px!important;margin-bottom:4px!important}
+  .week-card{
+    min-width:205px!important;
+    display:block!important;
+    border-top:0!important;
+    border-left:1px solid var(--line)!important;
+    padding:0 0 0 15px!important;
+  }
+  .week-card>span{width:auto!important;margin-bottom:3px!important}
+  .week{font-size:19px!important}
+  .tone-inline{margin-top:6px!important;gap:8px!important}
+  .tone-inline span{font-size:16px!important}
+  .tone-inline strong{font-size:25px!important}
+  .wrap{padding-top:10px!important}
+}
+
+/* Fold cover display / very narrow portrait */
+@media screen and (max-width:640px){
+  .topbar{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:
+      "brand week"
+      "actions actions"!important;
+    gap:7px 8px!important;
+    padding-left:max(8px,env(safe-area-inset-left))!important;
+    padding-right:max(8px,env(safe-area-inset-right))!important;
+  }
+  .topbar .badge{width:30px!important;height:30px!important;font-size:9.5px!important}
+  .topbar .brand{gap:7px!important}
+  .topbar .brand h1{font-size:13.5px!important;max-width:145px!important}
+  .topbar .brand-sub{display:none!important}
+  .topbar .week-nav-group{
+    min-width:0!important;
+    width:min(52vw,220px)!important;
+    max-width:220px!important;
+    grid-template-columns:28px minmax(82px,1fr) 28px!important;
+  }
+  .topbar .latest-week-badge{display:none!important}
+  .topbar .week-nav-btn{width:28px!important;min-width:28px!important;height:30px!important;font-size:11px!important}
+  .topbar .week-select{height:30px!important;font-size:10px!important;padding:4px 5px!important}
+  .topbar .actions{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  .topbar .actions .btn{
+    min-height:32px!important;
+    padding:6px 5px!important;
+    font-size:10.5px!important;
+  }
+  .hero{padding:13px 12px!important}
+  .hero h2{font-size:21px!important}
+  .hero p{font-size:10.5px!important}
+  .toolbar{margin-top:7px!important}
+}
+
+/* Extremely narrow cover screens: don't let a tall sticky toolbar hide content */
+@media screen and (max-width:430px){
+  .topbar{position:relative!important}
+  .topbar .brand h1{max-width:120px!important;font-size:12.5px!important}
+  .topbar .week-nav-group{width:min(53vw,195px)!important}
+  .topbar .actions .btn{font-size:10px!important}
+}
 
 </style></head>
 <body>
