@@ -950,6 +950,49 @@ button{touch-action:manipulation}
 .forecast-as-export-page .tab-image-page-body{height:100%!important;max-height:none!important;padding:0!important}
 .forecast-as-export-page .forecast-as-unit{height:100%;display:flex;align-items:stretch}
 .forecast-as-export-page .forecast-as-export-five{height:100%;box-sizing:border-box}
+
+.as-detail-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.as-detail-save-btn{background:#071d49!important;border-color:#071d49!important;color:#fff!important;padding:8px 13px!important;font-size:12px!important;font-weight:950!important}
+.as-detail-save-btn:hover{background:#123866!important;border-color:#123866!important}
+
+/* Forecast AS detail · A4 portrait image export */
+.as-a4-stage{position:fixed;left:-20000px;top:0;width:1414px;z-index:-9999;background:#e9eef3}
+.as-a4-page{width:1414px;height:2000px;background:#e9eef3;box-sizing:border-box;padding:24px;overflow:hidden}
+.as-a4-shell{width:100%;height:100%;background:#fff;border:1px solid #c8d5df;box-sizing:border-box;padding:34px 38px 30px;overflow:hidden}
+.as-a4-report{width:100%;transform-origin:top center;color:#1d334a}
+.as-a4-report-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:18px;border-bottom:4px solid #071d49}
+.as-a4-report-head .eyebrow{font-size:13px;font-weight:950;letter-spacing:.08em;color:#718096;text-transform:uppercase}
+.as-a4-report-head h1{margin:5px 0 0;font-size:44px;line-height:1.05;color:#071d49;font-weight:950;letter-spacing:-.045em}
+.as-a4-report-head .right{text-align:right;color:#31516d;font-size:15px;font-weight:850;line-height:1.45}
+.as-a4-report-head .right strong{display:block;color:#071d49;font-size:20px;font-weight:950}
+.as-a4-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.as-a4-kpi{border:1px solid #d4dee7;background:#f8fafc;padding:13px 15px;min-height:74px;box-sizing:border-box}
+.as-a4-kpi span{display:block;font-size:11px;font-weight:950;color:#758496;letter-spacing:.04em}
+.as-a4-kpi strong{display:block;margin-top:6px;font-size:19px;line-height:1.25;font-weight:950;color:#0d2a48}
+.as-a4-core{margin-top:14px;border:1px solid #cbd9e5;border-left:6px solid #071d49;background:#f5f9fc;padding:14px 16px;font-size:16px;line-height:1.48;font-weight:850}
+.as-a4-core.hit{border-left-color:#2d9d5b;background:#f2faf4;color:#17643a}
+.as-a4-core.miss{border-left-color:#d92d20;background:#fff5f3;color:#a62920}
+.as-a4-core .label{display:block;margin-bottom:5px;font-size:11px;font-weight:950;letter-spacing:.06em;color:#60758a}
+.as-a4-forecast{margin-top:12px;border:1px solid #d4e3ef;border-left:5px solid #5e98c5;background:#eef6ff;padding:13px 15px;font-size:14px;line-height:1.48;color:#23455f;font-weight:730}
+.as-a4-forecast b{display:block;margin-bottom:4px;color:#173a5e;font-size:11px;font-weight:950;letter-spacing:.04em}
+.as-a4-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.as-a4-axis{border:1px solid #d4dee7;background:#fff;padding:14px 15px 15px;border-top:5px solid #98a2b3;box-sizing:border-box;break-inside:avoid}
+.as-a4-axis.hit{border-top-color:#2d9d5b}.as-a4-axis.miss{border-top-color:#d92d20}
+.as-a4-axis-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid #e4eaf0}
+.as-a4-axis-head h2{margin:0;color:#071d49;font-size:21px;font-weight:950}
+.as-a4-axis-status{border-radius:999px;padding:5px 9px;background:#f2f4f7;color:#667085;font-size:11px;font-weight:950}
+.as-a4-axis.hit .as-a4-axis-status{background:#eaf7ee;color:#17643a}.as-a4-axis.miss .as-a4-axis-status{background:#fff0ee;color:#b42318}
+.as-a4-signals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.as-a4-signal{background:#f7f9fb;border:1px solid #e1e7ed;padding:8px 10px}
+.as-a4-signal span{display:block;font-size:10px;color:#7b8794;font-weight:900}.as-a4-signal b{display:block;margin-top:3px;font-size:14px;color:#263d55;font-weight:950}
+.as-a4-section{margin-top:9px}
+.as-a4-section b{display:block;margin-bottom:3px;color:#3d566f;font-size:10.5px;font-weight:950;letter-spacing:.025em}
+.as-a4-section p{margin:0;color:#354b61;font-size:12.5px;line-height:1.45;font-weight:700;word-break:keep-all}
+.as-a4-analysis{margin-top:10px;padding:9px 10px;background:#f7f9fb;border:1px solid #e1e7ed;color:#263d55;font-size:12.5px;line-height:1.46;font-weight:800}
+.as-a4-analysis b,.as-a4-correction b{display:block;margin-bottom:3px;color:#173a5e;font-size:10.5px;font-weight:950}
+.as-a4-correction{margin-top:8px;padding:9px 10px;background:#fffaf0;border:1px solid #f0dfb8;border-left:4px solid #d4a72c;color:#5c4a1f;font-size:12px;line-height:1.44;font-weight:760}
+.as-a4-footer{margin-top:12px;padding-top:8px;border-top:1px solid #d8e1e9;display:flex;justify-content:space-between;color:#7a8896;font-size:10.5px;font-weight:800}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -957,7 +1000,7 @@ button{touch-action:manipulation}
 <div id="printReport" class="print-report"></div>
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox ai-box" id="dAiBox"><h4>AI 전망</h4><pre id="dAiOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
 
-<div class="modal" id="asDetailModal"><div class="modalbox as-detailbox"><div class="modaltop"><div><h3 id="asDTitle">전망 AS 상세</h3><div class="note" id="asDMeta"></div></div><button class="close" onclick="closeAsDetail()">닫기</button></div><div id="asDetailBody"></div></div></div>
+<div class="modal" id="asDetailModal"><div class="modalbox as-detailbox"><div class="modaltop"><div><h3 id="asDTitle">전망 AS 상세</h3><div class="note" id="asDMeta"></div></div><div class="as-detail-actions"><button class="btn as-detail-save-btn" onclick="saveAsDetailImage()">이미지 저장</button><button class="close" onclick="closeAsDetail()">닫기</button></div></div><div id="asDetailBody"></div></div></div>
 
 
 <div class="modal" id="asParserModal"><div class="modalbox as-parserbox"><div class="modaltop"><div><h3>전망 AS 카드 파싱</h3><div class="note">전체 품목의 전주 전망 → 금주 실제 결과와 상세 AS를 붙여넣어 현재 주차에 저장합니다.</div><div class="parser-status">AS 핵심은 주요 원인을 2~4문장으로 상세히 작성하고, 코스트 · 수요 · 공급 · 이벤트는 각각 예상 / 실제 / 판정 / 분석을 입력합니다.</div></div><button class="close" onclick="closeAsParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="asParserWeekLabel">위클리 주차</label><input id="asParserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="asParserWeekEnd">실제 주차 기준일</label><input id="asParserWeekEnd" type="date" readonly></div><div class="hint"><strong>전주 전망과 금주 실제를 비교한 AS 카드</strong><br>현재 V1은 브라우저에 주차별 저장됩니다. 추후 forecast_as 시트/GAS 연결 시 동일 포맷을 그대로 사용할 수 있습니다.</div></div><div class="as-parser-guide"><strong>입력 형식</strong><br>품목 : SM<br>전주 전망 : 하락<br>실제 : 상승<br>판정 : 오판<br>AS 핵심<br>최종 방향을 결정한 핵심 원인, 맞은 판단, 틀린 판단을 2~4문장으로 구체적으로 작성<br><br>코스트<br>예상 : 하락<br>실제 : 상승<br>판정 : 불일치<br>예상 근거 : 전주 전망에서 유가·나프타·직접 원료를 어떻게 판단했는지<br>실제 확인 : 금주 실제 유가·나프타·직접 원료 및 제품 전가 여부<br>AS 분석 : 무엇을 맞게/틀리게 봤고 최종 가격에 어떻게 작용했는지<br>다음 보정 : 다음 전망에서 우선 확인할 변수와 보정 규칙<br><br>수요 / 공급 / 이벤트도 동일하게 예상 근거 → 실제 확인 → AS 분석 → 다음 보정까지 작성합니다.</div><textarea id="asParserText" oninput="previewAsParse()" placeholder="품목 : WTI&#10;전주 전망 : 하락&#10;실제 : 하락&#10;판정 : 적중&#10;AS 핵심&#10;...&#10;&#10;코스트&#10;예상 : 하락&#10;실제 : 하락&#10;판정 : 정합&#10;예상 근거 : ...&#10;실제 확인 : ...&#10;AS 분석 : ...&#10;다음 보정 : ...&#10;&#10;수요&#10;..."></textarea><div class="as-parser-preview" id="asParserPreview">AS 카드를 붙여넣으면 인식 품목 수와 품목명이 표시됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentAsCardsToParser()">현재 AS 불러오기</button><button class="btn" onclick="clearAsParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" onclick="parseAndSaveAsCards()">AS카드 파싱 · 저장</button></div></div></div></div>
@@ -1249,6 +1292,7 @@ const AS_AXIS_DEF={
  event:{label:'이벤트',keywords:['호르무즈','hormuz','홍해','red sea','지정학','geopolitical','전쟁','war','충돌','attack','공격','제재','sanction','관세','tariff','정책','금리','환율','물류','logistics','선박','vessel','운임','freight','기상','weather','라인강','force majeure','사고','파업','strike','협상','talks','선물','futures','moc','arbitrage','아비트라지','급등','급락']}
 };
 let FORECAST_AS_FILTER='all',FORECAST_AS_ROWS=[],FORECAST_AS_SEQ=0;
+let CURRENT_AS_DETAIL_INDEX=null;
 
 function asPrevWeekMeta(){
  const current=CURRENT_WEEK_END||inferWeekEnd();
@@ -1534,7 +1578,7 @@ function asCoreSummaryHtml(row){
 }
 function renderForecastAS(){
  const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),prev=asPrevWeekMeta();
- return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div><button class="as-parse-open-btn" onclick="openAsParser()">AS카드 파싱 / 수정</button></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
+ return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
 }
 function setForecastAsFilter(v){FORECAST_AS_FILTER=v||'all';renderForecastAsContent()}
 
@@ -1577,6 +1621,7 @@ function asAxisStatusText(s){return s==='hit'?'정합':s==='miss'?'불일치':'�
 function asEvidenceHtml(lines){return lines&&lines.length?lines.map(x=>'• '+esc(x)).join('<br>'):'근거 문구 미확인'}
 function openAsDetail(i){
  const row=(FORECAST_AS_ROWS||[]).find(r=>r.index===i);if(!row)return;
+ CURRENT_AS_DETAIL_INDEX=i;
  const m=document.getElementById('asDetailModal'),body=document.getElementById('asDetailBody');if(!m||!body)return;
  document.getElementById('asDTitle').textContent=displayName(row.name)+' 전망 AS 상세'+(row.manual?' · 저장 AS':'');
  document.getElementById('asDMeta').textContent=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제 · '+(row.source||'전망 데이터 없음');
@@ -1587,7 +1632,105 @@ function openAsDetail(i){
  body.innerHTML=top+forecast+'<div class="as-overall-review"><b>AS 핵심</b><br>'+asCoreSummaryHtml(row)+'</div><div class="as-axis-grid">'+axes+'</div>';
  m.classList.add('show');
 }
-function closeAsDetail(){const m=document.getElementById('asDetailModal');if(m)m.classList.remove('show')}
+
+function asPlainEvidence(lines){
+ return lines&&lines.length?lines.map(x=>'• '+asCleanSourceText(x)).join('\n'):'근거 문구 미확인';
+}
+function buildAsDetailA4Report(row){
+ const page=document.createElement('div');page.className='as-a4-page';
+ const shell=document.createElement('div');shell.className='as-a4-shell';
+ const report=document.createElement('div');report.className='as-a4-report';
+ const resultLabel=row.result==='hit'?'적중':row.result==='miss'?'오판':'판정보류';
+ const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
+ const period=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제';
+
+ const head=document.createElement('div');head.className='as-a4-report-head';
+ head.innerHTML='<div><div class="eyebrow">Forecast After Service Report</div><h1>'+esc(displayName(row.name))+' 전망 AS</h1></div><div class="right"><strong>'+esc(period)+'</strong>'+esc((row.source||'전망 데이터')+' 기준')+'</div>';
+ report.appendChild(head);
+
+ const kpis=document.createElement('div');kpis.className='as-a4-kpis';
+ kpis.innerHTML=
+   '<div class="as-a4-kpi"><span>전주 전망</span><strong>'+esc(row.forecastDir||'미분류')+'</strong></div>'+
+   '<div class="as-a4-kpi"><span>금주 실제</span><strong>'+esc(row.actualDir||'미분류')+'</strong></div>'+
+   '<div class="as-a4-kpi"><span>판정</span><strong>'+esc(resultLabel)+'</strong></div>'+
+   '<div class="as-a4-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div>';
+ report.appendChild(kpis);
+
+ const core=document.createElement('div');core.className='as-a4-core '+row.result;
+ core.innerHTML='<span class="label">AS 핵심</span>'+asCoreSummaryHtml(row);
+ report.appendChild(core);
+
+ const forecast=document.createElement('div');forecast.className='as-a4-forecast';
+ forecast.innerHTML='<b>전주 전망 원문</b>'+esc(row.forecastText||'전망 문구 없음');
+ report.appendChild(forecast);
+
+ const grid=document.createElement('div');grid.className='as-a4-grid';
+ (row.axes||[]).forEach(a=>{
+   const card=document.createElement('article');card.className='as-a4-axis '+a.status;
+   card.innerHTML=
+    '<div class="as-a4-axis-head"><h2>'+esc(a.label)+'</h2><span class="as-a4-axis-status">'+esc(asAxisStatusText(a.status))+'</span></div>'+
+    '<div class="as-a4-signals"><div class="as-a4-signal"><span>전주 예상 신호</span><b>'+esc(a.forecastSignal||'미분류')+'</b></div><div class="as-a4-signal"><span>금주 실제 신호</span><b>'+esc(a.actualSignal||'미분류')+'</b></div></div>'+
+    '<div class="as-a4-section"><b>전주 예상 근거</b><p>'+esc(asPlainEvidence(a.forecastEvidence)).replace(/\n/g,'<br>')+'</p></div>'+
+    '<div class="as-a4-section"><b>금주 실제 확인</b><p>'+esc(asPlainEvidence(a.actualEvidence)).replace(/\n/g,'<br>')+'</p></div>'+
+    '<div class="as-a4-analysis"><b>AS 판정 분석</b>'+esc(a.comment||'')+'</div>'+
+    '<div class="as-a4-correction"><b>다음 전망 보정</b>'+esc(a.correction||'')+'</div>';
+   grid.appendChild(card);
+ });
+ report.appendChild(grid);
+
+ const footer=document.createElement('div');footer.className='as-a4-footer';
+ footer.innerHTML='<span>LAM Petrochemical Weekly Board · Forecast AS</span><span>'+esc(row.currentWeek||'')+'</span>';
+ report.appendChild(footer);
+
+ shell.appendChild(report);page.appendChild(shell);
+ return {page,shell,report};
+}
+async function fitAsDetailA4Report(obj){
+ await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+ const available=obj.shell.clientHeight;
+ const needed=obj.report.scrollHeight;
+ if(needed<=available)return 1;
+ const ratio=Math.min(1,(available-3)/Math.max(needed,1));
+ obj.report.style.transformOrigin='top center';
+ obj.report.style.transform='scale('+ratio+')';
+ obj.report.style.width=(100/ratio)+'%';
+ await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+ return ratio;
+}
+async function saveAsDetailImage(){
+ try{
+   if(typeof html2canvas==='undefined')throw new Error('이미지 저장 모듈을 불러오지 못했습니다.');
+   const row=(FORECAST_AS_ROWS||[]).find(r=>r.index===CURRENT_AS_DETAIL_INDEX);
+   if(!row)throw new Error('저장할 AS 상세 데이터를 찾을 수 없습니다.');
+   showToast(displayName(row.name)+' 전망 AS · A4 이미지 구성 중...');
+   if(document.fonts&&document.fonts.ready){try{await document.fonts.ready}catch(_){}}
+   const stage=document.createElement('div');stage.className='as-a4-stage';document.body.appendChild(stage);
+   try{
+     const obj=buildAsDetailA4Report(row);stage.appendChild(obj.page);
+     const ratio=await fitAsDetailA4Report(obj);
+     const canvas=await html2canvas(obj.page,{
+       scale:1.35,
+       useCORS:true,
+       allowTaint:false,
+       backgroundColor:'#e9eef3',
+       width:1414,
+       height:2000,
+       windowWidth:1414,
+       windowHeight:2000,
+       scrollX:0,
+       scrollY:0,
+       logging:false
+     });
+     const filename='LAM_'+sanitizeFilePart(row.currentWeek||CURRENT_WEEK_END||'weekly')+'_'+sanitizeFilePart(displayName(row.name))+'_전망AS_상세_A4.png';
+     downloadCanvasFile(canvas,filename);
+     showToast(displayName(row.name)+' 전망 AS 상세 · A4 세로 이미지 저장 완료'+(ratio<.999?' (자동 맞춤)':''));
+   }finally{stage.remove()}
+ }catch(e){
+   console.error(e);showToast('AS 상세 이미지 저장 실패: '+e.message);
+ }
+}
+
+function closeAsDetail(){const m=document.getElementById('asDetailModal');if(m)m.classList.remove('show');CURRENT_AS_DETAIL_INDEX=null}
 
 function applyAiForecastSize(panel,bodyPx){
  if(!panel||!bodyPx)return 0;
