@@ -1112,8 +1112,25 @@ function asForecastDir(text){
 }
 function asDirClass(d){return d==='상승'?'up':d==='하락'?'down':d==='보합'?'flat':'unknown'}
 function asDirHtml(d){return '<span class="as-dir '+asDirClass(d)+'">'+esc(d||'미분류')+'</span>'}
+function asCleanSourceText(v){
+ let s=String(v||'');
+ for(let i=0;i<2;i++){
+   if(!/&(?:#\d+|#x[0-9a-f]+|nbsp|amp|lt|gt|quot);/i.test(s))break;
+   const ta=document.createElement('textarea');ta.innerHTML=s;s=ta.value;
+ }
+ return s
+   .replace(/\u00a0/g,' ')
+   .replace(/\*\*/g,'')
+   .replace(/__+/g,'')
+   .replace(/\.{3,}|…+/g,'')
+   .replace(/\s+/g,' ')
+   .trim();
+}
 function asSplitSentences(text){
- return String(text||'').replace(/\r/g,'\n').split(/\n+|[.!?]\s+/).map(s=>s.replace(/^\s*[-•·]\s*/,'').trim()).filter(Boolean);
+ return asCleanSourceText(String(text||'').replace(/\r/g,'\n'))
+   .split(/\n+|[.!?。]\s*/)
+   .map(s=>s.replace(/^\s*[-•·]\s*/,'').trim())
+   .filter(Boolean);
 }
 function asAxisText(item,mode){
  if(!item)return '';
@@ -1156,10 +1173,17 @@ function asAxisSignal(text,axis){
  if(up===down)return '보합';
  return up>down?'상승':'하락';
 }
-function asCompactEvidence(v,max=118){
- const s=String(v||'').replace(/\s+/g,' ').replace(/^[•\-·]\s*/,'').trim();
+function asCompactEvidence(v,max=160){
+ let s=asCleanSourceText(v).replace(/^[•\-·]\s*/,'').trim();
  if(!s)return '';
- return s.length>max?s.slice(0,max-1)+'…':s;
+ const first=(s.split(/[.!?。]/)[0]||s).trim();
+ s=first||s;
+ if(max&&s.length>max){
+   const cut=s.slice(0,max);
+   const p=Math.max(cut.lastIndexOf(','),cut.lastIndexOf('·'),cut.lastIndexOf(' '));
+   s=(p>Math.floor(max*.6)?cut.slice(0,p):cut).trim();
+ }
+ return s.replace(/[,:;·\s]+$/,'');
 }
 function asEvidenceLead(arr,max=105){
  const x=(arr||[]).map(v=>asCompactEvidence(v,max)).filter(Boolean);
@@ -1216,13 +1240,13 @@ function asRowSummary(row){
 }
 
 
-function asCoreEvidence(a,max=84){
- const raw=((a&&a.actualEvidence)||[]).map(v=>String(v||'').replace(/\s+/g,' ').replace(/^[•\-·]\s*/,'').trim()).filter(Boolean)[0]||'';
+function asCoreEvidence(a,max=110){
+ const raw=((a&&a.actualEvidence)||[])
+   .map(v=>asCleanSourceText(v).replace(/^[•\-·]\s*/,'').trim())
+   .filter(Boolean)[0]||'';
  if(!raw)return '';
- let s=raw.replace(/\.{3,}|…+/g,'').trim();
- const first=(s.split(/[.!?。]/)[0]||s).trim();
- s=first||s;
- if(s.length>max){
+ let s=(raw.split(/[.!?。]/)[0]||raw).trim();
+ if(max&&s.length>max){
    const cut=s.slice(0,max);
    const p=Math.max(cut.lastIndexOf(','),cut.lastIndexOf('·'),cut.lastIndexOf(' '));
    s=(p>Math.floor(max*.6)?cut.slice(0,p):cut).trim();
@@ -1230,9 +1254,8 @@ function asCoreEvidence(a,max=84){
  return s.replace(/[,:;·\s]+$/,'');
 }
 function asCleanManualCore(text){
- let s=String(text||'').replace(/\s+/g,' ').trim();
+ let s=asCleanSourceText(text);
  if(!s)return '';
- s=s.replace(/\.{3,}|…+/g,'').replace(/\s{2,}/g,' ').trim();
  if(/^(?:주요\s*원인을|여기에|내용|분석)\b/i.test(s))return '';
  return s;
 }
