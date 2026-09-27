@@ -749,6 +749,13 @@ button{touch-action:manipulation}
 .as-manual-badge{display:inline-flex;align-items:center;margin-left:7px;padding:3px 6px;border-radius:999px;background:#e8f5ec;color:#17643a;border:1px solid #c9e3d1;font-size:9px;font-weight:950;vertical-align:1px}
 @media(max-width:900px){.forecast-as-head-right{align-items:flex-start}.as-parserbox textarea{height:54vh;font-size:13px}}
 
+
+.as-axis-judgement{margin-top:10px;padding:10px 11px;background:#f7f9fb;border:1px solid #e1e7ed;color:#263d55;font-size:11.8px;line-height:1.55;font-weight:780}
+.as-axis-judgement b,.as-axis-correction b{display:block;margin-bottom:4px;color:#173a5e;font-size:10px;font-weight:950;letter-spacing:.03em}
+.as-axis-correction{margin-top:8px;padding:10px 11px;background:#fffaf0;border:1px solid #f0dfb8;border-left:4px solid #d4a72c;color:#5c4a1f;font-size:11.5px;line-height:1.52;font-weight:760}
+.as-evidence p{white-space:normal}
+.as-summary{font-size:12.7px;line-height:1.6}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -759,7 +766,7 @@ button{touch-action:manipulation}
 <div class="modal" id="asDetailModal"><div class="modalbox as-detailbox"><div class="modaltop"><div><h3 id="asDTitle">전망 AS 상세</h3><div class="note" id="asDMeta"></div></div><button class="close" onclick="closeAsDetail()">닫기</button></div><div id="asDetailBody"></div></div></div>
 
 
-<div class="modal" id="asParserModal"><div class="modalbox as-parserbox"><div class="modaltop"><div><h3>전망 AS 카드 파싱</h3><div class="note">전체 품목의 전주 전망 → 금주 실제 결과와 상세 AS를 붙여넣어 현재 주차에 저장합니다.</div><div class="parser-status">AS 핵심은 주요 원인을 2~4문장으로 상세히 작성하고, 코스트 · 수요 · 공급 · 이벤트는 각각 예상 / 실제 / 판정 / 분석을 입력합니다.</div></div><button class="close" onclick="closeAsParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="asParserWeekLabel">위클리 주차</label><input id="asParserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="asParserWeekEnd">실제 주차 기준일</label><input id="asParserWeekEnd" type="date" readonly></div><div class="hint"><strong>전주 전망과 금주 실제를 비교한 AS 카드</strong><br>현재 V1은 브라우저에 주차별 저장됩니다. 추후 forecast_as 시트/GAS 연결 시 동일 포맷을 그대로 사용할 수 있습니다.</div></div><div class="as-parser-guide"><strong>입력 형식</strong><br>품목 : SM<br>전주 전망 : 하락<br>실제 : 상승<br>판정 : 오판<br>AS 핵심<br>주요 원인을 2~4문장으로 상세 작성<br><br>코스트<br>예상 : 하락<br>실제 : 상승<br>판정 : 불일치<br>분석 : 원유·나프타·벤젠 등 원가 요인의 예상과 실제 차이를 설명<br><br>수요 / 공급 / 이벤트도 동일 형식으로 작성합니다. 여러 품목을 연속으로 붙여넣을 수 있습니다.</div><textarea id="asParserText" oninput="previewAsParse()" placeholder="품목 : WTI&#10;전주 전망 : 하락&#10;실제 : 하락&#10;판정 : 적중&#10;AS 핵심&#10;...&#10;&#10;코스트&#10;예상 : 하락&#10;실제 : 하락&#10;판정 : 정합&#10;분석 : ...&#10;&#10;수요&#10;..."></textarea><div class="as-parser-preview" id="asParserPreview">AS 카드를 붙여넣으면 인식 품목 수와 품목명이 표시됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentAsCardsToParser()">현재 AS 불러오기</button><button class="btn" onclick="clearAsParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" onclick="parseAndSaveAsCards()">AS카드 파싱 · 저장</button></div></div></div></div>
+<div class="modal" id="asParserModal"><div class="modalbox as-parserbox"><div class="modaltop"><div><h3>전망 AS 카드 파싱</h3><div class="note">전체 품목의 전주 전망 → 금주 실제 결과와 상세 AS를 붙여넣어 현재 주차에 저장합니다.</div><div class="parser-status">AS 핵심은 주요 원인을 2~4문장으로 상세히 작성하고, 코스트 · 수요 · 공급 · 이벤트는 각각 예상 / 실제 / 판정 / 분석을 입력합니다.</div></div><button class="close" onclick="closeAsParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="asParserWeekLabel">위클리 주차</label><input id="asParserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="asParserWeekEnd">실제 주차 기준일</label><input id="asParserWeekEnd" type="date" readonly></div><div class="hint"><strong>전주 전망과 금주 실제를 비교한 AS 카드</strong><br>현재 V1은 브라우저에 주차별 저장됩니다. 추후 forecast_as 시트/GAS 연결 시 동일 포맷을 그대로 사용할 수 있습니다.</div></div><div class="as-parser-guide"><strong>입력 형식</strong><br>품목 : SM<br>전주 전망 : 하락<br>실제 : 상승<br>판정 : 오판<br>AS 핵심<br>최종 방향을 결정한 핵심 원인, 맞은 판단, 틀린 판단을 2~4문장으로 구체적으로 작성<br><br>코스트<br>예상 : 하락<br>실제 : 상승<br>판정 : 불일치<br>예상 근거 : 전주 전망에서 유가·나프타·직접 원료를 어떻게 판단했는지<br>실제 확인 : 금주 실제 유가·나프타·직접 원료 및 제품 전가 여부<br>AS 분석 : 무엇을 맞게/틀리게 봤고 최종 가격에 어떻게 작용했는지<br>다음 보정 : 다음 전망에서 우선 확인할 변수와 보정 규칙<br><br>수요 / 공급 / 이벤트도 동일하게 예상 근거 → 실제 확인 → AS 분석 → 다음 보정까지 작성합니다.</div><textarea id="asParserText" oninput="previewAsParse()" placeholder="품목 : WTI&#10;전주 전망 : 하락&#10;실제 : 하락&#10;판정 : 적중&#10;AS 핵심&#10;...&#10;&#10;코스트&#10;예상 : 하락&#10;실제 : 하락&#10;판정 : 정합&#10;예상 근거 : ...&#10;실제 확인 : ...&#10;AS 분석 : ...&#10;다음 보정 : ...&#10;&#10;수요&#10;..."></textarea><div class="as-parser-preview" id="asParserPreview">AS 카드를 붙여넣으면 인식 품목 수와 품목명이 표시됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentAsCardsToParser()">현재 AS 불러오기</button><button class="btn" onclick="clearAsParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" onclick="parseAndSaveAsCards()">AS카드 파싱 · 저장</button></div></div></div></div>
 
 <div class="modal" id="parserModal"><div class="modalbox parserbox"><div class="modaltop"><div><h3>품목별 브리핑 파싱 · 자동저장</h3><div class="note">한 번에 한 품목만 파싱합니다. 입력하지 않은 다른 품목 데이터는 변경하지 않습니다.</div><div class="parser-status">위클리 주차(W32 등)는 보고 주차, 기준일은 해당 위클리의 대표일입니다. 제목의 날짜는 각 품목 실제 평가일로 별도 저장됩니다.</div></div><button class="close" onclick="closeParser()">닫기</button></div><div class="parser-weekbar"><div class="field weekcode-field"><label for="parserWeekLabel">위클리 주차</label><input id="parserWeekLabel" class="week-code-input" type="text" value="" readonly></div><div class="field"><label for="parserWeekEnd">위클리 기준일</label><input id="parserWeekEnd" type="date" onchange="updateParserWeekLabel()"></div><div class="hint"><strong>예: W32 / 기준일 2026-08-07</strong><br>AN 브리핑 제목이 2026-08-04여도 W32·2026-08-07 그룹에 저장되고, AN의 실제 평가일은 2026-08-04로 보존됩니다.</div></div><div class="parser-workspace"><div class="parser-itemnav" id="parserItemNav"></div><div class="parser-editor"><div class="parser-selected"><div><div class="label">선택 품목</div><strong id="parserSelectedName">WTI</strong></div><div class="state" id="parserSelectedState">해당 품목만 자동저장</div></div><textarea id="parserText" placeholder="선택한 품목의 브리핑 1개만 붙여넣으세요."></textarea><div class="parser-help" id="parserHelp">제목부터 데일리가격까지 해당 품목 브리핑 전체를 붙여넣으면 됩니다.</div><div class="parser-actions"><div class="left"><button class="btn" onclick="loadCurrentItemToParser()">현재 데이터 불러오기</button><button class="btn" onclick="clearParserText()">입력 지우기</button></div><div class="right"><button class="btn primary" id="itemParseSaveBtn" onclick="parseSelectedItemAndSave()">선택 품목 파싱 · 자동저장</button></div></div></div></div></div></div>
 
@@ -964,9 +971,15 @@ function asResultKey(v){const s=String(v||'').trim();if(/적중|정합|일치/.t
 function parseAsAxisSection(text,label){
  const src=String(text||''),head=new RegExp('^'+label+'\\s*$','mi'),hm=src.match(head);if(!hm)return null;
  const start=hm.index+hm[0].length,rest=src.slice(start),next=rest.search(/^(?:코스트|수요|공급|이벤트)\s*$/mi),body=(next>=0?rest.slice(0,next):rest).trim();
- const get=key=>{const m=body.match(new RegExp('^'+key+'\\s*:\\s*(.*)$','mi'));return m?m[1].trim():''};
- const am=body.match(/^분석\s*:\s*([\s\S]*)$/mi);
- return {label,forecastSignal:get('예상'),actualSignal:get('실제'),status:asResultKey(get('판정')),analysis:am?am[1].trim():''};
+ const fieldNames=['예상 근거','실제 확인','AS 분석','다음 보정','분석','예상','실제','판정'];
+ const field=(key)=>{
+  const alt=fieldNames.join('|');
+  const re=new RegExp('^'+key+'\\s*:\\s*([\\s\\S]*?)(?=^(?:'+alt+')\\s*:|$)','mi');
+  const m=body.match(re);return m?m[1].trim():'';
+ };
+ const analysis=field('AS 분석')||field('분석');
+ const fe=field('예상 근거'),ae=field('실제 확인'),corr=field('다음 보정');
+ return {label,forecastSignal:field('예상'),actualSignal:field('실제'),status:asResultKey(field('판정')),analysis,forecastEvidence:fe?[fe]:[],actualEvidence:ae?[ae]:[],correction:corr};
 }
 function parseAsCardBlock(block){
  const item=(block.match(/^품목\s*:\s*(.+)$/mi)||[])[1];if(!item)return null;
@@ -990,7 +1003,12 @@ function openAsParserUnlocked(){
 function closeAsParser(){document.getElementById('asParserModal')?.classList.remove('show');if(ADMIN_SCOPE==='as-parser')ADMIN_SCOPE=null}
 function clearAsParserText(){const ta=document.getElementById('asParserText');if(ta)ta.value='';previewAsParse()}
 function asCardToText(c){
- const ax=(key,label)=>{const a=c.axes&&c.axes[key]||{};return label+'\n예상 : '+(a.forecastSignal||'')+'\n실제 : '+(a.actualSignal||'')+'\n판정 : '+(a.status==='hit'?'정합':a.status==='miss'?'불일치':'판단보류')+'\n분석 : '+(a.analysis||'')};
+ const ax=(key,label)=>{
+  const a=c.axes&&c.axes[key]||{};
+  const fe=Array.isArray(a.forecastEvidence)?a.forecastEvidence.join(' / '):(a.forecastEvidence||'');
+  const ae=Array.isArray(a.actualEvidence)?a.actualEvidence.join(' / '):(a.actualEvidence||'');
+  return label+'\n예상 : '+(a.forecastSignal||'')+'\n실제 : '+(a.actualSignal||'')+'\n판정 : '+(a.status==='hit'?'정합':a.status==='miss'?'불일치':'판단보류')+'\n예상 근거 : '+fe+'\n실제 확인 : '+ae+'\nAS 분석 : '+(a.analysis||a.comment||'')+'\n다음 보정 : '+(a.correction||'');
+ };
  return '품목 : '+c.name+'\n전주 전망 : '+(c.forecastDir||'')+'\n실제 : '+(c.actualDir||'')+'\n판정 : '+(c.result==='hit'?'적중':c.result==='miss'?'오판':'판정보류')+'\nAS 핵심\n'+(c.summary||'')+'\n\n'+ax('cost','코스트')+'\n\n'+ax('demand','수요')+'\n\n'+ax('supply','공급')+'\n\n'+ax('event','이벤트');
 }
 function loadCurrentAsCardsToParser(){const week=CURRENT_WEEK_END||inferWeekEnd(),ta=document.getElementById('asParserText'),cards=getAsManualCards(week);if(ta)ta.value=cards.map(asCardToText).join('\n\n');previewAsParse()}
@@ -1010,7 +1028,21 @@ function applyManualAsCard(row,card){
  if(card.forecastDir)row.forecastDir=card.forecastDir;if(card.actualDir)row.actualDir=card.actualDir;
  row.result=card.result&&card.result!=='hold'?card.result:(row.forecastDir&&row.actualDir?(row.forecastDir===row.actualDir?'hit':'miss'):'hold');
  if(card.summary)row.summary=card.summary;
- row.axes=(row.axes||[]).map(a=>{const m=card.axes&&card.axes[a.axis];if(!m)return a;return {...a,forecastSignal:asNormDir(m.forecastSignal)||m.forecastSignal||a.forecastSignal,actualSignal:asNormDir(m.actualSignal)||m.actualSignal||a.actualSignal,status:m.status||a.status,comment:m.analysis||a.comment,manualAnalysis:m.analysis||''}});
+ row.axes=(row.axes||[]).map(a=>{
+   const m=card.axes&&card.axes[a.axis];if(!m)return a;
+   const fe=(m.forecastEvidence&&m.forecastEvidence.length)?m.forecastEvidence:a.forecastEvidence;
+   const ae=(m.actualEvidence&&m.actualEvidence.length)?m.actualEvidence:a.actualEvidence;
+   return {...a,
+     forecastSignal:asNormDir(m.forecastSignal)||m.forecastSignal||a.forecastSignal,
+     actualSignal:asNormDir(m.actualSignal)||m.actualSignal||a.actualSignal,
+     status:m.status||a.status,
+     forecastEvidence:fe,
+     actualEvidence:ae,
+     comment:m.analysis||a.comment,
+     manualAnalysis:m.analysis||'',
+     correction:m.correction||a.correction||''
+   };
+ });
  return row;
 }
 
@@ -1113,29 +1145,65 @@ function asAxisSignal(text,axis){
  if(up===down)return '보합';
  return up>down?'상승':'하락';
 }
+function asCompactEvidence(v,max=118){
+ const s=String(v||'').replace(/\s+/g,' ').replace(/^[•\-·]\s*/,'').trim();
+ if(!s)return '';
+ return s.length>max?s.slice(0,max-1)+'…':s;
+}
+function asEvidenceLead(arr,max=105){
+ const x=(arr||[]).map(v=>asCompactEvidence(v,max)).filter(Boolean);
+ return x[0]||'';
+}
+function asAxisCorrection(axis,status,actualEvidence){
+ const label=AS_AXIS_DEF[axis].label;
+ if(status==='miss'){
+  if(axis==='cost')return '다음 전망에서는 유가·나프타뿐 아니라 해당 품목의 직접 원료가 주후반에 반전하는지와 실제 제품 오퍼·거래가격 전가 여부를 함께 확인.';
+  if(axis==='demand')return '다음 전망에서는 최종수요 표현보다 실제 구매량·재고보충·다운스트림 가동률/마진과 buyer acceptance를 우선 확인.';
+  if(axis==='supply')return '다음 전망에서는 정기보수 발표 자체보다 실제 현물 가용성·재고 절대수준·재가동 시점·역외물량 유입을 우선 확인.';
+  if(axis==='event')return '다음 전망에서는 주중 선물·MOC·물류·지정학 이벤트가 기존 방향을 뒤집는 임계 신호인지 별도 점검.';
+ }
+ if(status==='hit')return label+' 판단에 사용한 핵심 변수가 실제 가격 방향과 정합했으므로 동일 변수의 지속 여부를 다음 주에도 우선 추적.';
+ return label+' 관련 근거가 충분하지 않으므로 다음 전망에서는 방향성과 가격 전가 경로를 구체적으로 기록.';
+}
 function asAxisReview(prev,cur,axis){
  const fText=asAxisText(prev,'forecast'),aText=asAxisText(cur,'actual');
  const fSig=asAxisSignal(fText,axis),aSig=asAxisSignal(aText,axis);
- const fEv=asPickEvidence(prev,axis,'forecast'),aEv=asPickEvidence(cur,axis,'actual');
+ const fEv=asPickEvidence(prev,axis,'forecast',3),aEv=asPickEvidence(cur,axis,'actual',3);
  let status='hold';
  if(fSig&&aSig)status=fSig===aSig?'hit':'miss';
+ const label=AS_AXIS_DEF[axis].label,fp=asEvidenceLead(fEv,100),ap=asEvidenceLead(aEv,100);
  let comment='';
- if(status==='hit')comment=AS_AXIS_DEF[axis].label+' 요인은 전주 예상 '+fSig+' 신호와 금주 확인 '+aSig+' 신호가 일치.';
- else if(status==='miss')comment=AS_AXIS_DEF[axis].label+' 요인은 전주 '+fSig+' 예상과 실제 '+aSig+' 흐름이 달라 전체 전망 오차에 영향을 준 요인.';
- else comment=AS_AXIS_DEF[axis].label+' 요인은 저장된 문구만으로 예상과 실제 방향을 명확히 판정하기 어려움.';
- return {axis,label:AS_AXIS_DEF[axis].label,forecastSignal:fSig,actualSignal:aSig,status,forecastEvidence:fEv,actualEvidence:aEv,comment};
+ if(status==='hit'){
+   comment='전주 '+label+' 판단은 '+(fp?('“'+fp+'”을 근거로 '):'')+(fSig||'해당')+' 방향을 예상했고, 금주에는 '+(ap?('“'+ap+'”이 확인돼 '):'')+(aSig||'유사')+' 흐름이 나타남. 해당 축의 방향 판단은 실제 시장과 정합했으며 최종 전망의 근거로 유효했음.';
+ }else if(status==='miss'){
+   comment='전주 '+label+'에서는 '+(fp?('“'+fp+'”을 근거로 '):'')+(fSig||'한쪽')+' 방향을 예상했으나, 금주 실제로는 '+(ap?('“'+ap+'”이 나타나며 '):'')+(aSig||'반대')+' 신호가 확인됨. 이 축의 변화가 전주 가정을 약화시키거나 뒤집어 최종 전망 오차에 기여한 것으로 판단.';
+ }else{
+   comment='전주 또는 금주 '+label+' 근거가 충분히 구조화되지 않아 방향 정합성은 판단보류. '+(fp?('전주에는 “'+fp+'”이 언급됐고 '):'')+(ap?('금주에는 “'+ap+'”이 확인됨. '):'')+'다음 전망에서는 이 축의 방향성과 가격 전가 경로를 명시적으로 기록할 필요.';
+ }
+ return {axis,label,forecastSignal:fSig,actualSignal:aSig,status,forecastEvidence:fEv,actualEvidence:aEv,comment,correction:asAxisCorrection(axis,status,aEv)};
 }
 function asRowSummary(row){
- if(row.result==='hold')return '전주 전망 또는 금주 실제 방향 데이터가 부족해 판정을 보류.';
- const axes=row.axes||[];
- const good=axes.filter(x=>x.status==='hit').map(x=>x.label),bad=axes.filter(x=>x.status==='miss').map(x=>x.label);
+ if(row.result==='hold')return '전주 전망 또는 금주 실제 방향 데이터가 충분하지 않아 전체 판정을 보류했다. 코스트·수요·공급·이벤트별 근거를 추가 확인한 뒤 방향성을 재평가해야 한다.';
+ const axes=row.axes||[],good=axes.filter(x=>x.status==='hit'),bad=axes.filter(x=>x.status==='miss');
+ const actualMove=(row.current&&row.current.pct!=null)?('금주 가격은 '+fmtPct(Number(row.current.pct))+'로 '+(row.actualDir||'')+' 마감했다.'):'';
+ const goodText=good.slice(0,2).map(a=>a.label+'에서 '+(asEvidenceLead(a.actualEvidence,82)||((a.actualSignal||'예상')+' 신호'))).join(', ');
+ const badText=bad.slice(0,2).map(a=>a.label+'에서 '+(asEvidenceLead(a.actualEvidence,82)||((a.actualSignal||'반대')+' 신호'))).join(', ');
  if(row.result==='hit'){
-  if(good.length)return '방향 적중 · '+good.join('·')+' 판단이 실제 시장 흐름과 정합.';
-  return '전주 방향 전망과 금주 실제 방향이 일치.';
+   let s='전주 '+(row.forecastDir||'')+' 전망과 금주 실제 '+(row.actualDir||'')+' 방향이 일치해 적중했다. ';
+   if(actualMove)s+=actualMove+' ';
+   if(goodText)s+='특히 '+goodText+'가 확인되며 전주 판단의 핵심 논리가 유지됐다. ';
+   if(badText)s+='다만 '+badText+'는 예상과 달라 다음 전망에서는 보조 리스크로 재점검할 필요가 있다.';
+   else s+='반대 방향의 변수가 최종 가격 흐름을 뒤집을 만큼 강하지 않았다는 점도 적중의 핵심이다.';
+   return s.trim();
  }
- if(bad.length)return '방향 오판 · '+bad.join('·')+' 요인에서 예상과 실제 신호가 불일치.';
- return '전주 방향 전망과 금주 실제 방향이 달라 상세 요인 재검토 필요.';
+ let s='전주 '+(row.forecastDir||'')+' 전망과 달리 금주 실제는 '+(row.actualDir||'')+'로 움직여 오판했다. ';
+ if(actualMove)s+=actualMove+' ';
+ if(badText)s+='핵심 오판 요인은 '+badText+'가 전주 예상과 다르게 전개된 점이다. ';
+ if(goodText)s+='반면 '+goodText+'에 대한 판단은 맞았지만 최종 가격 방향을 지배하기에는 영향력이 부족했다. ';
+ s+='다음 전망에서는 맞은 변수의 존재 여부뿐 아니라 실제 가격을 지배한 변수의 강도와 주후반 전환 여부를 우선 반영해야 한다.';
+ return s.trim();
 }
+
 function renderForecastAS(){
  const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),prev=asPrevWeekMeta();
  return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div><button class="as-parse-open-btn" onclick="openAsParser()">AS카드 파싱 / 수정</button></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
@@ -1180,8 +1248,8 @@ function openAsDetail(i){
  const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
  const top='<div class="as-detail-topgrid"><div class="as-detail-kpi"><span>전주 전망</span><strong>'+asDirHtml(row.forecastDir)+'</strong></div><div class="as-detail-kpi"><span>금주 실제</span><strong>'+asDirHtml(row.actualDir)+'</strong></div><div class="as-detail-kpi"><span>판정</span><strong><span class="as-result '+row.result+'">'+esc(row.result==='hit'?'적중':row.result==='miss'?'오판':'보류')+'</span></strong></div><div class="as-detail-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div></div>';
  const forecast='<div class="as-forecast-text"><b>전주 전망 원문</b><br>'+(row.forecastText?esc(row.forecastText):'전망 문구 없음')+'</div>';
- const axes=row.axes.map(a=>'<article class="as-axis-card '+a.status+'"><div class="as-axis-head"><h4>'+esc(a.label)+'</h4><span class="as-axis-status">'+esc(asAxisStatusText(a.status))+'</span></div><div class="as-axis-signals"><div class="as-axis-signal"><span>전주 예상 신호</span><b>'+esc(a.forecastSignal||'미분류')+'</b></div><div class="as-axis-signal"><span>금주 실제 신호</span><b>'+esc(a.actualSignal||'미분류')+'</b></div></div><div class="as-evidence"><b>예상 근거</b><p>'+asEvidenceHtml(a.forecastEvidence)+'</p></div><div class="as-evidence"><b>실제 확인</b><p>'+asEvidenceHtml(a.actualEvidence)+'</p></div><div class="as-axis-comment">'+esc(a.comment)+'</div></article>').join('');
- body.innerHTML=top+forecast+'<div class="as-axis-grid">'+axes+'</div><div class="as-overall-review"><b>종합 AS</b><br>'+esc(row.summary)+' 전주 전망과 실제 주간 시황 문구를 기준으로 코스트·수요·공급·이벤트를 각각 재검토한 결과이며, 근거가 부족한 축은 판단보류로 표시했습니다.</div>';
+ const axes=row.axes.map(a=>'<article class="as-axis-card '+a.status+'"><div class="as-axis-head"><h4>'+esc(a.label)+'</h4><span class="as-axis-status">'+esc(asAxisStatusText(a.status))+'</span></div><div class="as-axis-signals"><div class="as-axis-signal"><span>전주 예상 신호</span><b>'+esc(a.forecastSignal||'미분류')+'</b></div><div class="as-axis-signal"><span>금주 실제 신호</span><b>'+esc(a.actualSignal||'미분류')+'</b></div></div><div class="as-evidence"><b>전주 예상 근거</b><p>'+asEvidenceHtml(a.forecastEvidence)+'</p></div><div class="as-evidence"><b>금주 실제 확인</b><p>'+asEvidenceHtml(a.actualEvidence)+'</p></div><div class="as-axis-judgement"><b>AS 판정 분석</b>'+esc(a.comment||'')+'</div><div class="as-axis-correction"><b>다음 전망 보정</b>'+esc(a.correction||'')+'</div></article>').join('');
+ body.innerHTML=top+forecast+'<div class="as-overall-review"><b>AS 핵심</b><br>'+esc(row.summary)+'</div><div class="as-axis-grid">'+axes+'</div>';
  m.classList.add('show');
 }
 function closeAsDetail(){const m=document.getElementById('asDetailModal');if(m)m.classList.remove('show')}
