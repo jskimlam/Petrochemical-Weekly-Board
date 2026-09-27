@@ -688,8 +688,9 @@ button{touch-action:manipulation}
 .as-kpi{border:1px solid var(--line);background:#f9fbfd;padding:12px 13px;min-width:0}
 .as-kpi span{display:block;color:var(--muted);font-size:10px;font-weight:900;letter-spacing:.05em}
 .as-kpi strong{display:block;margin-top:4px;color:var(--navy);font-size:25px;font-weight:950;letter-spacing:-.035em}
-.as-kpi.hit{background:#f1faf4;border-color:#cbe7d4}.as-kpi.hit strong{color:#17643a}
-.as-kpi.miss{background:#fff4f2;border-color:#f0cec8}.as-kpi.miss strong{color:#b42318}
+.as-kpi small.as-kpi-items{display:block;margin-top:5px;color:#697b8d;font-size:9.2px;line-height:1.38;font-weight:850;letter-spacing:0;word-break:keep-all}
+.as-kpi.hit{background:#f1faf4;border-color:#cbe7d4}.as-kpi.hit strong{color:#17643a}.as-kpi.hit small.as-kpi-items{color:#2b7a4b}
+.as-kpi.miss{background:#fff4f2;border-color:#f0cec8}.as-kpi.miss strong{color:#b42318}.as-kpi.miss small.as-kpi-items{color:#b5473c}
 .as-kpi.rate strong{color:#215e91}
 .as-filterbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:0 0 11px}
 .as-filter-btn{border:1px solid var(--line-strong);background:#fff;color:#40566e;border-radius:999px;padding:7px 12px;font-size:11.5px;font-weight:900;cursor:pointer}
@@ -759,6 +760,10 @@ button{touch-action:manipulation}
 
 .forecast-as-export-five{padding-bottom:18px}
 .forecast-as-export-five .forecast-as-head{margin-bottom:10px;padding-bottom:10px}
+.forecast-as-export-five .as-kpis{margin-bottom:10px;gap:8px}
+.forecast-as-export-five .as-kpi{padding:9px 10px}
+.forecast-as-export-five .as-kpi strong{font-size:22px}
+.forecast-as-export-five .as-kpi small.as-kpi-items{font-size:8.5px;line-height:1.3;margin-top:3px}
 .forecast-as-export-five .as-table tbody td{padding-top:9px;padding-bottom:9px}
 .forecast-as-export-five .as-table-wrap{overflow:visible}
 
@@ -1250,7 +1255,9 @@ function renderForecastAsContent(){
  const root=document.getElementById('forecastAsContent');if(!root)return;
  const rows=FORECAST_AS_ROWS||[],evalRows=rows.filter(r=>r.result!=='hold'),hits=evalRows.filter(r=>r.result==='hit').length,misses=evalRows.filter(r=>r.result==='miss').length,rate=evalRows.length?hits/evalRows.length*100:0;
  const filtered=rows.filter(r=>FORECAST_AS_FILTER==='all'||r.result===FORECAST_AS_FILTER);
- const kpis='<div class="as-kpis"><div class="as-kpi"><span>전체 품목</span><strong>'+rows.length+'</strong></div><div class="as-kpi"><span>평가 가능</span><strong>'+evalRows.length+'</strong></div><div class="as-kpi hit"><span>적중</span><strong>'+hits+'</strong></div><div class="as-kpi miss"><span>오판</span><strong>'+misses+'</strong></div><div class="as-kpi rate"><span>적중률</span><strong>'+rate.toFixed(1)+'%</strong></div></div>';
+ const hitNames=evalRows.filter(r=>r.result==='hit').map(r=>displayName(r.name));
+ const missNames=evalRows.filter(r=>r.result==='miss').map(r=>displayName(r.name));
+ const kpis='<div class="as-kpis"><div class="as-kpi"><span>전체 품목</span><strong>'+rows.length+'</strong></div><div class="as-kpi"><span>평가 가능</span><strong>'+evalRows.length+'</strong></div><div class="as-kpi hit"><span>적중</span><strong>'+hits+'</strong><small class="as-kpi-items">'+esc(hitNames.join(' · ')||'-')+'</small></div><div class="as-kpi miss"><span>오판</span><strong>'+misses+'</strong><small class="as-kpi-items">'+esc(missNames.join(' · ')||'-')+'</small></div><div class="as-kpi rate"><span>적중률</span><strong>'+rate.toFixed(1)+'%</strong></div></div>';
  const filters='<div class="as-filterbar"><button class="as-filter-btn '+(FORECAST_AS_FILTER==='all'?'active':'')+'" onclick="setForecastAsFilter(\'all\')">전체 '+rows.length+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hit'?'active':'')+'" onclick="setForecastAsFilter(\'hit\')">적중 '+hits+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='miss'?'active':'')+'" onclick="setForecastAsFilter(\'miss\')">오판 '+misses+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hold'?'active':'')+'" onclick="setForecastAsFilter(\'hold\')">판정보류 '+(rows.length-evalRows.length)+'</button></div>';
  if(!filtered.length){root.innerHTML=kpis+filters+'<div class="as-empty">해당 조건의 품목이 없습니다.</div>';return}
  const body=filtered.map(r=>renderForecastAsRow(r,false)).join('');
@@ -2272,7 +2279,6 @@ function makeForecastAsExportUnit(panel){
   const rows=AI_FORECAST_ORDER.map(name=>(FORECAST_AS_ROWS||[]).find(r=>normalizeItemName(r.name)===normalizeItemName(name))).filter(Boolean);
   const tbody=clone.querySelector('.as-table tbody');
   if(tbody)tbody.innerHTML=rows.map(r=>renderForecastAsRow(r,true)).join('');
-  const kpis=clone.querySelector('.as-kpis');if(kpis)kpis.remove();
   const desc=clone.querySelector('.forecast-as-head p');
   if(desc)desc.textContent='5대 원료 저장본 · SM · AN · BD · BPA · MMA';
   const week=clone.querySelector('.forecast-as-week small');
