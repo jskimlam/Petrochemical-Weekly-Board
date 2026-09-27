@@ -758,15 +758,87 @@ button{touch-action:manipulation}
 .as-summary{font-size:12.7px;line-height:1.6}
 
 
-.forecast-as-export-five{padding-bottom:18px}
-.forecast-as-export-five .forecast-as-head{margin-bottom:10px;padding-bottom:10px}
-.forecast-as-export-five .as-kpis{margin-bottom:10px;gap:8px}
-.forecast-as-export-five .as-kpi{padding:9px 10px}
-.forecast-as-export-five .as-kpi strong{font-size:22px}
-.forecast-as-export-five .as-kpi small.as-kpi-items{font-size:8.5px;line-height:1.3;margin-top:3px}
-.forecast-as-export-five .as-table tbody td{padding-top:9px;padding-bottom:9px}
-.forecast-as-export-five .as-table-wrap{overflow:visible}
+.forecast-as-export-five{
+  padding:26px 28px 24px;
+  background:#fff;
+  border:none;
+  box-shadow:none;
+  width:100%;
+  max-width:none;
+}
+.forecast-as-export-five .forecast-as-head{
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid #d8e1e9;
+}
+.forecast-as-export-five .forecast-as-head h3{
+  font-size:34px;
+  line-height:1.08;
+  font-weight:950;
+}
+.forecast-as-export-five .forecast-as-head p{
+  font-size:14px;
+  line-height:1.42;
+}
+.forecast-as-export-five .forecast-as-week{
+  font-size:22px;
+  font-weight:950;
+}
+.forecast-as-export-five .forecast-as-week small{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:850;
+}
+.forecast-as-export-five .as-kpis{
+  margin-bottom:14px;
+  gap:10px;
+}
+.forecast-as-export-five .as-kpi{
+  padding:13px 14px;
+  min-height:102px;
+}
+.forecast-as-export-five .as-kpi span{
+  font-size:11.5px;
+}
+.forecast-as-export-five .as-kpi strong{
+  font-size:32px;
+  margin-top:5px;
+}
+.forecast-as-export-five .as-kpi small.as-kpi-items{
+  font-size:12.5px;
+  line-height:1.42;
+  margin-top:6px;
+  font-weight:900;
+}
+.forecast-as-export-five .as-table{
+  font-size:14px;
+}
+.forecast-as-export-five .as-table thead th{
+  padding:12px 10px;
+  font-size:12.5px;
+}
+.forecast-as-export-five .as-table tbody td{
+  padding:12px 10px;
+  vertical-align:middle;
+}
+.forecast-as-export-five .as-item{
+  font-size:15px;
+}
+.forecast-as-export-five .as-summary{
+  font-size:13.5px;
+  line-height:1.5;
+}
+.forecast-as-export-five .as-table-wrap{
+  overflow:visible;
+}
 
+
+.forecast-as-export-page .tab-image-header,
+.forecast-as-export-page .tab-image-footer{display:none!important}
+.forecast-as-export-page{padding:18px!important;background:#eef5fb!important}
+.forecast-as-export-page .tab-image-page-body{height:100%!important;max-height:none!important;padding:0!important}
+.forecast-as-export-page .forecast-as-unit{height:100%;display:flex;align-items:stretch}
+.forecast-as-export-page .forecast-as-export-five{height:100%;box-sizing:border-box}
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyReport()">카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -2337,6 +2409,11 @@ function makeForecastAsExportUnit(panel){
   if(desc)desc.textContent='5대 원료 저장본 · SM · AN · BD · BPA · MMA';
   const week=clone.querySelector('.forecast-as-week small');
   if(week)week.textContent=(week.textContent||'')+' · 5대 원료';
+  clone.style.background='#ffffff';
+  clone.style.border='none';
+  clone.style.boxShadow='none';
+  clone.style.maxWidth='none';
+  clone.style.width='100%';
   return semanticWrap(clone,'forecast-as-unit');
 }
 function getSemanticUnits(){
@@ -2350,7 +2427,7 @@ function getSemanticUnits(){
 }
 function newSemanticPage(stage, meta){
   const page=document.createElement('div');
-  page.className='tab-image-export tab-image-page'+((meta.tabName!=='전체'&&meta.tabName!=='Overview'&&meta.tabName!=='AI 전망'&&meta.tabName!=='전망 AS')?' category-focus':'');
+  page.className='tab-image-export tab-image-page'+((meta.tabName!=='전체'&&meta.tabName!=='Overview'&&meta.tabName!=='AI 전망'&&meta.tabName!=='전망 AS')?' category-focus':'')+(meta.tabName==='전망 AS'?' forecast-as-export-page':'');
   const header=buildExportHeader(meta);
   const body=document.createElement('div');body.className='tab-image-page-body';
   const footer=buildExportFooter(meta);
