@@ -702,7 +702,7 @@ button{touch-action:manipulation}
 .as-table tbody td{border-bottom:1px solid #e5ebf0;padding:11px 9px;vertical-align:middle;font-size:12.5px;color:#263d55;font-weight:720}
 .as-table tbody tr:last-child td{border-bottom:0}.as-table tbody tr:hover td{background:#fbfdff}
 .as-table td.center{text-align:center}.as-item{font-size:14px;font-weight:950;color:var(--navy);white-space:nowrap}
-.as-summary{line-height:1.48;color:#40566e;font-weight:720}
+.as-summary{line-height:1.48;color:#40566e;font-weight:720}.as-summary-miss{color:#b42318;font-weight:950}.as-summary-hit{color:#17643a;font-weight:900}
 .as-light{display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:middle;background:#98a2b3;box-shadow:0 0 0 4px rgba(152,162,179,.13)}
 .as-light.hit{background:#2d9d5b;box-shadow:0 0 0 4px rgba(45,157,91,.15),0 0 12px rgba(45,157,91,.3)}
 .as-light.miss{background:#d92d20;box-shadow:0 0 0 4px rgba(217,45,32,.13),0 0 12px rgba(217,45,32,.22)}
@@ -1204,6 +1204,32 @@ function asRowSummary(row){
  return s.trim();
 }
 
+
+function asCoreSummary(row){
+ const axes=row.axes||[],good=axes.filter(x=>x.status==='hit'),bad=axes.filter(x=>x.status==='miss');
+ const evidence=a=>asEvidenceLead(a.actualEvidence,72)||((a.actualSignal||'실제')+' 신호');
+ if(row.result==='miss'){
+   const causes=bad.slice(0,2).map(a=>a.label+'의 '+evidence(a));
+   if(causes.length)return '핵심오판요인은 '+causes.join(', ')+'를 전주 전망에서 충분히 반영하지 못한 점이다.';
+   return '핵심오판요인은 전주 예상과 달리 금주 가격을 지배한 변수의 방향과 강도를 충분히 반영하지 못한 점이다.';
+ }
+ if(row.result==='hit'){
+   const causes=good.slice(0,2).map(a=>a.label+'의 '+evidence(a));
+   if(causes.length)return '주요 적중요인은 '+causes.join(', ')+'가 전주 예상과 실제 시장에서 같은 방향으로 전개된 점이다.';
+   return '전주 전망 방향과 금주 실제 방향이 일치했다.';
+ }
+ return '전주 전망 또는 금주 실제 방향 데이터가 부족해 판정을 보류했다.';
+}
+function asCoreSummaryHtml(row){
+ const text=asCoreSummary(row);
+ if(row.result==='miss'){
+   const m=text.match(/^(핵심오판요인은[\s\S]*?[.。])(?:\s*([\s\S]*))?$/);
+   if(m)return '<span class="as-summary-miss">'+esc(m[1])+'</span>'+(m[2]?(' '+esc(m[2])):'');
+   return '<span class="as-summary-miss">'+esc(text)+'</span>';
+ }
+ if(row.result==='hit')return '<span class="as-summary-hit">'+esc(text)+'</span>';
+ return esc(text);
+}
 function renderForecastAS(){
  const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),prev=asPrevWeekMeta();
  return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div><button class="as-parse-open-btn" onclick="openAsParser()">AS카드 파싱 / 수정</button></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
@@ -1216,7 +1242,7 @@ function renderForecastAsContent(){
  const kpis='<div class="as-kpis"><div class="as-kpi"><span>전체 품목</span><strong>'+rows.length+'</strong></div><div class="as-kpi"><span>평가 가능</span><strong>'+evalRows.length+'</strong></div><div class="as-kpi hit"><span>적중</span><strong>'+hits+'</strong></div><div class="as-kpi miss"><span>오판</span><strong>'+misses+'</strong></div><div class="as-kpi rate"><span>적중률</span><strong>'+rate.toFixed(1)+'%</strong></div></div>';
  const filters='<div class="as-filterbar"><button class="as-filter-btn '+(FORECAST_AS_FILTER==='all'?'active':'')+'" onclick="setForecastAsFilter(\'all\')">전체 '+rows.length+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hit'?'active':'')+'" onclick="setForecastAsFilter(\'hit\')">적중 '+hits+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='miss'?'active':'')+'" onclick="setForecastAsFilter(\'miss\')">오판 '+misses+'</button><button class="as-filter-btn '+(FORECAST_AS_FILTER==='hold'?'active':'')+'" onclick="setForecastAsFilter(\'hold\')">판정보류 '+(rows.length-evalRows.length)+'</button></div>';
  if(!filtered.length){root.innerHTML=kpis+filters+'<div class="as-empty">해당 조건의 품목이 없습니다.</div>';return}
- const body=filtered.map(r=>'<tr><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(r.manual?'<span class="as-manual-badge">AS 저장</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary"><strong>주요요인</strong> · '+esc(r.summary)+'</div></td><td class="center"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button></td></tr>').join('');
+ const body=filtered.map(r=>'<tr><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(r.manual?'<span class="as-manual-badge">AS 저장</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button></td></tr>').join('');
  root.innerHTML=kpis+filters+'<div class="as-table-wrap"><table class="as-table"><colgroup><col class="signal"><col class="item"><col class="dir"><col class="dir"><col class="result"><col><col class="action"></colgroup><thead><tr><th>신호</th><th>품목</th><th>전주 전망</th><th>실제</th><th>판정</th><th class="summary">AS 핵심</th><th>상세</th></tr></thead><tbody>'+body+'</tbody></table></div>';
 }
 async function refreshForecastAS(){
@@ -1249,7 +1275,7 @@ function openAsDetail(i){
  const top='<div class="as-detail-topgrid"><div class="as-detail-kpi"><span>전주 전망</span><strong>'+asDirHtml(row.forecastDir)+'</strong></div><div class="as-detail-kpi"><span>금주 실제</span><strong>'+asDirHtml(row.actualDir)+'</strong></div><div class="as-detail-kpi"><span>판정</span><strong><span class="as-result '+row.result+'">'+esc(row.result==='hit'?'적중':row.result==='miss'?'오판':'보류')+'</span></strong></div><div class="as-detail-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div></div>';
  const forecast='<div class="as-forecast-text"><b>전주 전망 원문</b><br>'+(row.forecastText?esc(row.forecastText):'전망 문구 없음')+'</div>';
  const axes=row.axes.map(a=>'<article class="as-axis-card '+a.status+'"><div class="as-axis-head"><h4>'+esc(a.label)+'</h4><span class="as-axis-status">'+esc(asAxisStatusText(a.status))+'</span></div><div class="as-axis-signals"><div class="as-axis-signal"><span>전주 예상 신호</span><b>'+esc(a.forecastSignal||'미분류')+'</b></div><div class="as-axis-signal"><span>금주 실제 신호</span><b>'+esc(a.actualSignal||'미분류')+'</b></div></div><div class="as-evidence"><b>전주 예상 근거</b><p>'+asEvidenceHtml(a.forecastEvidence)+'</p></div><div class="as-evidence"><b>금주 실제 확인</b><p>'+asEvidenceHtml(a.actualEvidence)+'</p></div><div class="as-axis-judgement"><b>AS 판정 분석</b>'+esc(a.comment||'')+'</div><div class="as-axis-correction"><b>다음 전망 보정</b>'+esc(a.correction||'')+'</div></article>').join('');
- body.innerHTML=top+forecast+'<div class="as-overall-review"><b>AS 핵심</b><br>'+esc(row.summary)+'</div><div class="as-axis-grid">'+axes+'</div>';
+ body.innerHTML=top+forecast+'<div class="as-overall-review"><b>AS 핵심</b><br>'+asCoreSummaryHtml(row)+'</div><div class="as-axis-grid">'+axes+'</div>';
  m.classList.add('show');
 }
 function closeAsDetail(){const m=document.getElementById('asDetailModal');if(m)m.classList.remove('show')}
