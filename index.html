@@ -1456,7 +1456,7 @@ const AS_AXIS_DEF={
  cost:{label:'코스트',keywords:['원유','wti','brent','브렌트','나프타','naphtha','원료','원가','feedstock','cost','벤젠','benzene','에틸렌','ethylene','프로필렌','propylene','부타디엔','butadiene','bd','천연가스','natural gas','프로판','propane','에너지','energy','운임','freight']},
  demand:{label:'수요',keywords:['수요','demand','구매','buying','buyer','inquiry','inquiries','소비','consumption','주문','order','orders','다운스트림','downstream','최종수요','재고보충','restocking','성수기','구매저항','관망','sidelines','필요물량','마진','margin','오더','acrylic fiber','abs','pmma','pc','eps','ps']},
  supply:{label:'공급',keywords:['공급','supply','현물','spot','가용성','availability','재고','inventory','stock','정기보수','보수','maintenance','turnaround','셧다운','shutdown','재가동','restart','설비','plant','unit','생산','production','감산','cut','가동률','run rate','operating rate','수입','imports','수출','exports','역외','물량','cargo','offer','offers','outage','force majeure','fm']},
- event:{label:'이벤트',keywords:['호르무즈','hormuz','홍해','red sea','지정학','geopolitical','전쟁','war','충돌','attack','공격','제재','sanction','관세','tariff','정책','금리','환율','물류','logistics','선박','vessel','운임','freight','기상','weather','라인강','force majeure','사고','파업','strike','협상','talks','선물','futures','moc','arbitrage','아비트라지','급등','급락']}
+ event:{label:'이벤트',keywords:['호르무즈','hormuz','홍해','red sea','지정학','geopolitical','전쟁','war','충돌','attack','공격','제재','sanction','관세','tariff','정책','policy','금리','interest rate','연준','fed','fomc','cpi','ppi','고용','employment','gdp','달러','dollar','환율','fx','opec','opec+','원유','wti','brent','브렌트','유가','oil','협상','talks','외교','diplomatic','물류','logistics','선박','vessel','운임','freight','기상','weather','태풍','typhoon','라인강','force majeure','사고','파업','strike']}
 };
 let FORECAST_AS_FILTER='all',FORECAST_AS_ROWS=[],FORECAST_AS_SEQ=0;
 let CURRENT_AS_DETAIL_INDEX=null;
@@ -1620,22 +1620,59 @@ function asAxisCorrection(axis,status,actualEvidence){
  if(status==='hit')return label+' 판단에 사용한 핵심 변수가 실제 가격 방향과 정합했으므로 동일 변수의 지속 여부를 다음 주에도 우선 추적.';
  return label+' 관련 근거가 충분하지 않으므로 다음 전망에서는 방향성과 가격 전가 경로를 구체적으로 기록.';
 }
-function asAxisReview(prev,cur,axis){
- const fText=asAxisText(prev,'forecast'),aText=asAxisText(cur,'actual');
- const fSig=asAxisSignal(fText,axis),aSig=asAxisSignal(aText,axis);
- const fEv=asPickEvidence(prev,axis,'forecast',3),aEv=asPickEvidence(cur,axis,'actual',3);
+function asAxisReviewFromParts(axis,fSig,aSig,fEv,aEv){
  let status='hold';
  if(fSig&&aSig)status=fSig===aSig?'hit':'miss';
  const label=AS_AXIS_DEF[axis].label,fp=asEvidenceLead(fEv,100),ap=asEvidenceLead(aEv,100);
  let comment='';
- if(status==='hit'){
+ if(axis==='event'&&!fEv.length&&!aEv.length){
+   comment='이번 비교 구간에는 별도로 분리할 거시경제·지정학·유가·정책·물류 이벤트 근거가 없어 이벤트 판정은 생략.';
+ }else if(status==='hit'){
    comment='전주 '+label+' 판단은 '+(fp?('“'+fp+'”을 근거로 '):'')+(fSig||'해당')+' 방향을 예상했고, 금주에는 '+(ap?('“'+ap+'”이 확인돼 '):'')+(aSig||'유사')+' 흐름이 나타남. 해당 축의 방향 판단은 실제 시장과 정합했으며 최종 전망의 근거로 유효했음.';
  }else if(status==='miss'){
    comment='전주 '+label+'에서는 '+(fp?('“'+fp+'”을 근거로 '):'')+(fSig||'한쪽')+' 방향을 예상했으나, 금주 실제로는 '+(ap?('“'+ap+'”이 나타나며 '):'')+(aSig||'반대')+' 신호가 확인됨. 이 축의 변화가 전주 가정을 약화시키거나 뒤집어 최종 전망 오차에 기여한 것으로 판단.';
  }else{
    comment='전주 또는 금주 '+label+' 근거가 충분히 구조화되지 않아 방향 정합성은 판단보류. '+(fp?('전주에는 “'+fp+'”이 언급됐고 '):'')+(ap?('금주에는 “'+ap+'”이 확인됨. '):'')+'다음 전망에서는 이 축의 방향성과 가격 전가 경로를 명시적으로 기록할 필요.';
  }
- return {axis,label,forecastSignal:fSig,actualSignal:aSig,status,forecastEvidence:fEv,actualEvidence:aEv,comment,correction:asAxisCorrection(axis,status,aEv)};
+ const correction=(axis==='event'&&!fEv.length&&!aEv.length)
+   ?'별도 이벤트가 발생한 주에만 기록하고, 코스트·수요·공급 근거를 반복 사용하지 않음.'
+   :asAxisCorrection(axis,status,aEv);
+ return {axis,label,forecastSignal:fSig,actualSignal:aSig,status,forecastEvidence:fEv,actualEvidence:aEv,comment,correction};
+}
+function asAxisReview(prev,cur,axis){
+ const fText=asAxisText(prev,'forecast'),aText=asAxisText(cur,'actual');
+ const fSig=asAxisSignal(fText,axis),aSig=asAxisSignal(aText,axis);
+ const fEv=asPickEvidence(prev,axis,'forecast',3),aEv=asPickEvidence(cur,axis,'actual',3);
+ return asAxisReviewFromParts(axis,fSig,aSig,fEv,aEv);
+}
+function asEvidenceKey(v){
+ return asCleanSourceText(v).toLowerCase().replace(/[^0-9a-z가-힣]+/g,' ').trim();
+}
+function asUniqueAxisEvidence(list,used){
+ const out=[];
+ (list||[]).forEach(line=>{
+   const key=asEvidenceKey(line);if(!key)return;
+   const dup=used.some(k=>k===key||(Math.min(k.length,key.length)>=36&&(k.includes(key)||key.includes(k))));
+   if(dup)return;
+   used.push(key);out.push(line);
+ });
+ return out;
+}
+function asBuildAxisReviews(prev,cur){
+ const raw=AS_AXES.map(axis=>asAxisReview(prev,cur,axis));
+ const map=new Map(raw.map(a=>[a.axis,a]));
+ const usedF=[],usedA=[];
+ // 이벤트는 거시경제·지정학·유가·정책·물류 등 독립 사건을 우선 배정하고,
+ // 이후 코스트·수요·공급 카드에서는 동일 근거 문장을 반복 사용하지 않는다.
+ ['event','cost','demand','supply'].forEach(axis=>{
+   const a=map.get(axis);if(!a)return;
+   const fEv=asUniqueAxisEvidence(a.forecastEvidence,usedF);
+   const aEv=asUniqueAxisEvidence(a.actualEvidence,usedA);
+   const fSig=fEv.length?asAxisSignal(fEv.join('\n'),axis):'';
+   const aSig=aEv.length?asAxisSignal(aEv.join('\n'),axis):'';
+   map.set(axis,asAxisReviewFromParts(axis,fSig,aSig,fEv,aEv));
+ });
+ return AS_AXES.map(axis=>map.get(axis));
 }
 function asRowSummary(row){
  if(row.result==='hold')return '전주 전망 또는 금주 실제 방향 데이터가 충분하지 않아 전체 판정을 보류했다. 코스트·수요·공급·이벤트별 근거를 추가 확인한 뒤 방향성을 재평가해야 한다.';
@@ -1778,7 +1815,7 @@ async function refreshForecastAS(){
   FORECAST_AS_ROWS=ITEM_DISPLAY_ORDER.map((name,idx)=>{
    const prev=prevMap.get(name)||null,cur=curMap.get(name)||null,src=asForecastSource(prev),forecastDir=asForecastDir(src.text),actualDir=asNormDir(cur&&cur.direction);
    const result=forecastDir&&actualDir?(forecastDir===actualDir?'hit':'miss'):'hold';
-   const axes=AS_AXES.map(a=>asAxisReview(prev,cur,a));
+   const axes=asBuildAxisReviews(prev,cur);
    let row={index:idx,name,prev,current:cur,source:src.source,forecastText:src.text,forecastDir,actualDir,result,axes,prevWeek:prevMeta.week_end,currentWeek:CURRENT_WEEK_END||inferWeekEnd()};
    row.summary=asRowSummary(row);row=applyManualAsCard(row,manualMap.get(name));return row;
   });
