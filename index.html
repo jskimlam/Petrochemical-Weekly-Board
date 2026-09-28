@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>LAM Petrochemical Weekly Board - Revised 2026-09-27</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/petro-weekly-icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#071d49">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Petro Weekly">
 <!-- Revised 2026-09-27: Forecast AS tab, traffic-light review, 4-axis cost/demand/supply/event backtesting -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
 // Common modal keyboard behavior
@@ -51,7 +58,7 @@ button{touch-action:manipulation}
 
 /* Header — consulting report style */
 .topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:10px clamp(14px,2vw,30px);display:flex;justify-content:space-between;align-items:center;gap:18px;box-shadow:0 2px 10px rgba(7,29,73,.035)}
-.brand{display:flex;align-items:center;gap:11px;min-width:0}.badge{display:flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--navy);color:#fff;font-weight:900;font-size:13px;letter-spacing:.08em;border-radius:3px;flex:0 0 auto}.brand h1{font-size:19px;margin:0;color:var(--navy);font-weight:850;letter-spacing:-.02em}.brand-sub{font-size:11.5px;color:var(--muted);font-weight:750;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}.badge{display:flex;align-items:center;justify-content:center;width:38px;height:38px;background:var(--navy);color:#fff;font-weight:900;font-size:13px;letter-spacing:.08em;border-radius:9px;flex:0 0 auto;overflow:hidden;box-shadow:0 2px 8px rgba(7,29,73,.18)}.badge img{display:block;width:100%;height:100%;object-fit:cover}.brand h1{font-size:19px;margin:0;color:var(--navy);font-weight:850;letter-spacing:-.02em}.brand-sub{font-size:11.5px;color:var(--muted);font-weight:750;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
 .actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.btn{border:1px solid var(--line-strong);background:#fff;color:var(--navy-2);padding:9px 12px;border-radius:4px;font-weight:800;font-size:13px;cursor:pointer;transition:.15s ease}.btn:hover{background:#f4f8fb;border-color:#9eb3c6}.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}.btn.primary:hover{background:#0d2a5a}
 
 .wrap{width:100%;max-width:1920px;margin:0 auto;padding:18px clamp(14px,2.1vw,34px) 36px}
@@ -1162,7 +1169,7 @@ button{touch-action:manipulation}
 
 </style></head>
 <body>
-<div class="topbar"><div class="brand"><span class="badge">LAM</span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyCurrentTabForKakao()">현재탭 카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
+<div class="topbar"><div class="brand"><span class="badge" aria-hidden="true"><img src="./assets/petro-weekly-icon.svg" alt=""></span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyCurrentTabForKakao()">현재탭 카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
 <div class="wrap"><div class="hero"><div><div class="eyebrow">Weekly Market Monitor</div><h2>전체 석유화학 위클리 브리핑</h2><p>Energy → Base Chemicals → Key Feedstocks → Polymers → Regional Benchmarks</p></div><div class="week-card"><span>Reporting Week</span><strong class="week" id="weekText"></strong><div class="tone-inline"><span>주간 톤</span><strong id="toneText">-</strong></div></div></div><div class="toolbar"><div class="tabs" id="tabs"></div><div class="note">Overview · 카테고리별 상세 분석 · 최대 10주 주간가격 그래프 · 품목별 독립 파싱 · Google Sheet 자동동기화</div></div><div id="board"></div></div>
 <div id="printReport" class="print-report"></div>
 <div class="modal" id="detailModal"><div class="modalbox"><div class="modaltop"><div><h3 id="dTitle"></h3><div class="note" id="dMeta"></div></div><div class="modal-action-group"><button class="close" onclick="copyItemDetailForKakao()">메시지 복사</button><button class="close" onclick="openEditFromDetail()">수정</button><button class="close" onclick="closeDetail()">닫기</button></div></div><div class="detailgrid"><div class="detailbox"><h4>가격</h4><pre id="dPrice"></pre></div><div class="detailbox"><h4>코멘터리</h4><pre id="dComm"></pre></div><div class="detailbox"><h4>변동요인</h4><pre id="dFactors"></pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre id="dOutlook"></pre></div><div class="detailbox ai-box" id="dAiBox"><h4>AI 전망</h4><pre id="dAiOutlook"></pre></div><div class="detailbox wide"><h4>추가 정보</h4><pre id="dAdditional"></pre></div><div class="detailbox wide" id="dailyBox"><h4>데일리가격</h4><svg class="spark" id="spark" viewBox="0 0 900 160" preserveAspectRatio="none"></svg><pre id="dDaily"></pre></div></div></div></div>
@@ -3401,4 +3408,9 @@ async function saveCurrentTabImage(){
 
 render();
 initDb();
-</script></body></html>
+</script><script>
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('PWA service worker registration failed',err)));
+}
+</script>
+</body></html>
