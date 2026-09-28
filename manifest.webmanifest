@@ -1,0 +1,28 @@
+{
+  "name": "LAM Petrochemical Weekly Board",
+  "short_name": "Petro Weekly",
+  "description": "Weekly petrochemical market intelligence dashboard",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f7fa",
+  "theme_color": "#071d49",
+  "lang": "ko",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/petro-weekly-icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/petro-weekly-maskable.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
