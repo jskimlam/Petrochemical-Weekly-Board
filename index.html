@@ -1521,9 +1521,10 @@ function asCleanSourceText(v){
    .trim();
 }
 function asSplitSentences(text){
- return asCleanSourceText(String(text||'').replace(/\r/g,'\n'))
+ return String(text||'')
+   .replace(/\r\n?/g,'\n')
    .split(/\n+|[.!?。]\s*/)
-   .map(s=>s.replace(/^\s*[-•·]\s*/,'').trim())
+   .map(s=>asCleanSourceText(s).replace(/^\s*[-•·]\s*/,'').trim())
    .filter(Boolean);
 }
 function asAxisText(item,mode){
