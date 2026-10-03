@@ -1352,7 +1352,12 @@ function aiForecastRows(){
  return AI_FORECAST_ORDER.map(name=>{
    const x=ITEMS.find(v=>normalizeItemName(v.name)===name);
    const text=x&&String(x.ai_outlook||'').trim()?String(x.ai_outlook).trim():'';
-   const rich=x&&x.ai_outlook_html?sanitizeAiRichHtml(x.ai_outlook_html):'';
+   const richRaw=x&&x.ai_outlook_html?sanitizeAiRichHtml(x.ai_outlook_html):'';
+   // AI 전망 탭의 본문 원천은 항상 품목별 ai_outlook이다.
+   // 색상 편집용 HTML은 평문이 최신 ai_outlook과 정확히 같을 때만 사용해
+   // 과거 HTML이 새 주차/새 파싱의 AI 전망을 덮어쓰지 못하게 한다.
+   const richPlain=richRaw?aiHtmlToPlain(richRaw).trim():'';
+   const rich=(richRaw&&richPlain===text)?richRaw:'';
    return {name,item:x||null,text,html:rich};
  });
 }
@@ -1374,7 +1379,7 @@ function renderAiForecast(){
    const editable=AI_FORECAST_EDITING?' contenteditable="true" spellcheck="false" oninput="markAiForecastDirty()" onpaste="handleAiEditorPaste(event)"':'';
    return `<tr><th scope="row">${esc(r.name)}</th><td class="ai-editable-cell ${r.text?'':'ai-forecast-empty'}" data-ai-name="${esc(r.name)}"${editable}>${content}</td></tr>`;
  }).join('');
- return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA</div></div>${renderAiToolbar()}<table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`;
+ return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA · 품목별 AI 전망 원문 연동</div></div>${renderAiToolbar()}<table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`;
 }
 
 
