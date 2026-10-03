@@ -259,6 +259,18 @@ button{touch-action:manipulation}
   font-weight:820!important;
 }
 .tab-image-as-only-shell .note{font-size:12px!important;margin-top:5px!important}
+.tab-image-as-only-shell .as-export-full-five .as-table tbody tr{
+  display:table-row!important;
+  visibility:visible!important;
+  opacity:1!important;
+  break-inside:avoid!important;
+  page-break-inside:avoid!important;
+}
+.tab-image-as-only-shell .as-export-full-five .as-table tbody td{
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
 .tab-image-ai-only-shell{width:100%;height:100%;background:#fff;box-sizing:border-box;padding:12px 14px 14px;overflow:hidden}
 .tab-image-ai-only-shell .ai-export-inner{width:100%;height:100%;transform-origin:top center}
 .tab-image-ai-only-shell .ai-forecast-panel{--ai-title-size:42px;--ai-meta-size:16px;--ai-head-size:27px;--ai-item-size:24px;--ai-body-size:18px;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important;width:100%!important;max-width:none!important;height:100%;display:flex;flex-direction:column}
@@ -3341,7 +3353,7 @@ function buildForecastAsSingleReportPage(stage,meta){
   const page=document.createElement('div');
   page.className='tab-image-export tab-image-as-only-page';
   const shell=document.createElement('div');shell.className='tab-image-as-only-shell';
-  const inner=cleanExportClone(panel);inner.classList.add('as-export-inner');
+  const inner=cleanExportClone(panel);inner.classList.add('as-export-inner','as-export-full-five');
 
   const fiveRows=AI_FORECAST_ORDER
     .map(name=>(FORECAST_AS_ROWS||[]).find(r=>normalizeItemName(r.name)===normalizeItemName(name)))
@@ -3365,42 +3377,45 @@ async function fitForecastAsSingleReport(obj){
   obj.inner.style.minHeight='0';
   obj.inner.style.transform='none';
   obj.inner.style.width='100%';
+  const panel=obj.inner.querySelector('.forecast-as-panel')||obj.inner;
+  const content=obj.inner.querySelector('#forecastAsContent');
   const tableWrap=obj.inner.querySelector('.as-table-wrap');
   const table=obj.inner.querySelector('.as-table');
-  if(tableWrap){tableWrap.style.height='auto';tableWrap.style.maxHeight='none';tableWrap.style.overflow='visible'}
-  if(table){table.style.height='auto'}
+  if(panel){panel.style.height='auto';panel.style.minHeight='0';panel.style.overflow='visible'}
+  if(content){content.style.height='auto';content.style.minHeight='0';content.style.flex='0 0 auto';content.style.overflow='visible'}
+  if(tableWrap){tableWrap.style.height='auto';tableWrap.style.maxHeight='none';tableWrap.style.overflow='visible';tableWrap.style.flex='0 0 auto'}
+  if(table){table.style.height='auto';table.style.minHeight='0'}
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  const available=Math.max(1,obj.shell.clientHeight-2);
-  const needed=Math.max(obj.inner.scrollHeight,obj.inner.getBoundingClientRect().height,1);
-  if(needed<=available)return 1;
-  const ratio=Math.max(.52,Math.min(1,available/needed));
-  obj.inner.style.transformOrigin='top center';
-  obj.inner.style.transform='scale('+ratio+')';
-  obj.inner.style.width=(100/ratio)+'%';
-  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  return ratio;
+  return Math.ceil(Math.max(obj.inner.scrollHeight,obj.inner.getBoundingClientRect().height,1));
 }
 async function saveForecastAsSinglePageImage(stage,meta){
   const report=buildForecastAsSingleReportPage(stage,meta);
   const rows=[...report.inner.querySelectorAll('.as-table tbody tr')];
   if(rows.length!==5)throw new Error('전망 AS 저장 대상이 5개가 아닙니다. 현재 '+rows.length+'개');
-  const ratio=await fitForecastAsSingleReport(report);
+  const naturalHeight=await fitForecastAsSingleReport(report);
+  const exportHeight=Math.max(900,naturalHeight+44);
+  report.page.style.height=exportHeight+'px';
+  report.page.style.overflow='visible';
+  report.shell.style.height=(exportHeight-20)+'px';
+  report.shell.style.overflow='visible';
+  report.inner.style.height='auto';
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   const canvas=await html2canvas(report.page,{
-    scale:1.6,
+    scale:1.45,
     useCORS:true,
     allowTaint:false,
     backgroundColor:'#e9eef3',
     width:1600,
-    height:900,
+    height:exportHeight,
     windowWidth:1600,
-    windowHeight:900,
+    windowHeight:exportHeight,
     scrollX:0,
     scrollY:0,
     logging:false
   });
   const base='LAM_'+sanitizeFilePart(meta.weekLabel)+'_전망_AS_'+sanitizeFilePart(meta.weekEnd||'weekly');
   downloadCanvasFile(canvas,base+'.png');
-  showToast('전망 AS 5대 품목 · 내용만 1장 저장 완료'+(ratio<.999?' (자동 맞춤)':''));
+  showToast('전망 AS 5대 품목 전체 · 세로 1장 저장 완료');
 }
 
 function buildAiForecastSingleReportPage(stage,meta){
