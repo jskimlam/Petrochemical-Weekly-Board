@@ -46,6 +46,18 @@ const direction = delta > 0 ? '상승' : delta < 0 ? '하락' : '보합';
 - 스킬은 이 검증을 **작성 후 1회가 아니라 ① 작성 전 ② Sheets 저장 직후 ③ GAS 재조회 직후 ④ 최종 화면 확인 시** 반복한다. 18개 중 단 하나라도 불일치하면 저장/배포 작업을 중지하고 해당 품목을 수정, 해당 주 AS·Overview도 재검산한다.
 - `source current`와 `sheet current`가 같은지만 보는 검증은 불충분. **W40→W41의 실제 값 차이**를 원본과 비교하고, 어느 계층에서 $5가 누락됐는지 찾는다.
 
+
+### 필수 실행형 가격 감사 (G1 회귀 테스트)
+
+GitHub `scripts/validate-weekly-prices.cjs`는 18개 품목의 current/previous, 증감액, 증감률, 부호 방향, 가격문구, raw_brief, 코멘터리 마감 방향을 교차검산한다. **W41 AN의 +$5 상승을 보합으로 잘못 작성한 입력을 검출하는 회귀 테스트**를 포함한다.
+
+```sh
+node scripts/validate-weekly-prices.cjs --self-test
+node scripts/validate-weekly-prices.cjs data/qa/Wnn-sheet-export.json
+```
+
+`Wnn-sheet-export.json`은 저장 직후 **Google Sheets 원본을 독립 재조회한** 18행 A:U 스냅샷이며 형식은 `{"week_end":"2026-10-09","rows":[[A열,...,U열],...]}`이다. 임의 작성한 객체나 GitHub 파일을 복사해 Sheet 재조회로 속이지 않는다. 스크립트가 PASS해도 G0 원본 가격확인과 G3 GAS 반환값 및 G4 **실제 웹 렌더링 확인**이 남아 있다. 테스트 오류·평가일 오래됨·실제 화면 접근 불가는 각각 오류/미검증으로 보고하고 전체 완료 판정 금지.
+
 ## 검증 관문 G2 — Google Sheets DB 반영 후 재조회
 
 1. `weekly_data`에서 대상 주차의 **정확히 18개 ID**가 존재하는지 확인하고 중복·누락·다른 주차 혼입을 금지.
