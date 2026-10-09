@@ -1,4 +1,4 @@
 interface:
   display_name: "18품목위클리"
-  short_description: "석유화학 18개 품목, 400~500자 Overview, 18개 전망 AS 카드"
-  default_prompt: "18품목위클리 스킬에 따라 이번 주 18개 품목 파싱과 전체시장 Overview, 전망 AS 카드 18개를 작성하고, 글자 수와 주간 평가기준일을 검증한 후 Petrochemical-Weekly-Board를 업데이트해."
+  short_description: "18품목 원본·가격·방향·AS·DB·화면까지 교차검증"
+  default_prompt: "18품목위클리 스킬에 따라 18개 품목과 Overview 각 400~500자, 전망 AS 18개를 작성해. 가격·방향 자동검증을 실행하고 원본→Google Sheets→Apps Script→실제 대시보드 화면→AS 판정을 독립적으로 확인해. 미검증 또는 불일치가 있으면 완료로 보고하지 마."
