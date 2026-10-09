@@ -1,0 +1,4 @@
+interface:
+  display_name: "18품목위클리"
+  short_description: "석유화학 18개 품목, 400~500자 Overview, 18개 전망 AS 카드"
+  default_prompt: "18품목위클리 스킬에 따라 이번 주 18개 품목 파싱과 전체시장 Overview, 전망 AS 카드 18개를 작성하고, 글자 수와 주간 평가기준일을 검증한 후 Petrochemical-Weekly-Board를 업데이트해."
