@@ -1186,6 +1186,54 @@ button{touch-action:manipulation}
   .topbar .actions .btn{font-size:10px!important}
 }
 
+
+/* 18-item weekly: phone-width reading fix, not applied to PNG/PDF export clones */
+.comment-toggle{display:none}
+@media screen and (max-width:900px){
+  #tabs{scroll-snap-type:x proximity;scroll-padding-inline:14px;overscroll-behavior-inline:contain}
+  #tabs .tab{scroll-snap-align:center}
+  body.all-items-view #board .row{overflow:visible;min-width:0}
+  body.all-items-view #board .row-main{
+    grid-template-columns:minmax(0,1fr) minmax(92px,auto);
+    grid-template-areas:"name change" "date change" "price price" "comment comment" "detail detail";
+    gap:8px 10px;align-items:start;min-width:0;
+  }
+  body.all-items-view #board .item-stack{display:contents}
+  body.all-items-view #board .item-stack .name{grid-area:name;min-width:0;overflow-wrap:anywhere}
+  body.all-items-view #board .item-stack .note{grid-area:date;margin-top:0}
+  body.all-items-view #board .item-stack .pricebox{grid-area:price;margin-top:0;min-width:0;width:100%}
+  body.all-items-view #board .item-stack .price-line{display:flex;flex-wrap:wrap;gap:6px 9px}
+  body.all-items-view #board .item-stack .price{font-size:clamp(27px,6.3vw,36px);white-space:normal;overflow-wrap:anywhere;line-height:1.1}
+  body.all-items-view #board .item-stack .prev-inline{font-size:clamp(12px,3.1vw,15px);white-space:normal}
+  body.all-items-view #board .chg{grid-area:change;min-width:92px;width:100%}
+  body.all-items-view #board .comm{
+    grid-area:comment;display:block!important;-webkit-line-clamp:unset!important;
+    max-height:none!important;height:auto!important;overflow:visible!important;
+    white-space:pre-line;overflow-wrap:anywhere;word-break:keep-all;
+    font-size:clamp(14px,3.3vw,16px);line-height:1.62;padding:12px 13px;
+  }
+  body.all-items-view #board .row.comment-collapsed .comm{
+    display:-webkit-box!important;-webkit-box-orient:vertical;
+    -webkit-line-clamp:4!important;overflow:hidden!important;
+  }
+  body.all-items-view #board .row-actions{grid-area:detail;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  body.all-items-view #board .row-actions .comment-toggle{
+    display:block;grid-column:1/-1;width:100%;min-width:0;
+    padding:9px 12px;border:1px solid #afc7dc;border-radius:4px;
+    background:#eef5fb;color:#17476e;font-size:13px;font-weight:850;cursor:pointer;
+  }
+  body.all-items-view #board .row-actions .parsebtn,
+  body.all-items-view #board .row-actions .detailbtn{width:100%;min-width:0}
+}
+@media screen and (max-width:560px){
+  body.all-items-view #board .row{padding:12px 11px;margin-bottom:10px}
+  body.all-items-view #board .item-stack .name{font-size:19px;line-height:1.18}
+  body.all-items-view #board .item-stack .price{font-size:clamp(25px,6.7vw,30px)}
+  body.all-items-view #board .item-stack .prev-inline{font-size:12.5px}
+  body.all-items-view #board .chg{min-width:92px;font-size:15px;padding:8px 7px}
+  body.all-items-view #board .comm{font-size:14px;line-height:1.62;padding:11px 12px}
+  body.all-items-view #board .row-actions .comment-toggle{font-size:12.5px}
+}
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge" aria-hidden="true"><img src="./assets/petro-weekly-icon.svg" alt=""></span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyCurrentTabForKakao()">현재탭 카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -1261,6 +1309,7 @@ function renderOverview(){
 const CATEGORY_ORDER=['에너지/매크로','기초유분','주요 원료/중간체','폴리머/유도품','지역 벤치마크'];
 const ITEM_DISPLAY_ORDER=['WTI','Ethylene','Propylene','Benzene','SM','BD','AN','BPA','MMA','ABS','PC','EPS','PS','PBR','유럽 SM','미국 SM','유럽 BD','미국 BD'];
 let ITEMS=[], activeCategory='전체', mode='summary';
+const COLLAPSED_COMMENTS=new Set();
 let CURRENT_WEEK_END='', CURRENT_META={}, CURRENT_DETAIL_INDEX=-1, EDIT_INDEX=-1, TOAST_TIMER=null;
 let WEEK_LIST=[], WEEK_HISTORY_CACHE=new Map(), CATEGORY_CHART_ITEM='', CATEGORY_CHART_TYPE='line', CATEGORY_CHART_WEEKS=10, CATEGORY_CHART_SEQ=0;
 const LATEST_CACHE_KEY='LAM_WEEKLY_LATEST_CACHE_V2';
@@ -2189,6 +2238,7 @@ function render(){
  const toneEl=document.getElementById('toneText'); if(toneEl){toneEl.textContent=weeklyTone;toneEl.className=weeklyTone==='약세 우위'?'weak':weeklyTone==='강세 우위'?'strong':'mixed';}
  const tabs=['Overview','AI 전망','전망 AS','전체',...CATEGORY_ORDER]; document.getElementById('tabs').innerHTML=tabs.map(t=>`<button class="tab ${t===activeCategory?'active':''}" onclick="selectCategory('${t}')">${t}</button>`).join('');
  document.body.classList.toggle('full',mode==='full');
+ document.body.classList.toggle('all-items-view',activeCategory==='전체');
  const isCategoryFocus=activeCategory!=='전체'&&activeCategory!=='Overview'&&activeCategory!=='AI 전망'&&activeCategory!=='전망 AS';
  document.body.classList.toggle('category-focus',isCategoryFocus);
  let out='';
@@ -2213,8 +2263,15 @@ function render(){
    const focusArr=ITEMS.filter(x=>x.category===activeCategory).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name));
    out+=renderCategoryInsight(activeCategory,focusArr);
  }
- for(const cat of CATEGORY_ORDER){ const arr=ITEMS.filter(x=>x.category===cat&&(activeCategory==='전체'||activeCategory===cat)).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name)); if(!arr.length)continue; out+=`<section class="section"><div class="section-title"><h3>${cat}</h3><small>${arr.length}개 품목${isCategoryFocus?' · 상세 펼침':''}</small></div><div class="grid-head"><div>품목 / 현재가</div><div>WoW</div><div>핵심 코멘트</div><div></div></div>`; arr.forEach((x)=>{ const idx=ITEMS.indexOf(x); out+=`<div class="row"><div class="row-main"><div class="item-stack"><div class="name">${esc(displayName(x.name))}</div><div class="note">평가 ${esc(x.date)}</div><div class="pricebox"><div class="price-line"><span class="price ${cls(x.direction)}">${esc(x.current_raw||x.current)}</span><span class="prev-inline">${esc(x.prev_raw||x.previous)}</span></div><div class="benchmark-sub">(${esc(x.benchmark)})</div></div></div><div class="chg ${cls(x.direction)}">${x.direction}<br>${fmtPct(x.pct)}</div><div class="comm">${esc(x.commentary)}</div><div class="row-actions"><button class="parsebtn" onclick="openParserForIndex(${idx})">파싱</button><button class="detailbtn" onclick="openDetail(${idx})">상세</button></div></div><div class="detail-inline"><div class="detailbox"><h4>변동요인</h4><pre>${esc(x.factors)}</pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre>${esc(x.outlook)}</pre></div>${x.ai_outlook?`<div class="detailbox ai-box"><h4>AI 전망</h4><pre>${esc(x.ai_outlook)}</pre></div>`:""}<div class="detailbox" style="grid-column:1/-1"><h4>추가 정보</h4><pre>${esc(x.additional)}</pre></div></div></div>`; }); out+='</section>'; } document.getElementById('board').innerHTML=out;
+ for(const cat of CATEGORY_ORDER){ const arr=ITEMS.filter(x=>x.category===cat&&(activeCategory==='전체'||activeCategory===cat)).sort((a,b)=>itemSortRank(a.name)-itemSortRank(b.name)); if(!arr.length)continue; out+=`<section class="section"><div class="section-title"><h3>${cat}</h3><small>${arr.length}개 품목${isCategoryFocus?' · 상세 펼침':''}</small></div><div class="grid-head"><div>품목 / 현재가</div><div>WoW</div><div>핵심 코멘트</div><div></div></div>`; arr.forEach((x)=>{ const idx=ITEMS.indexOf(x); out+=`<div class="row ${COLLAPSED_COMMENTS.has(normalizeItemName(x.name))?'comment-collapsed':''}"><div class="row-main"><div class="item-stack"><div class="name">${esc(displayName(x.name))}</div><div class="note">평가 ${esc(x.date)}</div><div class="pricebox"><div class="price-line"><span class="price ${cls(x.direction)}">${esc(x.current_raw||x.current)}</span><span class="prev-inline">${esc(x.prev_raw||x.previous)}</span></div><div class="benchmark-sub">(${esc(x.benchmark)})</div></div></div><div class="chg ${cls(x.direction)}">${x.direction}<br>${fmtPct(x.pct)}</div><div class="comm" id="comm-${idx}">${esc(x.commentary)}</div><div class="row-actions"><button class="comment-toggle" type="button" aria-controls="comm-${idx}" aria-expanded="${!COLLAPSED_COMMENTS.has(normalizeItemName(x.name))}" onclick="toggleCardComment(${idx},this)">${COLLAPSED_COMMENTS.has(normalizeItemName(x.name))?'본문 펼치기':'본문 접기'}</button><button class="parsebtn" onclick="openParserForIndex(${idx})">파싱</button><button class="detailbtn" onclick="openDetail(${idx})">상세</button></div></div><div class="detail-inline"><div class="detailbox"><h4>변동요인</h4><pre>${esc(x.factors)}</pre></div><div class="detailbox"><h4>결론 및 전망</h4><pre>${esc(x.outlook)}</pre></div>${x.ai_outlook?`<div class="detailbox ai-box"><h4>AI 전망</h4><pre>${esc(x.ai_outlook)}</pre></div>`:""}<div class="detailbox" style="grid-column:1/-1"><h4>추가 정보</h4><pre>${esc(x.additional)}</pre></div></div></div>`; }); out+='</section>'; } document.getElementById('board').innerHTML=out;
  if(isCategoryFocus)setTimeout(()=>refreshCategoryChart(),0);
+}
+function toggleCardComment(i,button){
+ const item=ITEMS[i],row=button?.closest('.row');if(!item||!row)return;
+ const key=normalizeItemName(item.name),collapsed=row.classList.toggle('comment-collapsed');
+ if(collapsed)COLLAPSED_COMMENTS.add(key);else COLLAPSED_COMMENTS.delete(key);
+ button.textContent=collapsed?'본문 펼치기':'본문 접기';
+ button.setAttribute('aria-expanded',String(!collapsed));
 }
 function setMode(m){mode=m;render()}
 function openDetail(i){CURRENT_DETAIL_INDEX=i;const x=ITEMS[i];document.getElementById('dTitle').textContent=x.name+' 상세 브리핑';document.getElementById('dMeta').textContent=x.date+' · '+x.benchmark+' · '+x.direction+' '+fmtPct(x.pct);document.getElementById('dPrice').textContent=x.price_line;document.getElementById('dComm').textContent=x.commentary;document.getElementById('dFactors').textContent=x.factors;document.getElementById('dOutlook').textContent=x.outlook;const aiBox=document.getElementById('dAiBox');const aiPre=document.getElementById('dAiOutlook');if(aiPre)aiPre.textContent=x.ai_outlook||'';if(aiBox)aiBox.style.display=x.ai_outlook?'':'none';document.getElementById('dAdditional').textContent=x.additional;const daily=(x.daily||[]);document.getElementById('dailyBox').classList.toggle('hidden',!daily.length);document.getElementById('dDaily').textContent=formatDailyText(daily);drawSpark(daily);document.getElementById('detailModal').classList.add('show')} function closeDetail(){document.getElementById('detailModal').classList.remove('show')}
