@@ -1578,7 +1578,7 @@ function parseAndSaveAsCards(){
 function applyManualAsCard(row,card){
  if(!card)return row;row.manual=true;
  if(card.forecastDir)row.forecastDir=card.forecastDir;if(card.actualDir)row.actualDir=card.actualDir;
- row.result=card.result&&card.result!=='hold'?card.result:(row.forecastDir&&row.actualDir?(row.forecastDir===row.actualDir?'hit':'miss'):'hold');
+ row.result=card.result|| (row.forecastDir&&row.actualDir?(row.forecastDir===row.actualDir?'hit':'miss'):'hold');
  if(card.summary)row.summary=card.summary;
  row.axes=(row.axes||[]).map(a=>{
    const m=card.axes&&card.axes[a.axis];if(!m)return a;
