@@ -31,7 +31,7 @@ function priceLine(line){
  if(!m)return null;
  const rest=m[6],change=rest.match(/(?:전주 대비|기준)\s+([+-]?\$?[+-]?[\d.]+)\s*(?:\/mt|\/b|cents\/lb)/);
  const percent=rest.match(/([+-]?\d+(?:\.\d+)?)%/);
- const label=rest.match(/,\s*(상승|하락|보합)\s*\)$/);
+ const label=rest.match(/,\s*(상승|하락|보합)\s*$/);
  const read=s=>Number(String(s).replace(/[$,]/g,''));
  return {benchmark:m[1],current:read(m[2]),previous:read(m[4]),unit:m[3],unitPrev:m[5],
    change:change?read(change[1]):NaN,pct:percent?Number(percent[1]):NaN,
