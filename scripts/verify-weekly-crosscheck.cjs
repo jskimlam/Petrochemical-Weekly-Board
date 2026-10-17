@@ -132,6 +132,7 @@ function main(){
    requireAllReviewed:arg.includes('--require-all-reviewed')};
  const result=inspect(input);
  if(arg.includes('--self-test')){
+   if(!result.passed)console.error('BASELINE ERRORS:',JSON.stringify(result.errors,null,2));
    assert.equal(result.passed,true,'Baseline weekly source ledger must pass');
    const incorrect=structuredClone(ledger);
    incorrect.items.find(x=>x.item==='미국 BD').assessment_date='2026-10-09';
