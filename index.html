@@ -1480,7 +1480,7 @@ async function loadAsRemoteCards(week){
  }catch(e){console.warn('AS remote load failed',week,e);AS_REMOTE_CACHE[week]=[];return []}
 }
 async function ensureAsCards(week){await loadAsRemoteCards(week);return getAsManualCards(week)}
-function asResultKey(v){const s=String(v||'').trim();if(/적중|정합|일치/.test(s))return 'hit';if(/오판|불일치|미적중/.test(s))return 'miss';return 'hold'}
+function asResultKey(v){const s=String(v||'').trim();if(/오판|불일치|미적중/.test(s))return 'miss';if(/적중|정합|일치/.test(s))return 'hit';return 'hold'}
 function parseAsAxisSection(text,label){
  const src=String(text||''),head=new RegExp('^'+label+'\\s*$','mi'),hm=src.match(head);if(!hm)return null;
  const start=hm.index+hm[0].length,rest=src.slice(start),next=rest.search(/^(?:코스트|수요|공급|이벤트)\s*$/mi),body=(next>=0?rest.slice(0,next):rest).trim();
