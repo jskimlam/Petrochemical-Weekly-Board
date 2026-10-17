@@ -1498,7 +1498,7 @@ function parseAsCardBlock(block){
  const item=(block.match(/^품목\s*:\s*(.+)$/mi)||[])[1];if(!item)return null;
  const name=normalizeItemName(item.trim());if(!ITEM_DISPLAY_ORDER.includes(name))return null;
  const forecastDir=asNormDir((block.match(/^전주\s*전망\s*:\s*(.+)$/mi)||[])[1]||''),actualDir=asNormDir((block.match(/^실제\s*:\s*(.+)$/mi)||[])[1]||''),result=asResultKey((block.match(/^판정\s*:\s*(.+)$/mi)||[])[1]||'');
- const sm=block.match(/^AS\s*핵심\s*$([\s\S]*?)(?=^(?:코스트|수요|공급|이벤트)\s*$|$)/mi),axes={};
+ const sm=block.match(/^AS[ \t]*핵심[ \t]*\r?\n([\s\S]*?)(?=^(?:코스트|수요|공급|이벤트)[ \t]*$)/m),axes={};
  [['cost','코스트'],['demand','수요'],['supply','공급'],['event','이벤트']].forEach(([key,label])=>{const a=parseAsAxisSection(block,label);if(a)axes[key]=a});
  return {name,forecastDir,actualDir,result,summary:sm?sm[1].trim():'',axes};
 }
