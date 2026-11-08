@@ -2707,12 +2707,21 @@ async function historyItemsForWeek(week){
  WEEK_HISTORY_CACHE.set(week,arr);
  return arr;
 }
+/* ICIS source-verified Europe SM Friday Current Month Spot:
+ W39 DB contains the weekly range Mid; W40 DB contains EUR monthly contract.
+ Correct chart points only, without altering historical price records. */
+const EU_SM_FRIDAY_CLOSE_CORRECTIONS={
+ '2026-09-25':{value:1775,published:'2026-09-25'},
+ '2026-10-02':{value:1745,published:'2026-10-02'}
+};
 async function loadWeeklySeries(itemName,limit){
  const weeks=historyWeeksForCurrent(limit);
  const rows=await Promise.all(weeks.map(async w=>{
    try{
      const arr=await historyItemsForWeek(w.week_end);
      const x=arr.find(v=>normalizeItemName(v.name)===normalizeItemName(itemName));
+     const verified=normalizeItemName(itemName)==='유럽 SM'?EU_SM_FRIDAY_CLOSE_CORRECTIONS[w.week_end]:null;
+     if(verified)return {week_end:w.week_end,week_label:w.week_label||isoWeekLabel(w.week_end),value:verified.value,raw:'$'+verified.value.toLocaleString('en-US')+'/mt',pct:null,direction:'',benchmark:'Styrene FOB Rotterdam Spot Current Month Close',verifiedSource:'ICIS '+verified.published};
      if(!x||x.current==null||Number.isNaN(Number(x.current)))return null;
      return {week_end:w.week_end,week_label:w.week_label||isoWeekLabel(w.week_end),value:Number(x.current),raw:x.current_raw||String(x.current),pct:x.pct,direction:x.direction,benchmark:x.benchmark||''};
    }catch(e){console.warn('weekly history skip',w.week_end,e);return null}
@@ -2756,7 +2765,7 @@ function renderCategoryChartSide(rows,item){
  if(!rows.length){side.innerHTML=`<div class="chart-kpi"><span>최근 주간가격</span><strong>-</strong><small>저장 이력 없음</small></div><div class="chart-kpi"><span>기간 변동</span><strong>-</strong><small>비교 불가</small></div><div class="chart-kpi"><span>조회 기간</span><strong>${CATEGORY_CHART_WEEKS}주</strong><small>최대 10주</small></div><div class="chart-note">위클리 데이터가 추가 저장되면 자동으로 누적 표시됩니다.</div>`;return}
  const first=rows[0],last=rows[rows.length-1],diff=last.value-first.value,pct=first.value?diff/first.value*100:0;
  const sign=diff>0?'+':'';
- side.innerHTML=`<div class="chart-kpi"><span>최근 주간가격</span><strong>${esc(chartRawFromValue(last.value,item))}</strong><small>${esc(last.week_label)} · ${esc(last.week_end)}</small></div><div class="chart-kpi"><span>${rows.length}주 변동</span><strong class="${diff>0?'up':diff<0?'down':'flat'}">${sign}${esc(chartNumber(diff))} · ${sign}${pct.toFixed(2)}%</strong><small>${esc(first.week_label)} → ${esc(last.week_label)}</small></div><div class="chart-kpi"><span>조회 데이터</span><strong>${rows.length}주</strong><small>설정 ${CATEGORY_CHART_WEEKS}주 / 최대 10주</small></div><div class="chart-note">SM·BD의 데일리가격은 이 그래프에 사용하지 않습니다. 각 주차에 저장된 위클리 대표가격만 비교합니다.${rows.length<2?' 현재 DB에는 1주 데이터만 있어 단일 포인트로 표시됩니다.':''}</div>`;
+ side.innerHTML=`<div class="chart-kpi"><span>최근 주간가격</span><strong>${esc(chartRawFromValue(last.value,item))}</strong><small>${esc(last.week_label)} · ${esc(last.week_end)}</small></div><div class="chart-kpi"><span>${rows.length}주 변동</span><strong class="${diff>0?'up':diff<0?'down':'flat'}">${sign}${esc(chartNumber(diff))} · ${sign}${pct.toFixed(2)}%</strong><small>${esc(first.week_label)} → ${esc(last.week_label)}</small></div><div class="chart-kpi"><span>조회 데이터</span><strong>${rows.length}주</strong><small>설정 ${CATEGORY_CHART_WEEKS}주 / 최대 10주</small></div><div class="chart-note">SM·BD의 데일리가격은 이 그래프에 사용하지 않습니다. 각 주차에 저장된 위클리 대표가격만 비교합니다.${rows.some(r=>r.verifiedSource)?' 유럽 SM W39·W40 가격은 ICIS 원본 PDF Friday Close Spot Mid를 적용했습니다.':''}${rows.length<2?' 현재 DB에는 1주 데이터만 있어 단일 포인트로 표시됩니다.':''}</div>`;
 }
 async function refreshCategoryChart(){
  if(activeCategory==='전체')return;
