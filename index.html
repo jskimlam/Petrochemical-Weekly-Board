@@ -1989,7 +1989,7 @@ function setForecastAsFilter(v){FORECAST_AS_FILTER=v||'all';renderForecastAsCont
 
 function renderForecastAsRow(r,exportMode=false){
  const item=normalizeItemName(r.name);
- return '<tr data-as-item="'+esc(item)+'"><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(!exportMode&&r.manual?'<span class="as-manual-badge">AS 카드</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='partial'?'부분 적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center">'+(exportMode?'':'<div class="as-action-stack"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button><button class="as-edit-btn" onclick="openAsCardEditor('+r.index+')">수정</button></div>')+'</td></tr>';
+ return '<tr data-as-item="'+esc(item)+'"><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='partial'?'부분 적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(!exportMode&&r.manual?'<span class="as-manual-badge">AS 카드</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='partial'?'부분 적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center">'+(exportMode?'':'<div class="as-action-stack"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button><button class="as-edit-btn" onclick="openAsCardEditor('+r.index+')">수정</button></div>')+'</td></tr>';
 }
 function renderForecastAsContent(){
  const root=document.getElementById('forecastAsContent');if(!root)return;
@@ -2051,7 +2051,7 @@ function buildAsDetailA4Report(row){
  const page=document.createElement('div');page.className='as-a4-page';
  const shell=document.createElement('div');shell.className='as-a4-shell';
  const report=document.createElement('div');report.className='as-a4-report';
- const resultLabel=row.result==='hit'?'적중':row.result==='miss'?'오판':'판정보류';
+ const resultLabel=row.result==='hit'?'적중':row.result==='partial'?'부분 적중':row.result==='miss'?'오판':'판정보류';
  const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
  const period=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제';
 
@@ -2817,7 +2817,7 @@ function buildForecastAsKakaoText(){
   let out='['+weekLabel+' 전망 AS]\n'+(weekEnd||'')+'\n';
   out+='평가 '+evalRows.length+'/'+rows.length+' | 적중 '+hits+' | 오판 '+misses+' | 적중률 '+rate.toFixed(1)+'%\n';
   rows.forEach(r=>{
-    const result=r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류';
+    const result=r.result==='hit'?'적중':r.result==='partial'?'부분 적중':r.result==='miss'?'오판':'판정보류';
     out+='\n■ '+displayName(r.name)+' | '+(r.forecastDir||'-')+' → '+(r.actualDir||'-')+' | '+result;
     if(r.current&&r.current.pct!=null)out+=' | '+fmtPct(Number(r.current.pct));
     out+='\n'+cleanKakaoText(asCoreSummary(r))+'\n';
@@ -2854,7 +2854,7 @@ function buildItemDetailKakaoText(x){
 }
 function buildAsDetailKakaoText(row){
   if(!row)return '';
-  const result=row.result==='hit'?'적중':row.result==='miss'?'오판':'판정보류';
+  const result=row.result==='hit'?'적중':row.result==='partial'?'부분 적중':row.result==='miss'?'오판':'판정보류';
   const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
   let out='['+displayName(row.name)+' 전망 AS 상세]\n';
   out+=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제\n';
