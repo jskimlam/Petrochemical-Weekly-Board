@@ -1234,6 +1234,40 @@ button{touch-action:manipulation}
   body.all-items-view #board .comm{font-size:14px;line-height:1.62;padding:11px 12px}
   body.all-items-view #board .row-actions .comment-toggle{font-size:12.5px}
 }
+
+/* W40-W45 5대 원료 AS 원문 카드: W45와 동일한 슬라이드 배치 */
+.as-five-slide{background:#fff;padding:17px 15px;margin:10px 0 21px;border:1px solid #c6d8e6;color:#151923}
+.as-five-head{border-bottom:2px solid #27628e;padding:2px 7px 15px;margin-bottom:10px;position:relative}
+.as-five-head h4{font-size:clamp(23px,2.6vw,34px);font-weight:950;color:#111722;letter-spacing:-.045em;line-height:1.2;margin:0}
+.as-five-head:after{content:"";position:absolute;bottom:-9px;right:20px;width:17px;height:17px;background:#92c638;border-radius:3px;box-shadow:-30px 0 #145082,-60px 0 #df1826}
+.as-five-overview{margin:11px 3px;font-size:clamp(12px,1.3vw,17px);font-weight:850;line-height:1.48}
+.as-five-overview p{margin:4px 0}.as-five-overview strong{color:#123df1;text-decoration:underline}
+.as-five-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:11px 0}
+.as-five-kpi{min-width:0;border-radius:10px;border:1px solid #bcd2ee;background:#eaf2ff;padding:10px;text-align:center}
+.as-five-kpi.gray{background:#f2f4f7;border-color:#cbd2db}.as-five-kpi.rose{background:#fff0f1;border-color:#f2c3c8}
+.as-five-kpi label{display:block;color:#636d78;font-size:clamp(10px,.96vw,14px);font-weight:750}
+.as-five-kpi b{display:block;color:#143df0;font-size:clamp(20px,1.9vw,27px);font-weight:950;line-height:1.3}
+.as-five-kpi.gray b{color:#151923}.as-five-kpi.rose b{color:#dc192a}
+.as-five-kpi small{font-size:11px;color:#687786;display:block;line-height:1.35;word-break:keep-all}
+.as-five-rows{display:flex;flex-direction:column;gap:9px}
+.as-five-row{display:grid;grid-template-columns:19% 46% minmax(0,1fr);align-items:stretch;gap:9px}
+.as-five-cell{min-width:0;overflow-wrap:anywhere;word-break:keep-all;border:1px solid #c8dafa;border-radius:10px;padding:12px 13px}
+.as-five-status{background:#fff0f2;border-color:#f2c4ca}.as-five-status.hit{background:#e9f6ee;border-color:#c3e6cf}.as-five-status.partial{background:#fff1d8;border-color:#efd49d}.as-five-status.hold{background:#f3f5f7;border-color:#cbd3dd}
+.as-five-status .as-five-name{font-size:clamp(20px,1.8vw,27px);font-weight:950}
+.as-five-status .as-five-result{color:#ea1321;font-size:clamp(13px,1.15vw,18px);font-weight:950;margin-left:10px}
+.as-five-status.hit .as-five-result{color:#1640e7}.as-five-status.partial .as-five-result{color:#a16a13}.as-five-status.hold .as-five-result{color:#667586}
+.as-five-signal{font-size:clamp(11px,1.03vw,14px);font-weight:850;margin-top:10px;line-height:1.5}
+.as-five-status small{font-size:10.5px;color:#6c7682;display:block;margin-top:9px}
+.as-five-proof{background:#e9f2ff}.as-five-next{background:#fff7dd;border-color:#efd49d}
+.as-five-cell h5{font-size:clamp(13px,1.16vw,17px);font-weight:950;margin:0 0 5px}
+.as-five-cell p{font-size:clamp(11px,1.03vw,14px);font-weight:650;white-space:pre-line;line-height:1.39;margin:0;overflow-wrap:anywhere}
+.as-five-foot{color:#7b8490;font-size:10px;line-height:1.4;margin-top:9px}
+.as-full-details{margin-top:14px;padding-top:11px;border-top:1px solid #d8e2ee}
+.as-full-details>summary{cursor:pointer;color:#174b7d;background:#edf5fc;border:1px solid #c7dbe9;border-radius:5px;padding:10px 13px;font-weight:950;font-size:13px;margin-bottom:12px}
+.as-light.partial{background:#b98930;box-shadow:0 0 0 4px #b9893020}.as-result.partial{color:#955e11;background:#fff2dc;border:1px solid #e8d29f}
+@media(max-width:950px){.as-five-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.as-five-row{grid-template-columns:22% 43% minmax(0,1fr);gap:6px}.as-five-cell{padding:9px}.as-five-cell p{font-size:11.3px}}
+@media(max-width:640px){.as-five-slide{padding:10px 8px}.as-five-head h4{font-size:20px}.as-five-row{display:flex;flex-direction:column;gap:0;overflow:hidden;border:1px solid #d0dce8;border-radius:9px}.as-five-cell{border:0;border-radius:0;padding:10px 12px}.as-five-cell p{font-size:13px;line-height:1.52}}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge" aria-hidden="true"><img src="./assets/petro-weekly-icon.svg" alt=""></span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyCurrentTabForKakao()">현재탭 카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -1480,7 +1514,7 @@ async function loadAsRemoteCards(week){
  }catch(e){console.warn('AS remote load failed',week,e);AS_REMOTE_CACHE[week]=[];return []}
 }
 async function ensureAsCards(week){await loadAsRemoteCards(week);return getAsManualCards(week)}
-function asResultKey(v){const s=String(v||'').trim();if(/오판|불일치|미적중/.test(s))return 'miss';if(/적중|정합|일치/.test(s))return 'hit';return 'hold'}
+function asResultKey(v){const s=String(v||'').trim();if(/부분\s*적중/.test(s))return 'partial';if(/오판|불일치|미적중/.test(s))return 'miss';if(/적중|정합|일치/.test(s))return 'hit';return 'hold'}
 function parseAsAxisSection(text,label){
  const src=String(text||''),head=new RegExp('^'+label+'\\s*$','mi'),hm=src.match(head);if(!hm)return null;
  const start=hm.index+hm[0].length,rest=src.slice(start),next=rest.search(/^(?:코스트|수요|공급|이벤트)\s*$/mi),body=(next>=0?rest.slice(0,next):rest).trim();
@@ -1546,7 +1580,7 @@ function asCardToText(c){
   const ae=Array.isArray(a.actualEvidence)?a.actualEvidence.join(' / '):(a.actualEvidence||'');
   return label+'\n예상 : '+(a.forecastSignal||'')+'\n실제 : '+(a.actualSignal||'')+'\n판정 : '+(a.status==='hit'?'정합':a.status==='miss'?'불일치':'판단보류')+'\n예상 근거 : '+fe+'\n실제 확인 : '+ae+'\nAS 분석 : '+(a.analysis||a.comment||'')+'\n다음 보정 : '+(a.correction||'');
  };
- return '품목 : '+c.name+'\n전주 전망 : '+(c.forecastDir||'')+'\n실제 : '+(c.actualDir||'')+'\n판정 : '+(c.result==='hit'?'적중':c.result==='miss'?'오판':'판정보류')+'\nAS 핵심\n'+(c.summary||'')+'\n\n'+ax('cost','코스트')+'\n\n'+ax('demand','수요')+'\n\n'+ax('supply','공급')+'\n\n'+ax('event','이벤트');
+ return '품목 : '+c.name+'\n전주 전망 : '+(c.forecastDir||'')+'\n실제 : '+(c.actualDir||'')+'\n판정 : '+(c.result==='hit'?'적중':c.result==='partial'?'부분 적중':c.result==='miss'?'오판':'판정보류')+'\nAS 핵심\n'+(c.summary||'')+'\n\n'+ax('cost','코스트')+'\n\n'+ax('demand','수요')+'\n\n'+ax('supply','공급')+'\n\n'+ax('event','이벤트');
 }
 async function loadCurrentAsCardsToParser(){
  const week=CURRENT_WEEK_END||inferWeekEnd(),ta=document.getElementById('asParserText');
@@ -1929,6 +1963,24 @@ function asCoreSummaryHtml(row){
  if(row.result==='hit')return '<span class="as-summary-hit">'+esc(text)+'</span>';
  return esc(text);
 }
+
+function renderAsFiveSlide(){
+ const week=CURRENT_WEEK_END||inferWeekEnd(),cards=getAsManualCards(week),order=['SM','AN','BD','BPA','MMA'];
+ const five=order.map(n=>cards.find(c=>normalizeItemName(c.name)===n)).filter(Boolean);
+ if(!five.length)return '<div class="as-empty">이 주차의 5대 원료 AS 원문이 없습니다.</div>';
+ const count=(a,k)=>a.filter(c=>asResultKey(c.result)===k).length;
+ const hit=count(five,'hit'),partial=count(five,'partial'),miss=count(five,'miss'),hold=count(five,'hold'),total=count(cards,'hit'),totalPartial=count(cards,'partial'),totalHold=count(cards,'hold'),evalNum=cards.length-totalHold;
+ const ups=five.filter(c=>asNormDir(c.actualDir)==='상승').map(c=>c.name),downs=five.filter(c=>asNormDir(c.actualDir)==='하락').map(c=>c.name);
+ const e=v=>esc(String(v==null?'':v)),label=CURRENT_META&&CURRENT_META.week_label||isoWeekLabel(week),status={hit:'적중',miss:'오판',partial:'부분 적중',hold:'판정보류'};
+ const k=(cl,name,val,info)=>'<div class="as-five-kpi '+cl+'"><label>'+name+'</label><b>'+val+'</b><small>'+info+'</small></div>';
+ const kpis='<div class="as-five-kpis">'+k('','5대 주원료 적중률',(100*hit/five.length).toFixed(0)+'%',hit+'/'+five.length+' 적중 · 부분 '+partial+' · 오판 '+miss+(hold?' · 보류 '+hold:''))+k('gray','전체 보드 적중률',(evalNum?100*total/evalNum:0).toFixed(1)+'%',cards.length+'개 중 '+total+' 적중 · 부분 '+totalPartial+(totalHold?' · 보류 '+totalHold:''))+k('','하락 품목',downs.length+'개',e(downs.join(' · ')||'없음'))+k('rose','상승 품목',ups.length+'개',e(ups.join(' · ')||'없음'))+'</div>';
+ const body=five.map(c=>{
+  const st=asResultKey(c.result),summary=e(c.summary||'AS 핵심 원문 미등록'),next=e(c.axes&&c.axes.event&&c.axes.event.correction||'다음 보정 원문 미등록');
+  return '<div class="as-five-row" data-as-item="'+e(c.name)+'"><div class="as-five-cell as-five-status '+st+'"><div><span class="as-five-name">'+e(c.name)+'</span><span class="as-five-result">● '+status[st]+'</span></div><div class="as-five-signal">전망 '+e(c.forecastDir||'미확인')+' → 실제 '+e(c.actualDir||'평가유보')+'</div><small>가격 정보는 기존 AS 핵심 원문 참조</small></div><div class="as-five-cell as-five-proof"><h5>판정 근거</h5><p>'+summary+'</p></div><div class="as-five-cell as-five-next"><h5>다음 주 점검</h5><p>'+next+'</p></div></div>';
+ }).join('');
+ return '<section class="as-five-slide"><div class="as-five-head"><h4>전망 AS · 5대 주원료 전망 적중 점검 · '+e(label)+' ('+e(week.slice(5).replace('-','/'))+')</h4></div><div class="as-five-overview"><p>□ 전주 AI 전망 vs 이번 주 실제 — 5대 주원료 <strong>적중 '+hit+'/'+five.length+'건('+(100*hit/five.length).toFixed(0)+'%)</strong> · 부분 적중 '+partial+' · 오판 '+miss+'</p><p>□ 기존 AS 핵심·다음 보정 문구를 변경하지 않고 동일한 슬라이드 양식으로 표시</p></div>'+kpis+'<div class="as-five-rows">'+body+'</div><div class="as-five-foot">출처: '+e(label)+' 저장된 원본 AS 카드 · 부분 적중은 적중률에 포함하지 않음</div></section>';
+}
+
 function renderForecastAS(){
  const week=CURRENT_WEEK_END||inferWeekEnd(),label=(CURRENT_META&&CURRENT_META.week_label)||isoWeekLabel(week),prev=asPrevWeekMeta();
  return '<section class="forecast-as-panel"><div class="forecast-as-head"><div><div class="eyebrow">Forecast After Service</div><h3>전망 AS</h3><p>전체 품목의 전주 방향 전망과 금주 실제 방향을 비교하고 코스트 · 수요 · 공급 · 이벤트별 정합성을 점검합니다.</p></div><div class="forecast-as-head-right"><div class="forecast-as-week">'+esc(prev?(prev.week_label||isoWeekLabel(prev.week_end)):'-')+' → '+esc(label||'-')+'<small>'+(prev?esc(prev.week_end)+' → ':'')+esc(week||'-')+'</small></div><button class="as-parse-open-btn" onclick="openAsParser()">전체 AS 파싱 / 수정</button></div></div><div id="forecastAsContent"><div class="as-loading">전주 전망과 금주 실제 데이터를 비교하는 중...</div></div></section>';
@@ -1937,10 +1989,11 @@ function setForecastAsFilter(v){FORECAST_AS_FILTER=v||'all';renderForecastAsCont
 
 function renderForecastAsRow(r,exportMode=false){
  const item=normalizeItemName(r.name);
- return '<tr data-as-item="'+esc(item)+'"><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(!exportMode&&r.manual?'<span class="as-manual-badge">AS 카드</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center">'+(exportMode?'':'<div class="as-action-stack"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button><button class="as-edit-btn" onclick="openAsCardEditor('+r.index+')">수정</button></div>')+'</td></tr>';
+ return '<tr data-as-item="'+esc(item)+'"><td class="center"><span class="as-light '+r.result+'" title="'+esc(r.result==='hit'?'적중':r.result==='miss'?'오판':'판정보류')+'"></span></td><td><span class="as-item">'+esc(displayName(r.name))+'</span>'+(!exportMode&&r.manual?'<span class="as-manual-badge">AS 카드</span>':'')+'</td><td class="center">'+asDirHtml(r.forecastDir)+'</td><td class="center">'+asDirHtml(r.actualDir)+'<div class="note">'+esc(r.current&&r.current.pct!=null?fmtPct(Number(r.current.pct)):'')+'</div></td><td class="center"><span class="as-result '+r.result+'">'+esc(r.result==='hit'?'적중':r.result==='partial'?'부분 적중':r.result==='miss'?'오판':'보류')+'</span></td><td><div class="as-summary">'+asCoreSummaryHtml(r)+'</div></td><td class="center">'+(exportMode?'':'<div class="as-action-stack"><button class="as-detail-btn" onclick="openAsDetail('+r.index+')">상세</button><button class="as-edit-btn" onclick="openAsCardEditor('+r.index+')">수정</button></div>')+'</td></tr>';
 }
 function renderForecastAsContent(){
  const root=document.getElementById('forecastAsContent');if(!root)return;
+ const wasOpen=!!root.querySelector('.as-full-details[open]');
  const rows=FORECAST_AS_ROWS||[],evalRows=rows.filter(r=>r.result!=='hold'),hits=evalRows.filter(r=>r.result==='hit').length,misses=evalRows.filter(r=>r.result==='miss').length,rate=evalRows.length?hits/evalRows.length*100:0;
  const filtered=rows.filter(r=>FORECAST_AS_FILTER==='all'||r.result===FORECAST_AS_FILTER);
  const hitNames=evalRows.filter(r=>r.result==='hit').map(r=>displayName(r.name));
@@ -1950,15 +2003,18 @@ function renderForecastAsContent(){
  if(!filtered.length){root.innerHTML=kpis+filters+'<div class="as-empty">해당 조건의 품목이 없습니다.</div>';return}
  const body=filtered.map(r=>renderForecastAsRow(r,false)).join('');
  root.innerHTML=kpis+filters+'<div class="as-table-wrap"><table class="as-table"><colgroup><col class="signal"><col class="item"><col class="dir"><col class="dir"><col class="result"><col><col class="action"></colgroup><thead><tr><th>신호</th><th>품목</th><th>전주 전망</th><th>실제</th><th>판정</th><th class="summary">AS 핵심</th><th>상세</th></tr></thead><tbody>'+body+'</tbody></table></div>';
+ const details=document.createElement('details');details.className='as-full-details';details.open=wasOpen;details.innerHTML='<summary>18품목 상세 AS · 판정 및 4축 분석 펼치기</summary>';
+ while(root.firstChild)details.appendChild(root.firstChild);
+ root.appendChild(details);root.insertAdjacentHTML('afterbegin',renderAsFiveSlide());
 }
 async function refreshForecastAS(){
  if(activeCategory!=='전망 AS')return;
  const seq=++FORECAST_AS_SEQ,root=document.getElementById('forecastAsContent'),prevMeta=asPrevWeekMeta();
  if(!root)return;
- if(!prevMeta){root.innerHTML='<div class="as-empty">비교할 이전 주차 데이터가 없습니다.</div>';return}
+ /* Earliest saved AS week may have no earlier week in the dashboard. */
  try{
   const currentWeek=CURRENT_WEEK_END||inferWeekEnd();
-  const [prevItems]=await Promise.all([historyItemsForWeek(prevMeta.week_end),loadAsRemoteCards(currentWeek)]);
+  const [prevItems]=await Promise.all([(prevMeta?historyItemsForWeek(prevMeta.week_end):Promise.resolve([])),loadAsRemoteCards(currentWeek)]);
   if(seq!==FORECAST_AS_SEQ||activeCategory!=='전망 AS')return;
   const prevMap=new Map(prevItems.map(x=>[normalizeItemName(x.name),x])),curMap=new Map(ITEMS.map(x=>[normalizeItemName(x.name),x]));
   const manualMap=new Map(getAsManualCards(currentWeek).map(x=>[normalizeItemName(x.name),x]));
@@ -1966,7 +2022,7 @@ async function refreshForecastAS(){
    const prev=prevMap.get(name)||null,cur=curMap.get(name)||null,src=asForecastSource(prev),forecastDir=asForecastDir(src.text),actualDir=asNormDir(cur&&cur.direction);
    const result=forecastDir&&actualDir?(forecastDir===actualDir?'hit':'miss'):'hold';
    const axes=asBuildAxisReviews(prev,cur);
-   let row={index:idx,name,prev,current:cur,source:src.source,forecastText:src.text,forecastDir,actualDir,result,axes,prevWeek:prevMeta.week_end,currentWeek:CURRENT_WEEK_END||inferWeekEnd()};
+   let row={index:idx,name,prev,current:cur,source:src.source,forecastText:src.text,forecastDir,actualDir,result,axes,prevWeek:prevMeta?prevMeta.week_end:'',currentWeek:CURRENT_WEEK_END||inferWeekEnd()};
    row.summary=asRowSummary(row);row=applyManualAsCard(row,manualMap.get(name));return row;
   });
   FORECAST_AS_FILTER='all';renderForecastAsContent();
@@ -1981,7 +2037,7 @@ function openAsDetail(i){
  document.getElementById('asDTitle').textContent=displayName(row.name)+' 전망 AS 상세'+(row.manual?' · 저장 AS':'');
  document.getElementById('asDMeta').textContent=(row.prevWeek||'-')+' 전망 → '+(row.currentWeek||'-')+' 실제 · '+(row.source||'전망 데이터 없음');
  const price=row.current?((row.current.prev_raw||row.prev&&row.prev.current_raw||'-')+' → '+(row.current.current_raw||'-')+' · '+fmtPct(Number(row.current.pct||0))):'-';
- const top='<div class="as-detail-topgrid"><div class="as-detail-kpi"><span>전주 전망</span><strong>'+asDirHtml(row.forecastDir)+'</strong></div><div class="as-detail-kpi"><span>금주 실제</span><strong>'+asDirHtml(row.actualDir)+'</strong></div><div class="as-detail-kpi"><span>판정</span><strong><span class="as-result '+row.result+'">'+esc(row.result==='hit'?'적중':row.result==='miss'?'오판':'보류')+'</span></strong></div><div class="as-detail-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div></div>';
+ const top='<div class="as-detail-topgrid"><div class="as-detail-kpi"><span>전주 전망</span><strong>'+asDirHtml(row.forecastDir)+'</strong></div><div class="as-detail-kpi"><span>금주 실제</span><strong>'+asDirHtml(row.actualDir)+'</strong></div><div class="as-detail-kpi"><span>판정</span><strong><span class="as-result '+row.result+'">'+esc(row.result==='hit'?'적중':row.result==='partial'?'부분 적중':row.result==='miss'?'오판':'보류')+'</span></strong></div><div class="as-detail-kpi"><span>가격 변화</span><strong>'+esc(price)+'</strong></div></div>';
  const forecast='<div class="as-forecast-text"><b>전주 전망 원문</b><br>'+(row.forecastText?esc(row.forecastText):'전망 문구 없음')+'</div>';
  const axes=row.axes.map(a=>'<article class="as-axis-card '+a.status+'"><div class="as-axis-head"><h4>'+esc(a.label)+'</h4><span class="as-axis-status">'+esc(asAxisStatusText(a.status))+'</span></div><div class="as-axis-signals"><div class="as-axis-signal"><span>전주 예상 신호</span><b>'+esc(a.forecastSignal||'미분류')+'</b></div><div class="as-axis-signal"><span>금주 실제 신호</span><b>'+esc(a.actualSignal||'미분류')+'</b></div></div><div class="as-evidence"><b>전주 예상 근거</b><p>'+asEvidenceHtml(a.forecastEvidence)+'</p></div><div class="as-evidence"><b>금주 실제 확인</b><p>'+asEvidenceHtml(a.actualEvidence)+'</p></div><div class="as-axis-judgement"><b>AS 판정 분석</b>'+esc(a.comment||'')+'</div><div class="as-axis-correction"><b>다음 전망 보정</b>'+esc(a.correction||'')+'</div></article>').join('');
  body.innerHTML=top+forecast+'<div class="as-overall-review"><b>AS 핵심</b><br>'+asCoreSummaryHtml(row)+'</div><div class="as-axis-grid">'+axes+'</div>';
@@ -3415,8 +3471,7 @@ function buildForecastAsSingleReportPage(stage,meta){
   const fiveRows=AI_FORECAST_ORDER
     .map(name=>(FORECAST_AS_ROWS||[]).find(r=>normalizeItemName(r.name)===normalizeItemName(name)))
     .filter(Boolean);
-  const tbody=inner.querySelector('.as-table tbody');
-  if(tbody)tbody.innerHTML=fiveRows.map(r=>renderForecastAsRow(r,true)).join('');
+  const more=inner.querySelector('.as-full-details');if(more)more.remove();
 
   const h3=inner.querySelector('.forecast-as-head h3');
   if(h3)h3.textContent='전망 AS'+(meta.weekEnd?' ('+shortMd(meta.weekEnd)+')':'');
@@ -3447,7 +3502,7 @@ async function fitForecastAsSingleReport(obj){
 }
 async function saveForecastAsSinglePageImage(stage,meta){
   const report=buildForecastAsSingleReportPage(stage,meta);
-  const rows=[...report.inner.querySelectorAll('.as-table tbody tr')];
+  const rows=[...report.inner.querySelectorAll('.as-five-row')];
   if(rows.length!==5)throw new Error('전망 AS 저장 대상이 5개가 아닙니다. 현재 '+rows.length+'개');
   const naturalHeight=await fitForecastAsSingleReport(report);
   const exportHeight=Math.max(900,naturalHeight+44);
