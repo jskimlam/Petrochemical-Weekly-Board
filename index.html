@@ -1268,6 +1268,12 @@ button{touch-action:manipulation}
 @media(max-width:950px){.as-five-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.as-five-row{grid-template-columns:22% 43% minmax(0,1fr);gap:6px}.as-five-cell{padding:9px}.as-five-cell p{font-size:11.3px}}
 @media(max-width:640px){.as-five-slide{padding:10px 8px}.as-five-head h4{font-size:20px}.as-five-row{display:flex;flex-direction:column;gap:0;overflow:hidden;border:1px solid #d0dce8;border-radius:9px}.as-five-cell{border:0;border-radius:0;padding:10px 12px}.as-five-cell p{font-size:13px;line-height:1.52}}
 
+
+/* Polymer AI outlook follows the archived original, outside the 5-feedstock editor. */
+.ai-polymer-panel{margin-top:16px}
+.ai-polymer-panel .ai-polymer-original{white-space:pre-line;line-height:1.64;word-break:keep-all;overflow-wrap:anywhere;font-weight:650}
+.ai-polymer-panel .ai-forecast-empty{color:#7c8794}
+
 </style></head>
 <body>
 <div class="topbar"><div class="brand"><span class="badge" aria-hidden="true"><img src="./assets/petro-weekly-icon.svg" alt=""></span><div><h1>Petrochemical Weekly Board</h1><div class="brand-sub">Strategic Market Intelligence</div></div></div><div class="week-nav-group"><button class="week-nav-btn" id="prevWeekBtn" title="이전 주" onclick="loadPrevWeek()">◀</button><select id="weekSelector" class="week-select" onchange="loadSelectedWeek()"><option value="">최신 주차 불러오는 중...</option></select><button class="week-nav-btn" id="nextWeekBtn" title="다음 주" onclick="loadNextWeek()">▶</button><span class="latest-week-badge" id="latestWeekBadge" style="display:none">최신</span></div><div class="actions"><span class="db-status" id="dbStatus"><span class="dot"></span><span id="dbStatusText">DB 연결 중</span></span><button class="btn db-save" id="retrySaveBtn" style="display:none" onclick="retryLastSave()">저장 재시도</button><button class="btn" onclick="setMode('summary')">요약형</button><button class="btn" onclick="setMode('full')">전체형</button><button class="btn" onclick="copyCurrentTabForKakao()">현재탭 카톡복사</button><button class="btn" onclick="prepareAndPrint()">보고서 PDF/인쇄</button><button class="btn" onclick="saveCurrentTabImage()">탭 이미지 저장</button><button class="btn" onclick="openBulkParser()">전체 파싱</button><button class="btn" onclick="openOverviewParser()">Overview 파싱</button><button class="btn primary" onclick="openParser()">품목별 파싱</button></div></div>
@@ -1370,6 +1376,7 @@ function fmtPct(v){if(v==null||Number.isNaN(v))return '-';return (v>0?'+':'')+v.
 function cls(d){return d==='상승'?'up':d==='하락'?'down':'flat'}
 
 const AI_FORECAST_ORDER=['SM','AN','BD','BPA','MMA'];
+const AI_POLYMER_ORDER=['ABS','PC','EPS','PS','PBR'];
 
 /* Historical AI originals: fill only missing forecasts, without touching DB or AS data. */
 const AI_WEEKLY_ARCHIVES={'2026-10-02':'./data/weekly/W40.md','2026-10-09':'./data/weekly/W41.md','2026-10-16':'./data/weekly/W42.md','2026-10-23':'./data/weekly/W43.md','2026-10-30':'./data/weekly/W44.md','2026-11-06':'./data/weekly/W45.md'};
@@ -1521,7 +1528,14 @@ function renderAiForecast(){
    const editable=AI_FORECAST_EDITING?' contenteditable="true" spellcheck="false" oninput="markAiForecastDirty()" onpaste="handleAiEditorPaste(event)"':'';
    return `<tr><th scope="row">${esc(r.name)}</th><td class="ai-editable-cell ${r.text?'':'ai-forecast-empty'}" data-ai-name="${esc(r.name)}"${editable}>${content}</td></tr>`;
  }).join('');
- return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA · 품목별 AI 전망 원문 연동</div></div>${renderAiToolbar()}<table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`;
+ 
+ const polymerRows=AI_POLYMER_ORDER.map(name=>{
+  const item=ITEMS.find(x=>normalizeItemName(x.name)===name);
+  const text=item&&String(item.ai_outlook||'').trim()||'';
+  return '<tr><th scope="row">'+esc(name)+'</th><td class="ai-polymer-original '+(text?'':'ai-forecast-empty')+'">'+(text?esc(text):'AI 전망 원문 미등록')+'</td></tr>';
+ }).join('');
+ const polymerPanel='<section class="ai-forecast-panel ai-polymer-panel"><div class="ai-forecast-head"><h3>폴리머 AI 전망 ('+esc(shortMd(weekEnd))+')</h3><div class="meta">'+esc(weekLabel||'')+' · ABS / PC / EPS / PS / PBR · 기존 원문 그대로 표시</div></div><table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>'+polymerRows+'</tbody></table></section>';
+return `<section class="ai-forecast-panel"><div class="ai-forecast-head"><h3>AI 전망 (${esc(shortMd(weekEnd))})</h3><div class="meta">${esc(weekLabel||'')} · SM / AN / BD / BPA / MMA · 품목별 AI 전망 원문 연동</div></div>${renderAiToolbar()}<table class="ai-forecast-table"><colgroup><col class="item-col"><col></colgroup><thead><tr><th>품목</th><th>AI 전망</th></tr></thead><tbody>${body}</tbody></table></section>`+polymerPanel;
 }
 
 
